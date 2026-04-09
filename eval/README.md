@@ -49,6 +49,7 @@
 - bugfix before vs after 对照
 - judge rerank 的候选数与通过率
 - multi-file patch 的 files touched 与 patch recall
+- test generation 的 bug detection rate
 
 ### Harness
 

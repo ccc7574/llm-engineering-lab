@@ -45,7 +45,45 @@
 - `Agentic` 已有两层 runnable 路线，可比较 `direct vs tool_use` 以及 `tool_use vs stateful`。
 - `Multimodal` 已有两层 runnable 路线，可比较 `text-only vs vision-augmented` 以及 `ocr_only vs structured_pipeline`。
 - `Harness` 已能把 summary board 转成 `ship / hold / block` 的 gate report。
-- 当前仍未成体系的主要是: 更复杂的 multimodal OCR / table / grounding 联合管线、更长链路的 agentic memory / reflection，以及更深的 coding test generation / agentic coding / harness automation。
+- `Coding` 已补到 test generation，可用 `bug_detection_rate` 评测测试质量。
+- 当前仍未成体系的主要是: 更复杂的 multimodal OCR / table / grounding 联合管线、更长链路的 agentic memory / reflection，以及更深的 agentic coding / harness automation。
+
+## Session Entry
+
+- Date: 2026-04-10 02:10 CST
+- Goal: 继续把 Coding 能力线推进到更接近真实工程，把 test generation 和隐藏 bug 检测接进现有 harness。
+- Status: 已完成 tiny testgen 数据、test generation runner / eval、回归产物和 summary board 接入。
+- Key findings:
+  - test generation 的关键不在“生成了几条断言”，而在“这些断言是否能通过 reference 且抓住 hidden bug”。
+  - `weak -> targeted` 的对照非常适合作为非算法工程师的第一条测试生成路线，因为 `bug_detection_rate` 比 BLEU 或断言数量更符合真实工作要求。
+  - 当前 `Coding` 线已经形成 `completion -> repo context -> bugfix -> judge -> multi-file patch -> test generation` 的连续工作流。
+- Files touched:
+  - `code/stage_coding/testgen_dataset.py`
+  - `code/stage_coding/testgen_runner.py`
+  - `eval/testgen_eval.py`
+  - `datasets/tiny_testgen/eval.jsonl`
+  - `tasks/C12_test_generation.md`
+  - `code/README.md`
+  - `datasets/README.md`
+  - `eval/README.md`
+  - `tasks/README.md`
+  - `tracks/coding/README.md`
+  - `docs/runbook.md`
+  - `code/stage_harness/summary_board.py`
+  - `docs/session_handoff.md`
+- Validation:
+  - `python3 -m compileall code/stage_coding eval/testgen_eval.py code/stage_harness`
+  - `python3 eval/testgen_eval.py --data-path datasets/tiny_testgen/eval.jsonl --strategy weak --report-path runs/testgen_weak.json`
+  - `python3 eval/testgen_eval.py --data-path datasets/tiny_testgen/eval.jsonl --strategy targeted --report-path runs/testgen_targeted.json`
+  - `python3 code/stage_harness/regression_compare.py --baseline-report runs/testgen_weak.json --candidate-report runs/testgen_targeted.json --output runs/testgen_regression_diff.json`
+  - `python3 code/stage_harness/summary_board.py --runs-dir runs --registry-path runs/run_registry.json --output runs/summary_board.json --md-output runs/summary_board.md`
+  - 结果:
+    - test generation: `0/3 -> 3/3`
+    - `bug_detection_rate +1.000`
+    - summary board: `10` 条 regression rows，已包含 `Coding Test Generation`
+- Next step:
+  - 把 Coding 往 agentic coding / patch diff protocol / test repair 推进
+  - 或把 Harness 往 scheduled regression / CI 触发推进
 
 ## Session Entry
 

@@ -25,5 +25,6 @@
 - `C03` execution-based eval
 - `C10` coding judge / verifier
 - `C11` multi-file patch protocol
+- `C12` test generation
 
 当前可直接运行的最小命令见 [runbook.md](/Volumes/ExtaData/newcode/llm-engineering-lab/docs/runbook.md) 中的 `C00-C03` 段落。

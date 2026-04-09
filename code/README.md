@@ -105,6 +105,8 @@ Coding 能力线的最小入口。
 - `judge.py`
 - `multifile_bugfix_dataset.py`
 - `patch_runner.py`
+- `testgen_dataset.py`
+- `testgen_runner.py`
 - `execution.py`
 
 用途:
@@ -116,6 +118,7 @@ Coding 能力线的最小入口。
 - 演示 bugfix 任务的最小闭环
 - 演示 code judge / verifier 如何在候选池里做 rerank
 - 演示 multi-file patch protocol 如何覆盖跨文件修复
+- 演示 test generation 如何区分 reference 和 hidden bug
 
 ### `stage_harness`
 

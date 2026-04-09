@@ -120,6 +120,14 @@ python3 eval/multifile_bugfix_eval.py --data-path datasets/tiny_multifile_bugfix
 python3 code/stage_harness/regression_compare.py --baseline-report runs/multifile_bugfix_single_file.json --candidate-report runs/multifile_bugfix_patch_protocol.json --output runs/multifile_bugfix_regression_diff.json
 ```
 
+## `C12`: Test Generation
+
+```bash
+python3 eval/testgen_eval.py --data-path datasets/tiny_testgen/eval.jsonl --strategy weak --report-path runs/testgen_weak.json
+python3 eval/testgen_eval.py --data-path datasets/tiny_testgen/eval.jsonl --strategy targeted --report-path runs/testgen_targeted.json
+python3 code/stage_harness/regression_compare.py --baseline-report runs/testgen_weak.json --candidate-report runs/testgen_targeted.json --output runs/testgen_regression_diff.json
+```
+
 ## `H01-H03`: Harness Starter Path
 
 ```bash

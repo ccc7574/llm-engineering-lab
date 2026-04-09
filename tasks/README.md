@@ -79,7 +79,8 @@ V2 的任务体系会逐步从旧的 `T00-T32` 编号，迁移到按能力线组
 - [C03_execution_feedback_eval.md](/Volumes/ExtaData/newcode/llm-engineering-lab/tasks/C03_execution_feedback_eval.md)
 - [C10_coding_judge_verifier.md](/Volumes/ExtaData/newcode/llm-engineering-lab/tasks/C10_coding_judge_verifier.md)
 - [C11_multi_file_bugfix_protocol.md](/Volumes/ExtaData/newcode/llm-engineering-lab/tasks/C11_multi_file_bugfix_protocol.md)
-- `C12` pass@k 与 execution-based eval
+- [C12_test_generation.md](/Volumes/ExtaData/newcode/llm-engineering-lab/tasks/C12_test_generation.md)
+- `C13` pass@k 与 execution-based eval
 - `C20` SWE-bench 风格任务拆解
 
 ### `Track M: Multimodal`

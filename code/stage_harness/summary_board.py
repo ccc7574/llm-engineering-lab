@@ -61,6 +61,12 @@ TRACK_CONFIG = {
         "quality_gate": 0.05,
         "cost_metrics": ["avg_selected_context_count", "avg_relevant_context_recall", "avg_context_char_count"],
     },
+    "testgen": {
+        "label": "Coding Test Generation",
+        "primary_metric": "bug_detection_rate",
+        "quality_gate": 0.05,
+        "cost_metrics": ["avg_generated_tests_count"],
+    },
 }
 
 
