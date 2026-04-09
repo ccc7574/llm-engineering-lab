@@ -22,6 +22,15 @@ on:
         required: false
         default: true
         type: boolean
+      notify_channel:
+        description: "Optional notification channel: none, slack_webhook, feishu_webhook"
+        required: false
+        default: "none"
+        type: choice
+        options:
+          - none
+          - slack_webhook
+          - feishu_webhook
   schedule:
     - cron: "20 18 * * *"
 
@@ -40,6 +49,7 @@ jobs:
       SUITE_MANIFEST: ${{ inputs.manifest || 'manifests/regression_v2_suite.json' }}
       CHANGED_ONLY: ${{ inputs.changed_only == true }}
       REQUIRE_SHIP: ${{ inputs.require_ship != false }}
+      NOTIFY_CHANNEL: ${{ inputs.notify_channel || 'none' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -104,6 +114,24 @@ jobs:
               --digest runs/notification_digest.json \
               --slack-output runs/notification_slack.json \
               --feishu-output runs/notification_feishu.json
+          fi
+
+      - name: Optional Notification Dispatch
+        if: always()
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          FEISHU_WEBHOOK_URL: ${{ secrets.FEISHU_WEBHOOK_URL }}
+        run: |
+          if [ "$NOTIFY_CHANNEL" = "slack_webhook" ] && [ -f runs/notification_slack.json ] && [ -n "$SLACK_WEBHOOK_URL" ]; then
+            python3 code/stage_harness/notification_dispatch.py \
+              --payload runs/notification_slack.json \
+              --channel slack_webhook
+          elif [ "$NOTIFY_CHANNEL" = "feishu_webhook" ] && [ -f runs/notification_feishu.json ] && [ -n "$FEISHU_WEBHOOK_URL" ]; then
+            python3 code/stage_harness/notification_dispatch.py \
+              --payload runs/notification_feishu.json \
+              --channel feishu_webhook
+          else
+            echo "notification dispatch skipped"
           fi
 
       - name: Publish Job Summary

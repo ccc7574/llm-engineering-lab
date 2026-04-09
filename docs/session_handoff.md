@@ -53,7 +53,37 @@
 - `Harness` 已补到 changed-scope suite 和 step retry，可按变更范围压缩 PR 回归。
 - `Harness` 已补到 notification digest，可把 suite/gate 结果压缩成值班摘要。
 - `Harness` 已补到 Slack / 飞书 payload artifact，可作为后续 webhook / bot 外发输入。
-- 当前仍未成体系的主要是: 更复杂的 multimodal OCR / table / grounding 联合管线、更长链路的 agentic memory / reflection，以及更深入的 cost / latency / live notification integration。
+- `Harness` 已补到 notification dispatch，可在配置 webhook 时直接发送。
+- 当前仍未成体系的主要是: 更复杂的 multimodal OCR / table / grounding 联合管线、更长链路的 agentic memory / reflection，以及更深入的 cost / latency / routing policy integration。
+
+## Session Entry
+
+- Date: 2026-04-10 04:05 CST
+- Goal: 把通知链再推进到 dispatch 层，让 payload 可以在有 webhook 的环境里直接外发。
+- Status: 已完成 dispatch 脚本、workflow 可选发送参数，以及中文文档接入。
+- Key findings:
+  - payload 资产标准化之后，dispatch 层可以做得非常薄，只负责通道和发送策略。
+  - `stdout + dry-run + webhook` 这三层模式足够覆盖本地开发、CI 演练和真实外发三种场景。
+  - 当前仓库的 Harness 已经具备 `digest -> payload -> dispatch` 的完整通知执行链。
+- Files touched:
+  - `code/stage_harness/notification_dispatch.py`
+  - `.github/workflows/regression-suite.yml`
+  - `tasks/H16_notification_dispatch.md`
+  - `code/README.md`
+  - `tasks/README.md`
+  - `tracks/harness/README.md`
+  - `README.md`
+  - `docs/runbook.md`
+  - `docs/ci_regression_guide_zh.md`
+  - `docs/session_handoff.md`
+- Validation:
+  - `python3 code/stage_harness/notification_dispatch.py --payload runs/notification_slack.json --channel slack_webhook --webhook-url https://example.invalid/webhook --dry-run`
+  - 结果:
+    - dry-run 输出成功
+    - dispatch 支持 webhook 参数与环境变量两种方式
+- Next step:
+  - 把 Harness 往 schedule-specific routing、failure taxonomy 细化、真实外部发送适配推进
+  - 或把 Multimodal 往 grounding / multi-page doc pipeline 推进
 
 ## Session Entry
 

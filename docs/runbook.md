@@ -271,6 +271,23 @@ python3 code/stage_harness/notification_payloads.py \
 
 这一步不会真正发送消息，只会生成可直接外发的 payload artifact。
 
+## `H16`: Notification Dispatch
+
+如果要本地 dry-run 一次 dispatch:
+
+```bash
+python3 code/stage_harness/notification_dispatch.py \
+  --payload runs/notification_slack.json \
+  --channel slack_webhook \
+  --webhook-url https://example.invalid/webhook \
+  --dry-run
+```
+
+如果在真实环境里发送，可以去掉 `--dry-run`，并通过参数或环境变量提供:
+
+- `SLACK_WEBHOOK_URL`
+- `FEISHU_WEBHOOK_URL`
+
 ## 2026 V2 说明
 
 从 V2 开始，这个仓库的主入口应以:

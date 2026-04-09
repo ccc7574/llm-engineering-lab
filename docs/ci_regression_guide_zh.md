@@ -29,6 +29,8 @@
 - external payloads:
   - `runs/notification_slack.json`
   - `runs/notification_feishu.json`
+- dispatch:
+  - `code/stage_harness/notification_dispatch.py`
 - summary board:
   - `runs/summary_board.json`
   - `runs/summary_board.md`
@@ -118,6 +120,8 @@ workflow 会做这些事:
 8. 生成 Slack / 飞书 payload artifact
 9. 把 digest、suite report 和 summary board 写进 GitHub Job Summary
 
+如果通过 `workflow_dispatch` 显式传入 `notify_channel`，并且仓库 secret 已配置，workflow 还可以继续做可选 dispatch。
+
 对 `pull_request`，workflow 现在会默认尝试按 changed files 跑 scoped suite。
 
 如果变更命中了 `harness` 相关路径，则会自动升级成全量 suite。
@@ -147,6 +151,17 @@ workflow 会做这些事:
 - webhook 发送前最后一步
 - IM 机器人接入
 - 发布频道消息模板固化
+
+### `code/stage_harness/notification_dispatch.py`
+
+看真正的发送入口。
+
+它支持:
+
+- `stdout`
+- `slack_webhook`
+- `feishu_webhook`
+- `dry-run`
 
 ### `runs/regression_suite_report.md`
 
@@ -198,6 +213,7 @@ workflow 会做这些事:
 - step 级最小重试
 - failure taxonomy 与 notification digest
 - Slack / 飞书 payload artifact
+- dry-run / webhook dispatch
 
 ## 当前还没做的部分
 
@@ -206,7 +222,7 @@ workflow 会做这些事:
 - 定时回归后的通知与值班机制
 - latency / cost 趋势面板
 - PR comment / release note 自动生成
-- 真正的 webhook / bot token 发送动作
+- 更细粒度的通知路由策略，比如 schedule 才发、PR 失败才发
 - 更精细的 changed-scope 依赖图，而不只是 scope tag
 
 ## 建议的团队使用方式
