@@ -217,6 +217,28 @@ python3 code/stage_harness/suite_runner.py --manifest manifests/regression_v2_su
 
 配套中文说明见 [ci_regression_guide_zh.md](/Volumes/ExtaData/newcode/llm-engineering-lab/docs/ci_regression_guide_zh.md)。
 
+## `H13`: Changed-Scope 与 Retry
+
+如果要只按变更文件运行受影响能力线，可以先准备一个文件列表:
+
+```bash
+git diff --name-only HEAD^ HEAD > runs/changed_files.txt
+```
+
+然后执行:
+
+```bash
+python3 code/stage_harness/suite_runner.py \
+  --manifest manifests/regression_v2_suite.json \
+  --changed-files-path runs/changed_files.txt \
+  --clean-regression-artifacts \
+  --output runs/regression_suite_report.json \
+  --md-output runs/regression_suite_report.md \
+  --strict
+```
+
+当前 manifest 默认给每个 step 1 次重试，suite report 会额外记录 `attempt_count`。
+
 ## 2026 V2 说明
 
 从 V2 开始，这个仓库的主入口应以:

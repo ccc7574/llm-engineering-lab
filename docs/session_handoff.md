@@ -50,7 +50,41 @@
 - `Harness` 已补到 manifest-driven regression suite，可一键执行 cross-track eval、summary 和 gate。
 - `Harness` 已补到 GitHub Actions CI launcher，可在 PR / main / schedule 中执行 suite。
 - 已新增中文 CI / 回归指南，便于直接交付给中文工程团队使用。
-- 当前仍未成体系的主要是: 更复杂的 multimodal OCR / table / grounding 联合管线、更长链路的 agentic memory / reflection，以及更深入的 cost / latency / flaky retry integration。
+- `Harness` 已补到 changed-scope suite 和 step retry，可按变更范围压缩 PR 回归。
+- 当前仍未成体系的主要是: 更复杂的 multimodal OCR / table / grounding 联合管线、更长链路的 agentic memory / reflection，以及更深入的 cost / latency / notification integration。
+
+## Session Entry
+
+- Date: 2026-04-10 03:20 CST
+- Goal: 把 Harness 再推进到 changed-scope suite 和 flaky retry，让 PR 回归更接近真实团队执行方式。
+- Status: 已完成 suite step retry、changed-file scope 选择、PR changed-only CI 模式，以及对应中文文档。
+- Key findings:
+  - 对真实团队来说，full suite 很重要，但不是每个 PR 都应该先跑 full suite。
+  - `scope tag + run_all_scopes` 这种设计足够轻量，适合当前教学仓库，也能表达“改到 harness 就升格全量回归”的真实规则。
+  - suite report 里加入 `run_mode`、`active_scopes`、`attempt_count` 后，CI 结果的可解释性明显更强。
+- Files touched:
+  - `code/stage_harness/suite_runner.py`
+  - `manifests/regression_v2_suite.json`
+  - `.github/workflows/regression-suite.yml`
+  - `tasks/H13_changed_scope_and_retry.md`
+  - `code/README.md`
+  - `tasks/README.md`
+  - `tracks/harness/README.md`
+  - `README.md`
+  - `docs/runbook.md`
+  - `docs/ci_regression_guide_zh.md`
+  - `docs/session_handoff.md`
+- Validation:
+  - `python3 -m compileall code/stage_harness`
+  - `python3 code/stage_harness/suite_runner.py --manifest manifests/regression_v2_suite.json --strict --require-ship`
+  - `python3 code/stage_harness/suite_runner.py --manifest manifests/regression_v2_suite.json --changed-file code/stage_coding/agentic_runner.py --changed-file tasks/C13_agentic_coding_loop.md --clean-regression-artifacts --output runs/regression_suite_report.json --md-output runs/regression_suite_report.md --strict`
+  - 结果:
+    - full suite: `passed`
+    - changed-scoped suite: 仅选择 `coding + harness finalizers`
+    - suite report 已包含 `run_mode`、`active_scopes`、`attempt_count`
+- Next step:
+  - 把 Harness 往 changed-scope 依赖图、failure taxonomy、scheduled notification 推进
+  - 或把 Multimodal 往 grounding / multi-page doc pipeline 推进
 
 ## Session Entry
 

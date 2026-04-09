@@ -129,6 +129,7 @@ V2 的任务体系会逐步从旧的 `T00-T32` 编号，迁移到按能力线组
 - [H10_release_gate.md](/Volumes/ExtaData/newcode/llm-engineering-lab/tasks/H10_release_gate.md)
 - [H11_manifest_regression_suite.md](/Volumes/ExtaData/newcode/llm-engineering-lab/tasks/H11_manifest_regression_suite.md)
 - [H12_ci_launcher.md](/Volumes/ExtaData/newcode/llm-engineering-lab/tasks/H12_ci_launcher.md)
+- [H13_changed_scope_and_retry.md](/Volumes/ExtaData/newcode/llm-engineering-lab/tasks/H13_changed_scope_and_retry.md)
 - `H20` 周报与复盘模板
 
 ## 旧任务到新任务的映射

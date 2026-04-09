@@ -12,6 +12,11 @@ on:
         required: false
         default: "manifests/regression_v2_suite.json"
         type: string
+      changed_only:
+        description: "Run changed-scope suite instead of full suite"
+        required: false
+        default: false
+        type: boolean
       require_ship:
         description: "Fail unless gate decision is ship"
         required: false
@@ -33,24 +38,51 @@ jobs:
     timeout-minutes: 30
     env:
       SUITE_MANIFEST: ${{ inputs.manifest || 'manifests/regression_v2_suite.json' }}
+      CHANGED_ONLY: ${{ inputs.changed_only == true }}
       REQUIRE_SHIP: ${{ inputs.require_ship != false }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
+      - name: Determine Suite Mode
+        id: suite_mode
+        shell: bash
+        run: |
+          mkdir -p runs
+          args=()
+          if [ "${{ github.event_name }}" = "pull_request" ] || [ "$CHANGED_ONLY" = "true" ]; then
+            if [ "${{ github.event_name }}" = "pull_request" ]; then
+              git fetch --no-tags --prune --depth=1 origin "${{ github.base_ref }}"
+              git diff --name-only "origin/${{ github.base_ref }}"...HEAD > runs/changed_files.txt
+            elif git rev-parse --verify HEAD^ >/dev/null 2>&1; then
+              git diff --name-only HEAD^ HEAD > runs/changed_files.txt
+            else
+              : > runs/changed_files.txt
+            fi
+            args+=(--changed-files-path runs/changed_files.txt --clean-regression-artifacts)
+          fi
+          if [ "$REQUIRE_SHIP" = "true" ]; then
+            args+=(--require-ship)
+          fi
+          printf 'suite_args=%s\n' "${args[*]}" >> "$GITHUB_OUTPUT"
+
       - name: Run Regression Suite
+        env:
+          SUITE_ARGS: ${{ steps.suite_mode.outputs.suite_args }}
         run: |
           python3 code/stage_harness/suite_runner.py \
             --manifest "$SUITE_MANIFEST" \
             --output runs/regression_suite_report.json \
             --md-output runs/regression_suite_report.md \
             --strict \
-            $( [ "$REQUIRE_SHIP" = "true" ] && printf '%s' '--require-ship' )
+            $SUITE_ARGS
 
       - name: Publish Job Summary
         if: always()
@@ -71,3 +103,4 @@ jobs:
           path: |
             runs/*.json
             runs/*.md
+            runs/changed_files.txt

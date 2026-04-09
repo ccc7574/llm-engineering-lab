@@ -18,6 +18,7 @@
 - 已有 `gate_check.py` 可把 summary board 转成 `ship / hold / block` 决策
 - 已有 `suite_runner.py` 与 suite manifest，可一键执行 V2 regression suite
 - 已有 GitHub Actions CI launcher，可在 PR / main / schedule 中执行 suite
+- 已支持 changed-scope suite 与 step retry，可把 PR 回归压缩到受影响能力线
 
 建议首批任务:
 
@@ -27,3 +28,4 @@
 - `H03` latency / cost profiling
 - `H11` manifest-driven regression suite
 - `H12` CI launcher
+- `H13` changed-scope and flaky retry

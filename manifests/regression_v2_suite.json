@@ -1,6 +1,56 @@
 {
   "suite_name": "v2_regression_suite",
   "description": "Run the current V2 cross-track evals, diffs, summary board and release gate in one deterministic sequence.",
+  "default_step_retries": 1,
+  "default_retry_delay_seconds": 0.1,
+  "run_all_scopes": ["harness"],
+  "scopes": {
+    "coding": [
+      "code/stage_coding/**",
+      "eval/coding_eval.py",
+      "eval/repo_context_eval.py",
+      "eval/bugfix_eval.py",
+      "eval/bugfix_judge_eval.py",
+      "eval/multifile_bugfix_eval.py",
+      "eval/testgen_eval.py",
+      "eval/agentic_coding_eval.py",
+      "datasets/tiny_coding/**",
+      "datasets/tiny_repo_context/**",
+      "datasets/tiny_bugfix/**",
+      "datasets/tiny_multifile_bugfix/**",
+      "datasets/tiny_testgen/**",
+      "datasets/tiny_agentic_coding/**",
+      "tracks/coding/**",
+      "tasks/C*.md"
+    ],
+    "agentic": [
+      "code/stage_agentic/**",
+      "eval/agentic_eval.py",
+      "datasets/tiny_agentic/**",
+      "datasets/tiny_agentic_memory/**",
+      "tracks/agentic/**",
+      "tasks/A*.md"
+    ],
+    "multimodal": [
+      "code/stage_multimodal/**",
+      "eval/multimodal_eval.py",
+      "datasets/tiny_multimodal/**",
+      "datasets/tiny_multimodal_noisy/**",
+      "assets/figures/multimodal_*",
+      "tracks/multimodal/**",
+      "tasks/M*.md"
+    ],
+    "harness": [
+      "code/stage_harness/**",
+      "manifests/**",
+      ".github/workflows/**",
+      "tracks/harness/**",
+      "tasks/H*.md",
+      "docs/ci_regression_guide_zh.md",
+      "docs/runbook.md",
+      "README.md"
+    ]
+  },
   "steps": [
     {
       "name": "coding_eval_weak",

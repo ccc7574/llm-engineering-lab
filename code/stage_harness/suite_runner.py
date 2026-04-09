@@ -1,11 +1,12 @@
 from __future__ import annotations
 
 import argparse
+import fnmatch
 import json
 import subprocess
 import sys
 import time
-from dataclasses import asdict, dataclass
+from dataclasses import asdict, dataclass, field
 from datetime import datetime
 from pathlib import Path
 
@@ -14,12 +15,19 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from common.runtime import ensure_dir
 
 
+META_STEP_NAMES = {"run_registry", "summary_board", "gate_check"}
+
+
 @dataclass
 class SuiteStep:
     name: str
     command: list[str]
     expected_outputs: list[str]
     timeout_seconds: int = 300
+    retries: int = 0
+    retry_delay_seconds: float = 0.0
+    scope_tags: list[str] = field(default_factory=list)
+    always_run: bool = False
 
 
 @dataclass
@@ -29,6 +37,7 @@ class StepResult:
     command: list[str]
     duration_seconds: float
     return_code: int | None
+    attempt_count: int
     expected_outputs: list[str]
     missing_outputs: list[str]
     stdout_excerpt: str
@@ -43,6 +52,9 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--continue-on-error", action="store_true")
     parser.add_argument("--strict", action="store_true")
     parser.add_argument("--require-ship", action="store_true")
+    parser.add_argument("--changed-files-path", default=None)
+    parser.add_argument("--changed-file", action="append", default=[])
+    parser.add_argument("--clean-regression-artifacts", action="store_true")
     return parser.parse_args()
 
 
@@ -50,16 +62,45 @@ def load_manifest(path: str | Path) -> dict:
     return json.loads(Path(path).read_text(encoding="utf-8"))
 
 
-def parse_steps(payload: dict) -> list[SuiteStep]:
-    return [
-        SuiteStep(
-            name=row["name"],
-            command=list(row["command"]),
-            expected_outputs=list(row.get("expected_outputs", [])),
-            timeout_seconds=int(row.get("timeout_seconds", 300)),
+def infer_scope_tags(step_name: str) -> list[str]:
+    if step_name.startswith(
+        (
+            "coding_",
+            "repo_context_",
+            "bugfix_",
+            "multifile_bugfix_",
+            "testgen_",
+            "agentic_coding_",
         )
-        for row in payload.get("steps", [])
-    ]
+    ):
+        return ["coding"]
+    if step_name.startswith("agentic_"):
+        return ["agentic"]
+    if step_name.startswith("multimodal_"):
+        return ["multimodal"]
+    if step_name in META_STEP_NAMES:
+        return ["harness"]
+    return []
+
+
+def parse_steps(payload: dict) -> list[SuiteStep]:
+    default_step_retries = int(payload.get("default_step_retries", 0))
+    default_retry_delay_seconds = float(payload.get("default_retry_delay_seconds", 0.0))
+    steps = []
+    for row in payload.get("steps", []):
+        steps.append(
+            SuiteStep(
+                name=row["name"],
+                command=list(row["command"]),
+                expected_outputs=list(row.get("expected_outputs", [])),
+                timeout_seconds=int(row.get("timeout_seconds", 300)),
+                retries=int(row.get("retries", default_step_retries)),
+                retry_delay_seconds=float(row.get("retry_delay_seconds", default_retry_delay_seconds)),
+                scope_tags=list(row.get("scope_tags", infer_scope_tags(row["name"]))),
+                always_run=bool(row.get("always_run", row["name"] in META_STEP_NAMES)),
+            )
+        )
+    return steps
 
 
 def excerpt(text: str, max_lines: int = 12) -> str:
@@ -69,7 +110,7 @@ def excerpt(text: str, max_lines: int = 12) -> str:
     return "\n".join(lines[-max_lines:])
 
 
-def run_step(step: SuiteStep, repo_root: Path) -> StepResult:
+def execute_step_once(step: SuiteStep, repo_root: Path) -> tuple[int | None, list[str], str, str, float]:
     started = time.perf_counter()
     try:
         completed = subprocess.run(
@@ -83,38 +124,111 @@ def run_step(step: SuiteStep, repo_root: Path) -> StepResult:
         return_code = completed.returncode
         stdout_text = completed.stdout
         stderr_text = completed.stderr
+        missing_outputs = [
+            output_path
+            for output_path in step.expected_outputs
+            if not (repo_root / output_path).exists()
+        ]
     except subprocess.TimeoutExpired as exc:
-        duration_seconds = time.perf_counter() - started
-        return StepResult(
-            name=step.name,
-            status="failed",
-            command=step.command,
-            duration_seconds=duration_seconds,
-            return_code=None,
-            expected_outputs=step.expected_outputs,
-            missing_outputs=list(step.expected_outputs),
-            stdout_excerpt=excerpt(exc.stdout or ""),
-            stderr_excerpt=excerpt(exc.stderr or "timeout"),
-        )
-
-    missing_outputs = [
-        output_path
-        for output_path in step.expected_outputs
-        if not (repo_root / output_path).exists()
-    ]
-    status = "passed" if return_code == 0 and not missing_outputs else "failed"
+        return_code = None
+        stdout_text = exc.stdout or ""
+        stderr_text = exc.stderr or "timeout"
+        missing_outputs = list(step.expected_outputs)
     duration_seconds = time.perf_counter() - started
-    return StepResult(
-        name=step.name,
-        status=status,
-        command=step.command,
-        duration_seconds=duration_seconds,
-        return_code=return_code,
-        expected_outputs=step.expected_outputs,
-        missing_outputs=missing_outputs,
-        stdout_excerpt=excerpt(stdout_text),
-        stderr_excerpt=excerpt(stderr_text),
-    )
+    return return_code, missing_outputs, stdout_text, stderr_text, duration_seconds
+
+
+def run_step(step: SuiteStep, repo_root: Path) -> StepResult:
+    total_duration = 0.0
+    final_return_code: int | None = None
+    final_missing_outputs: list[str] = []
+    final_stdout_excerpt = ""
+    final_stderr_excerpt = ""
+
+    for attempt in range(1, step.retries + 2):
+        return_code, missing_outputs, stdout_text, stderr_text, duration_seconds = execute_step_once(step, repo_root)
+        total_duration += duration_seconds
+        final_return_code = return_code
+        final_missing_outputs = missing_outputs
+        final_stdout_excerpt = excerpt(stdout_text)
+        final_stderr_excerpt = excerpt(stderr_text)
+        passed = return_code == 0 and not missing_outputs
+        if passed or attempt == step.retries + 1:
+            return StepResult(
+                name=step.name,
+                status="passed" if passed else "failed",
+                command=step.command,
+                duration_seconds=total_duration,
+                return_code=final_return_code,
+                attempt_count=attempt,
+                expected_outputs=step.expected_outputs,
+                missing_outputs=final_missing_outputs,
+                stdout_excerpt=final_stdout_excerpt,
+                stderr_excerpt=final_stderr_excerpt,
+            )
+        if step.retry_delay_seconds > 0:
+            time.sleep(step.retry_delay_seconds)
+
+    raise RuntimeError("unreachable")
+
+
+def load_changed_files(args: argparse.Namespace) -> list[str]:
+    changed_files = list(args.changed_file)
+    if args.changed_files_path:
+        changed_files.extend(
+            line.strip()
+            for line in Path(args.changed_files_path).read_text(encoding="utf-8").splitlines()
+            if line.strip()
+        )
+    return sorted(set(changed_files))
+
+
+def find_active_scopes(manifest: dict, changed_files: list[str]) -> list[str]:
+    scopes = manifest.get("scopes", {})
+    if not changed_files or not scopes:
+        return []
+
+    active_scopes = []
+    for scope_name, patterns in scopes.items():
+        for changed_file in changed_files:
+            if any(fnmatch.fnmatch(changed_file, pattern) for pattern in patterns):
+                active_scopes.append(scope_name)
+                break
+    return sorted(set(active_scopes))
+
+
+def select_steps(steps: list[SuiteStep], active_scopes: list[str], run_all: bool) -> list[SuiteStep]:
+    if run_all or not active_scopes:
+        return list(steps) if run_all else [step for step in steps if step.always_run]
+    active_scope_set = set(active_scopes)
+    return [
+        step
+        for step in steps
+        if step.always_run or bool(active_scope_set & set(step.scope_tags))
+    ]
+
+
+def should_run_full_suite(manifest: dict, active_scopes: list[str]) -> bool:
+    run_all_scopes = set(manifest.get("run_all_scopes", []))
+    return bool(run_all_scopes & set(active_scopes))
+
+
+def clean_regression_artifacts(repo_root: Path, steps: list[SuiteStep]) -> None:
+    cleanup_patterns = [
+        "runs/*_regression_diff.json",
+        "runs/summary_board.json",
+        "runs/summary_board.md",
+        "runs/gate_report.json",
+        "runs/run_registry.json",
+        "runs/regression_suite_report.json",
+        "runs/regression_suite_report.md",
+    ]
+    cleanup_paths = {repo_root / output_path for step in steps for output_path in step.expected_outputs}
+    for pattern in cleanup_patterns:
+        cleanup_paths.update(repo_root.glob(pattern))
+    for path in cleanup_paths:
+        if path.exists() and path.is_file():
+            path.unlink()
 
 
 def load_release_decision(repo_root: Path, results: list[StepResult]) -> str | None:
@@ -134,18 +248,27 @@ def format_md_report(payload: dict) -> str:
         "",
         f"- Generated at: {payload['generated_at']}",
         f"- Suite: {payload['suite_name']}",
+        f"- Run mode: {payload['run_mode']}",
         f"- Overall status: {payload['overall_status']}",
         f"- Release decision: {payload.get('release_decision') or 'unknown'}",
         f"- Steps passed: {payload['steps_passed']}/{payload['steps_total']}",
-        "",
-        "| Step | Status | Duration | Return Code | Missing Outputs |",
-        "| --- | --- | ---: | ---: | --- |",
     ]
+    if payload.get("active_scopes"):
+        lines.append(f"- Active scopes: {', '.join(payload['active_scopes'])}")
+    if payload.get("changed_files"):
+        lines.append(f"- Changed files: {len(payload['changed_files'])}")
+    lines.extend(
+        [
+            "",
+            "| Step | Status | Attempts | Duration | Return Code | Missing Outputs |",
+            "| --- | --- | ---: | ---: | ---: | --- |",
+        ]
+    )
     for row in payload["results"]:
         missing = ", ".join(row["missing_outputs"]) or "-"
         return_code = "-" if row["return_code"] is None else str(row["return_code"])
         lines.append(
-            f"| {row['name']} | {row['status']} | {row['duration_seconds']:.2f}s | "
+            f"| {row['name']} | {row['status']} | {row['attempt_count']} | {row['duration_seconds']:.2f}s | "
             f"{return_code} | {missing} |"
         )
     return "\n".join(lines) + "\n"
@@ -157,14 +280,29 @@ def main() -> None:
     repo_root = Path(__file__).resolve().parents[2]
     manifest = load_manifest(manifest_path)
     steps = parse_steps(manifest)
+    changed_files = load_changed_files(args)
+
+    if changed_files:
+        active_scopes = find_active_scopes(manifest, changed_files)
+        run_all = should_run_full_suite(manifest, active_scopes)
+        selected_steps = select_steps(steps, active_scopes, run_all)
+        run_mode = "changed_scoped_full" if run_all else "changed_scoped"
+    else:
+        active_scopes = []
+        run_all = True
+        selected_steps = list(steps)
+        run_mode = "full"
+
+    if args.clean_regression_artifacts:
+        clean_regression_artifacts(repo_root, selected_steps)
 
     results: list[StepResult] = []
-    for step in steps:
+    for step in selected_steps:
         result = run_step(step, repo_root)
         results.append(result)
         print(
             f"{step.name}\t{result.status}\t{result.duration_seconds:.2f}s\t"
-            f"return_code={result.return_code}"
+            f"attempts={result.attempt_count}\treturn_code={result.return_code}"
         )
         if result.missing_outputs:
             print(f"  missing_outputs={result.missing_outputs}")
@@ -172,18 +310,23 @@ def main() -> None:
             break
 
     steps_passed = sum(1 for result in results if result.status == "passed")
-    overall_status = "passed" if steps_passed == len(steps) else "failed"
+    steps_total = len(selected_steps)
+    overall_status = "passed" if steps_passed == steps_total else "failed"
     payload = {
         "generated_at": datetime.now().astimezone().isoformat(),
         "manifest": str(manifest_path),
         "suite_name": manifest.get("suite_name", manifest_path.stem),
         "description": manifest.get("description", ""),
+        "run_mode": run_mode,
+        "changed_files": changed_files,
+        "active_scopes": active_scopes,
         "overall_status": overall_status,
         "release_decision": load_release_decision(repo_root, results),
-        "steps_total": len(steps),
+        "steps_total": steps_total,
         "steps_completed": len(results),
         "steps_passed": steps_passed,
         "continue_on_error": args.continue_on_error,
+        "selected_steps": [step.name for step in selected_steps],
         "results": [asdict(result) for result in results],
     }
 

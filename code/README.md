@@ -142,6 +142,7 @@ Harness 能力线的最小入口。
 - 输出最小 checkpoint / config registry 视图
 - 用 manifest 顺序执行跨能力线 regression suite
 - 为 CI 提供 strict / require-ship 的统一 suite 入口
+- 支持 changed-scope suite 和 step retry
 
 ### `stage_agentic`
 

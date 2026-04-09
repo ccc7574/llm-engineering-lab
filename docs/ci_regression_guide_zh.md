@@ -65,6 +65,26 @@ python3 code/stage_harness/suite_runner.py \
 - 确认 suite 失败时进程会直接失败
 - 确认 gate 不是 `ship` 时也会直接失败
 
+### 3. 按变更范围跑更快的 suite
+
+```bash
+git diff --name-only HEAD^ HEAD > runs/changed_files.txt
+
+python3 code/stage_harness/suite_runner.py \
+  --manifest manifests/regression_v2_suite.json \
+  --changed-files-path runs/changed_files.txt \
+  --clean-regression-artifacts \
+  --output runs/regression_suite_report.json \
+  --md-output runs/regression_suite_report.md \
+  --strict
+```
+
+这个模式适合:
+
+- PR 只改了 `coding`、`agentic` 或 `multimodal` 某一条能力线
+- 希望先拿到更快反馈
+- 希望避免旧的 regression diff artifact 污染当前结果
+
 ## CI 怎么运行
 
 workflow 文件是:
@@ -89,6 +109,10 @@ workflow 会做这些事:
 5. 要求 gate 决策为 `ship`
 6. 上传 `json/md` 产物为 artifact
 7. 把 suite report 和 summary board 写进 GitHub Job Summary
+
+对 `pull_request`，workflow 现在会默认尝试按 changed files 跑 scoped suite。
+
+如果变更命中了 `harness` 相关路径，则会自动升级成全量 suite。
 
 ## 怎么看结果
 
@@ -136,15 +160,22 @@ workflow 会做这些事:
 - Summary Board
 - Gate Check
 
+当前 suite 执行策略还包括:
+
+- `changed-scoped`
+- `changed-scoped-full`
+- `full`
+- step 级最小重试
+
 ## 当前还没做的部分
 
 这套系统已经够支撑最小交付，但离真实一线团队的完整平台还有几步:
 
-- flaky retry 与 step 级重试
-- changed-scope suite，只跑受影响能力线
 - 定时回归后的通知与值班机制
 - latency / cost 趋势面板
 - PR comment / release note 自动生成
+- flaky 分类与按失败类型决定是否重试
+- 更精细的 changed-scope 依赖图，而不只是 scope tag
 
 ## 建议的团队使用方式
 
