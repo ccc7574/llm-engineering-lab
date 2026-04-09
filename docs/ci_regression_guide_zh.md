@@ -26,6 +26,9 @@
 - notification digest:
   - `runs/notification_digest.json`
   - `runs/notification_digest.md`
+- external payloads:
+  - `runs/notification_slack.json`
+  - `runs/notification_feishu.json`
 - summary board:
   - `runs/summary_board.json`
   - `runs/summary_board.md`
@@ -112,7 +115,8 @@ workflow 会做这些事:
 5. 要求 gate 决策为 `ship`
 6. 上传 `json/md` 产物为 artifact
 7. 生成 notification digest
-8. 把 digest、suite report 和 summary board 写进 GitHub Job Summary
+8. 生成 Slack / 飞书 payload artifact
+9. 把 digest、suite report 和 summary board 写进 GitHub Job Summary
 
 对 `pull_request`，workflow 现在会默认尝试按 changed files 跑 scoped suite。
 
@@ -133,6 +137,16 @@ workflow 会做这些事:
 - gate 结论
 
 如果团队需要把 CI 结果同步到 IM、邮件或发布频道，这个文件最适合作为正文模板。
+
+### `runs/notification_slack.json` / `runs/notification_feishu.json`
+
+看对外发消息的最终结构化 payload。
+
+这两个文件适合:
+
+- webhook 发送前最后一步
+- IM 机器人接入
+- 发布频道消息模板固化
 
 ### `runs/regression_suite_report.md`
 
@@ -183,6 +197,7 @@ workflow 会做这些事:
 - `full`
 - step 级最小重试
 - failure taxonomy 与 notification digest
+- Slack / 飞书 payload artifact
 
 ## 当前还没做的部分
 
@@ -191,7 +206,7 @@ workflow 会做这些事:
 - 定时回归后的通知与值班机制
 - latency / cost 趋势面板
 - PR comment / release note 自动生成
-- IM / 邮件 / 飞书等真正外发的通知接入
+- 真正的 webhook / bot token 发送动作
 - 更精细的 changed-scope 依赖图，而不只是 scope tag
 
 ## 建议的团队使用方式

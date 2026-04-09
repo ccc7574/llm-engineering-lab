@@ -20,6 +20,7 @@
 - 已有 GitHub Actions CI launcher，可在 PR / main / schedule 中执行 suite
 - 已支持 changed-scope suite 与 step retry，可把 PR 回归压缩到受影响能力线
 - 已支持 notification digest，可直接输出值班/发布摘要
+- 已支持 Slack / 飞书 payload artifact，可直接作为后续外发输入
 
 建议首批任务:
 
@@ -31,3 +32,4 @@
 - `H12` CI launcher
 - `H13` changed-scope and flaky retry
 - `H14` notification digest
+- `H15` external notification adapter

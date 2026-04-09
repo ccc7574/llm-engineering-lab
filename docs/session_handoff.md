@@ -52,7 +52,38 @@
 - 已新增中文 CI / 回归指南，便于直接交付给中文工程团队使用。
 - `Harness` 已补到 changed-scope suite 和 step retry，可按变更范围压缩 PR 回归。
 - `Harness` 已补到 notification digest，可把 suite/gate 结果压缩成值班摘要。
-- 当前仍未成体系的主要是: 更复杂的 multimodal OCR / table / grounding 联合管线、更长链路的 agentic memory / reflection，以及更深入的 cost / latency / external notification integration。
+- `Harness` 已补到 Slack / 飞书 payload artifact，可作为后续 webhook / bot 外发输入。
+- 当前仍未成体系的主要是: 更复杂的 multimodal OCR / table / grounding 联合管线、更长链路的 agentic memory / reflection，以及更深入的 cost / latency / live notification integration。
+
+## Session Entry
+
+- Date: 2026-04-10 03:50 CST
+- Goal: 把 Harness 再推进到 external notification adapter，给 digest 生成可直接外发的 Slack / 飞书 payload。
+- Status: 已完成 payload 生成器、workflow 接入和中文文档更新。
+- Key findings:
+  - 对真实团队来说，digest 解决了“给人看”，payload 解决了“给系统发”。
+  - 先把 payload artifact 标准化，再接 webhook 或 bot token，能显著降低后续通知接入成本。
+  - 当前仓库的 Harness 已经具备 `suite -> digest -> payload` 的完整通知准备链。
+- Files touched:
+  - `code/stage_harness/notification_payloads.py`
+  - `.github/workflows/regression-suite.yml`
+  - `tasks/H15_external_notification_adapter.md`
+  - `code/README.md`
+  - `tasks/README.md`
+  - `tracks/harness/README.md`
+  - `README.md`
+  - `docs/runbook.md`
+  - `docs/ci_regression_guide_zh.md`
+  - `docs/session_handoff.md`
+- Validation:
+  - `python3 code/stage_harness/notification_payloads.py --digest runs/notification_digest.json --slack-output runs/notification_slack.json --feishu-output runs/notification_feishu.json`
+  - 结果:
+    - `runs/notification_slack.json` 已生成
+    - `runs/notification_feishu.json` 已生成
+    - payload 已包含 headline、gate、steps、failed steps
+- Next step:
+  - 把 Harness 往真实 webhook adapter、scheduled digest routing、failure taxonomy 细分推进
+  - 或把 Multimodal 往 grounding / multi-page doc pipeline 推进
 
 ## Session Entry
 

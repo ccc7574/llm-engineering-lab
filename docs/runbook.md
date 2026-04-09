@@ -258,6 +258,19 @@ python3 code/stage_harness/notification_digest.py \
 - 发布前检查结论
 - CI Job Summary 顶部摘要
 
+## `H15`: External Notification Payloads
+
+如果要进一步生成 Slack / 飞书 payload:
+
+```bash
+python3 code/stage_harness/notification_payloads.py \
+  --digest runs/notification_digest.json \
+  --slack-output runs/notification_slack.json \
+  --feishu-output runs/notification_feishu.json
+```
+
+这一步不会真正发送消息，只会生成可直接外发的 payload artifact。
+
 ## 2026 V2 说明
 
 从 V2 开始，这个仓库的主入口应以:

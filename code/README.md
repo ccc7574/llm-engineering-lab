@@ -136,6 +136,7 @@ Harness 能力线的最小入口。
 - `gate_check.py`
 - `suite_runner.py`
 - `notification_digest.py`
+- `notification_payloads.py`
 
 用途:
 
@@ -145,6 +146,7 @@ Harness 能力线的最小入口。
 - 为 CI 提供 strict / require-ship 的统一 suite 入口
 - 支持 changed-scope suite 和 step retry
 - 从 suite / summary / gate 生成 notification digest
+- 从 digest 生成 Slack / 飞书 payload
 
 ### `stage_agentic`
 
