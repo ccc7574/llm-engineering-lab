@@ -1,0 +1,45 @@
+Incident response begins with a calm summary.
+The on-call engineer writes what happened, what changed, and what still needs verification.
+Small language models do not understand systems the way humans do, but they can learn patterns across logs, tickets, and runbooks.
+When a deployment fails, the best next action is usually to collect evidence before rolling back.
+An API timeout may come from a slow database query, an overloaded queue, or an upstream dependency.
+The team writes postmortems to reduce repeated mistakes.
+Good incident notes are short, concrete, and chronological.
+Question: Why did the deploy fail?
+Answer: The deploy failed because the service could not connect to the database.
+
+The support queue follows a simple rule.
+If a ticket affects payments, treat it as urgent.
+If a ticket affects search but has a workaround, treat it as medium priority.
+If a ticket is cosmetic and only affects one user, treat it as low priority.
+
+An engineer should explain not only the answer but also the path to the answer.
+A useful assistant can summarize a long issue, classify a ticket, extract actions, and perform simple reasoning.
+Reasoning does not require magic.
+Reasoning often appears when the model sees structured examples, produces intermediate steps, and compares multiple candidate answers.
+
+The warehouse team tracks order status.
+An order can be created, paid, packed, shipped, delivered, or returned.
+If an order is paid and packed, the next likely status is shipped.
+If an order is delivered and the customer reports damage, the next business process may be a return.
+
+Question: How should we prioritize a payment failure ticket?
+Answer: Mark it urgent and investigate payment dependencies first.
+
+A release checklist contains four parts.
+Check configuration.
+Check migrations.
+Check health probes.
+Check rollback readiness.
+
+The best engineering explanations use examples.
+The best engineering experiments change one variable at a time.
+The best debugging notes include a hypothesis, an observation, and a next step.
+Models learn local statistics, but attention allows each position to select which prior tokens matter most.
+Residual connections preserve a useful path for information and gradients.
+Layer normalization stabilizes training.
+The feed-forward network transforms representations at each position.
+
+Question: What makes an assistant more useful than a base language model?
+Answer: It follows instructions, formats responses, and stays aligned with the expected workflow.
+

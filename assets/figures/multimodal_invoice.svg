@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="420" viewBox="0 0 720 420">
+  <rect width="720" height="420" fill="#f8fafc" />
+  <rect x="36" y="32" width="648" height="356" rx="18" fill="#ffffff" stroke="#cbd5e1" stroke-width="2" />
+  <text x="72" y="86" font-family="SF Mono, Fira Code, monospace" font-size="28" fill="#0f172a">Invoice</text>
+  <text x="72" y="126" font-family="SF Mono, Fira Code, monospace" font-size="18" fill="#475569">Customer: Northwind Labs</text>
+  <text x="72" y="156" font-family="SF Mono, Fira Code, monospace" font-size="18" fill="#475569">Invoice ID: INV-1042</text>
+  <line x1="72" y1="188" x2="648" y2="188" stroke="#cbd5e1" stroke-width="2" />
+  <text x="72" y="228" font-family="SF Mono, Fira Code, monospace" font-size="18" fill="#0f172a">Support Retainer</text>
+  <text x="580" y="228" font-family="SF Mono, Fira Code, monospace" font-size="18" fill="#0f172a">$1200</text>
+  <text x="72" y="260" font-family="SF Mono, Fira Code, monospace" font-size="18" fill="#0f172a">Priority Review</text>
+  <text x="580" y="260" font-family="SF Mono, Fira Code, monospace" font-size="18" fill="#0f172a">$300</text>
+  <text x="72" y="292" font-family="SF Mono, Fira Code, monospace" font-size="18" fill="#0f172a">Credits Applied</text>
+  <text x="580" y="292" font-family="SF Mono, Fira Code, monospace" font-size="18" fill="#0f172a">-$100</text>
+  <line x1="72" y1="320" x2="648" y2="320" stroke="#cbd5e1" stroke-width="2" />
+  <text x="72" y="356" font-family="SF Mono, Fira Code, monospace" font-size="24" fill="#0f172a">Total Due</text>
+  <text x="548" y="356" font-family="SF Mono, Fira Code, monospace" font-size="24" fill="#0f172a">$1400</text>
+</svg>

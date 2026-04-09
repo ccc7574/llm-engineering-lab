@@ -1,0 +1,4 @@
+{"instruction":"Summarize the incident in one sentence.","input":"The image service returned 500 errors after a storage permission change.","output":"The image service returned 500 errors because a storage permission change broke access."}
+{"instruction":"Classify the ticket priority.","input":"The profile page has a small layout issue on one browser and users can refresh as a workaround.","output":"priority=low\nreason=cosmetic issue with a workaround and limited impact"}
+{"instruction":"Convert the request into JSON.","input":"Customer reports duplicate invoices after retrying payment.","output":"{\"issue_type\":\"duplicate_invoice\",\"suspected_component\":\"payment_retry\",\"severity\":\"high\"}"}
+

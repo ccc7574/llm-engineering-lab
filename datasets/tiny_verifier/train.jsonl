@@ -1,0 +1,9 @@
+{"prompt":"Question: A ticket spends 12 minutes in triage and 18 minutes in repair. How long is the total?","candidate":"We add 12 and 18. Final Answer: 30","label":1}
+{"prompt":"Question: A ticket spends 12 minutes in triage and 18 minutes in repair. How long is the total?","candidate":"The total is 28. Final Answer: 28","label":0}
+{"prompt":"Question: A queue has 20 jobs. Workers finish 6 jobs and then 5 more. How many jobs remain?","candidate":"The workers finish 11 jobs. 20 minus 11 is 9. Final Answer: 9","label":1}
+{"prompt":"Question: A queue has 20 jobs. Workers finish 6 jobs and then 5 more. How many jobs remain?","candidate":"There are 20 jobs left. Final Answer: 20","label":0}
+{"prompt":"Question: A dashboard has 3 red widgets and 7 green widgets. How many widgets are there in total?","candidate":"Add 3 and 7. Final Answer: 10","label":1}
+{"prompt":"Question: A dashboard has 3 red widgets and 7 green widgets. How many widgets are there in total?","candidate":"The answer is 11. Final Answer: 11","label":0}
+{"prompt":"Question: A rollout plan has 4 checks and each check takes 3 minutes. How many minutes for all checks?","candidate":"Multiply 4 by 3. Final Answer: 12","label":1}
+{"prompt":"Question: A rollout plan has 4 checks and each check takes 3 minutes. How many minutes for all checks?","candidate":"It is 7 minutes. Final Answer: 7","label":0}
+

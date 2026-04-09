@@ -1,0 +1,5 @@
+{"question":"A runbook review takes 14 minutes and the incident summary takes 11 minutes. What is the total time?","rationale":"Add the times. 14 + 11 = 25.","answer":"25"}
+{"question":"A queue has 16 messages and 9 are processed. How many are left?","rationale":"Subtract processed messages from the total. 16 - 9 = 7.","answer":"7"}
+{"question":"A release has 5 checks and each takes 2 minutes. How many minutes total?","rationale":"Multiply 5 by 2. 5 x 2 = 10.","answer":"10"}
+{"question":"A server restarts every 20 minutes. How many restarts happen in 60 minutes?","rationale":"Divide 60 by 20. 60 / 20 = 3.","answer":"3"}
+

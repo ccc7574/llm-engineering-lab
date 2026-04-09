@@ -1,0 +1,7 @@
+{"question":"A ticket spends 12 minutes in triage and 18 minutes in repair. How long is the total?","rationale":"The total time is the sum of 12 and 18. 12 + 18 = 30.","answer":"30"}
+{"question":"A rollout plan has 4 checks and each check takes 3 minutes. How many minutes for all checks?","rationale":"There are 4 checks. Each takes 3 minutes. 4 x 3 = 12.","answer":"12"}
+{"question":"A queue has 20 jobs. Workers finish 6 jobs and then 5 more. How many jobs remain?","rationale":"Start with 20 jobs. Finishing 6 and 5 more removes 11 jobs. 20 - 11 = 9.","answer":"9"}
+{"question":"An alert fires every 15 minutes. How many alerts fire in one hour?","rationale":"One hour is 60 minutes. 60 / 15 = 4.","answer":"4"}
+{"question":"A customer order is packed at 09:10 and shipped 25 minutes later. What time is it shipped?","rationale":"Add 25 minutes to 09:10. The shipment time is 09:35.","answer":"09:35"}
+{"question":"A dashboard has 3 red widgets and 7 green widgets. How many widgets are there in total?","rationale":"Add the red and green widgets. 3 + 7 = 10.","answer":"10"}
+
