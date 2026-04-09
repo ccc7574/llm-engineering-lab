@@ -125,7 +125,7 @@ V2 的任务体系会逐步从旧的 `T00-T32` 编号，迁移到按能力线组
 - [H01_checkpoint_config_registry.md](/Volumes/ExtaData/newcode/llm-engineering-lab/tasks/H01_checkpoint_config_registry.md)
 - [H02_regression_harness.md](/Volumes/ExtaData/newcode/llm-engineering-lab/tasks/H02_regression_harness.md)
 - [H03_latency_cost_profiling.md](/Volumes/ExtaData/newcode/llm-engineering-lab/tasks/H03_latency_cost_profiling.md)
-- `H10` 发布与回滚标准
+- [H10_release_gate.md](/Volumes/ExtaData/newcode/llm-engineering-lab/tasks/H10_release_gate.md)
 - `H20` 周报与复盘模板
 
 ## 旧任务到新任务的映射

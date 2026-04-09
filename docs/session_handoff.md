@@ -44,7 +44,39 @@
 - `Coding` 已进一步扩到 `repo context` 与 `bugfix` 两条 runnable 路线。
 - `Agentic` 已有两层 runnable 路线，可比较 `direct vs tool_use` 以及 `tool_use vs stateful`。
 - `Multimodal` 已有两层 runnable 路线，可比较 `text-only vs vision-augmented` 以及 `ocr_only vs structured_pipeline`。
-- 当前仍未成体系的主要是: 更复杂的 multimodal OCR / table / grounding 联合管线、更长链路的 agentic memory / reflection，以及更深的 coding test generation / agentic coding / harness gate。
+- `Harness` 已能把 summary board 转成 `ship / hold / block` 的 gate report。
+- 当前仍未成体系的主要是: 更复杂的 multimodal OCR / table / grounding 联合管线、更长链路的 agentic memory / reflection，以及更深的 coding test generation / agentic coding / harness automation。
+
+## Session Entry
+
+- Date: 2026-04-10 01:45 CST
+- Goal: 把 Harness 从“会汇总回归”推进到“会做发布门槛判断”，并把本地仓库初始化后推到 GitHub。
+- Status: 已完成 Git 初始化、本地首次提交、远程仓库创建与 push，以及 `gate_check.py` 发布门槛脚本。
+- Key findings:
+  - 对真实团队来说，summary board 只有在能变成 `ship / hold / block` 决策时才真正进入发布流程。
+  - 当前仓库现在已经不只是教学文件集合，而是已经有了公开远程仓库和可机读 gate report，交付感明显提升。
+  - `runs/gate_report.json` 很适合作为后续 CI / scheduled regression 的最小输入。
+- Files touched:
+  - `code/stage_harness/gate_check.py`
+  - `tasks/H10_release_gate.md`
+  - `code/README.md`
+  - `tasks/README.md`
+  - `tracks/harness/README.md`
+  - `docs/runbook.md`
+  - `docs/session_handoff.md`
+- Validation:
+  - `python3 -m compileall code/stage_harness code/stage_coding eval`
+  - `python3 code/stage_harness/gate_check.py --summary-board runs/summary_board.json --output runs/gate_report.json`
+  - 结果:
+    - `overall_gate=ship`
+    - gate report 已写入 `runs/gate_report.json`
+  - Git:
+    - 本地仓库已初始化
+    - 首次提交: `408fc7c`
+    - 远程仓库: `https://github.com/ccc7574/llm-engineering-lab`
+- Next step:
+  - 把 Harness 往 CI / scheduled regression 触发推进
+  - 或把 Coding 往 test generation / agentic coding 推进
 
 ## Session Entry
 

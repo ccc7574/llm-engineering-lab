@@ -127,6 +127,7 @@ Harness 能力线的最小入口。
 - `report_runs.py`
 - `regression_compare.py`
 - `summary_board.py`
+- `gate_check.py`
 
 用途:
 

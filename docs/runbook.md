@@ -168,6 +168,7 @@ python3 code/stage_harness/regression_compare.py --baseline-report runs/multimod
 
 ```bash
 python3 code/stage_harness/summary_board.py --runs-dir runs --registry-path runs/run_registry.json --output runs/summary_board.json --md-output runs/summary_board.md
+python3 code/stage_harness/gate_check.py --summary-board runs/summary_board.json --output runs/gate_report.json
 ```
 
 ## 2026 V2 说明

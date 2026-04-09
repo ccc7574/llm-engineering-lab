@@ -15,6 +15,7 @@
 - 已能扫描 `runs/` 并对比基线与候选报告
 - 已能对 `coding`、`repo context`、`bugfix`、`agentic`、`multimodal` 报告做最小回归比较
 - 已有 `summary_board.py` 可聚合多条能力线的 regression diff、门槛状态和 Markdown 面板
+- 已有 `gate_check.py` 可把 summary board 转成 `ship / hold / block` 决策
 
 建议首批任务:
 
