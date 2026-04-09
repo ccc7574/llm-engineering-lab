@@ -288,6 +288,25 @@ python3 code/stage_harness/notification_dispatch.py \
 - `SLACK_WEBHOOK_URL`
 - `FEISHU_WEBHOOK_URL`
 
+## `H17`: Notification Routing Policy
+
+如果要查看当前 digest 在不同事件下会路由到哪个通道:
+
+```bash
+python3 code/stage_harness/notification_route.py \
+  --digest runs/notification_digest.json \
+  --routes manifests/notification_routes.json \
+  --event-name schedule \
+  --default-channel none \
+  --output runs/notification_route.json
+```
+
+这个步骤会产出:
+
+- `channel`
+- `reason`
+- `payload_path`
+
 ## 2026 V2 说明
 
 从 V2 开始，这个仓库的主入口应以:

@@ -54,7 +54,38 @@
 - `Harness` 已补到 notification digest，可把 suite/gate 结果压缩成值班摘要。
 - `Harness` 已补到 Slack / 飞书 payload artifact，可作为后续 webhook / bot 外发输入。
 - `Harness` 已补到 notification dispatch，可在配置 webhook 时直接发送。
-- 当前仍未成体系的主要是: 更复杂的 multimodal OCR / table / grounding 联合管线、更长链路的 agentic memory / reflection，以及更深入的 cost / latency / routing policy integration。
+- `Harness` 已补到 notification routing policy，可按 event / severity 选择 channel。
+- 当前仍未成体系的主要是: 更复杂的 multimodal OCR / table / grounding 联合管线、更长链路的 agentic memory / reflection，以及更深入的 cost / latency / live routing integration。
+
+## Session Entry
+
+- Date: 2026-04-10 04:20 CST
+- Goal: 把通知链再推进到 routing policy，让 workflow 不再硬编码发往哪个通道。
+- Status: 已完成 routing selector、route manifest、workflow 接入和中文文档更新。
+- Key findings:
+  - 对真实团队来说，dispatch 和 routing 是两层不同问题: 前者负责“怎么发”，后者负责“该不该发、发到哪”。
+  - route manifest 把“schedule 正常报告去 Slack、异常去飞书”这类规则显式化了，后续维护成本会低很多。
+  - 当前仓库的 Harness 已经具备 `digest -> payload -> route -> dispatch` 的完整通知控制链。
+- Files touched:
+  - `code/stage_harness/notification_route.py`
+  - `manifests/notification_routes.json`
+  - `.github/workflows/regression-suite.yml`
+  - `tasks/H17_notification_routing_policy.md`
+  - `code/README.md`
+  - `tasks/README.md`
+  - `tracks/harness/README.md`
+  - `README.md`
+  - `docs/runbook.md`
+  - `docs/ci_regression_guide_zh.md`
+  - `docs/session_handoff.md`
+- Validation:
+  - `python3 code/stage_harness/notification_route.py --digest runs/notification_digest.json --routes manifests/notification_routes.json --event-name schedule --default-channel none --output runs/notification_route.json`
+  - 结果:
+    - 当前 healthy scheduled run 会路由到 `slack_webhook`
+    - route artifact 已包含 `channel`、`reason`、`payload_path`
+- Next step:
+  - 把 Harness 往 route override、failure taxonomy 细分、真实外部 secret/adapter 整合推进
+  - 或把 Multimodal 往 grounding / multi-page doc pipeline 推进
 
 ## Session Entry
 

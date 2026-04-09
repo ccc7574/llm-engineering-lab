@@ -138,6 +138,7 @@ Harness 能力线的最小入口。
 - `notification_digest.py`
 - `notification_payloads.py`
 - `notification_dispatch.py`
+- `notification_route.py`
 
 用途:
 
@@ -149,6 +150,7 @@ Harness 能力线的最小入口。
 - 从 suite / summary / gate 生成 notification digest
 - 从 digest 生成 Slack / 飞书 payload
 - 用 dry-run 或 webhook 发送通知 payload
+- 基于 event / severity / gate 选择通知 channel
 
 ### `stage_agentic`
 

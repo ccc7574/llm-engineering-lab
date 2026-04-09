@@ -31,6 +31,9 @@
   - `runs/notification_feishu.json`
 - dispatch:
   - `code/stage_harness/notification_dispatch.py`
+- routing:
+  - `code/stage_harness/notification_route.py`
+  - `manifests/notification_routes.json`
 - summary board:
   - `runs/summary_board.json`
   - `runs/summary_board.md`
@@ -118,7 +121,8 @@ workflow 会做这些事:
 6. 上传 `json/md` 产物为 artifact
 7. 生成 notification digest
 8. 生成 Slack / 飞书 payload artifact
-9. 把 digest、suite report 和 summary board 写进 GitHub Job Summary
+9. 基于 routing policy 选择 channel
+10. 把 digest、suite report 和 summary board 写进 GitHub Job Summary
 
 如果通过 `workflow_dispatch` 显式传入 `notify_channel`，并且仓库 secret 已配置，workflow 还可以继续做可选 dispatch。
 
@@ -162,6 +166,18 @@ workflow 会做这些事:
 - `slack_webhook`
 - `feishu_webhook`
 - `dry-run`
+
+### `code/stage_harness/notification_route.py`
+
+看通知路由选择入口。
+
+它会根据:
+
+- GitHub event
+- digest severity
+- gate / ship_ready
+
+从 [notification_routes.json](/Volumes/ExtaData/newcode/llm-engineering-lab/manifests/notification_routes.json) 里选出最合适的 channel。
 
 ### `runs/regression_suite_report.md`
 
@@ -214,6 +230,7 @@ workflow 会做这些事:
 - failure taxonomy 与 notification digest
 - Slack / 飞书 payload artifact
 - dry-run / webhook dispatch
+- route policy artifact
 
 ## 当前还没做的部分
 

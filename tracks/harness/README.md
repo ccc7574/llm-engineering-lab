@@ -22,6 +22,7 @@
 - 已支持 notification digest，可直接输出值班/发布摘要
 - 已支持 Slack / 飞书 payload artifact，可直接作为后续外发输入
 - 已支持 dispatch 脚本，可用 webhook 或 dry-run 发送 payload
+- 已支持 routing policy，可按 event / severity 自动选择通知通道
 
 建议首批任务:
 
@@ -35,3 +36,4 @@
 - `H14` notification digest
 - `H15` external notification adapter
 - `H16` notification dispatch
+- `H17` notification routing policy

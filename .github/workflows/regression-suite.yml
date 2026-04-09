@@ -116,19 +116,48 @@ jobs:
               --feishu-output runs/notification_feishu.json
           fi
 
+      - name: Select Notification Route
+        if: always()
+        id: notification_route
+        run: |
+          if [ -f runs/notification_digest.json ]; then
+            python3 code/stage_harness/notification_route.py \
+              --digest runs/notification_digest.json \
+              --routes manifests/notification_routes.json \
+              --event-name "${{ github.event_name }}" \
+              --default-channel "$NOTIFY_CHANNEL" \
+              --output runs/notification_route.json
+            channel=$(python3 - <<'PY'
+import json
+from pathlib import Path
+obj=json.loads(Path('runs/notification_route.json').read_text())
+print(obj['channel'])
+PY
+)
+            payload=$(python3 - <<'PY'
+import json
+from pathlib import Path
+obj=json.loads(Path('runs/notification_route.json').read_text())
+print(obj.get('payload_path') or '')
+PY
+)
+            printf 'channel=%s\n' "$channel" >> "$GITHUB_OUTPUT"
+            printf 'payload_path=%s\n' "$payload" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Optional Notification Dispatch
         if: always()
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
           FEISHU_WEBHOOK_URL: ${{ secrets.FEISHU_WEBHOOK_URL }}
         run: |
-          if [ "$NOTIFY_CHANNEL" = "slack_webhook" ] && [ -f runs/notification_slack.json ] && [ -n "$SLACK_WEBHOOK_URL" ]; then
+          if [ "${{ steps.notification_route.outputs.channel }}" = "slack_webhook" ] && [ -f "${{ steps.notification_route.outputs.payload_path }}" ] && [ -n "$SLACK_WEBHOOK_URL" ]; then
             python3 code/stage_harness/notification_dispatch.py \
-              --payload runs/notification_slack.json \
+              --payload "${{ steps.notification_route.outputs.payload_path }}" \
               --channel slack_webhook
-          elif [ "$NOTIFY_CHANNEL" = "feishu_webhook" ] && [ -f runs/notification_feishu.json ] && [ -n "$FEISHU_WEBHOOK_URL" ]; then
+          elif [ "${{ steps.notification_route.outputs.channel }}" = "feishu_webhook" ] && [ -f "${{ steps.notification_route.outputs.payload_path }}" ] && [ -n "$FEISHU_WEBHOOK_URL" ]; then
             python3 code/stage_harness/notification_dispatch.py \
-              --payload runs/notification_feishu.json \
+              --payload "${{ steps.notification_route.outputs.payload_path }}" \
               --channel feishu_webhook
           else
             echo "notification dispatch skipped"
