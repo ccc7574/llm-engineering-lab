@@ -239,6 +239,25 @@ python3 code/stage_harness/suite_runner.py \
 
 当前 manifest 默认给每个 step 1 次重试，suite report 会额外记录 `attempt_count`。
 
+## `H14`: Notification Digest
+
+在 suite、summary 和 gate 都生成后，可以进一步产出通知摘要:
+
+```bash
+python3 code/stage_harness/notification_digest.py \
+  --suite-report runs/regression_suite_report.json \
+  --summary-board runs/summary_board.json \
+  --gate-report runs/gate_report.json \
+  --output runs/notification_digest.json \
+  --md-output runs/notification_digest.md
+```
+
+这个 artifact 适合:
+
+- 值班摘要
+- 发布前检查结论
+- CI Job Summary 顶部摘要
+
 ## 2026 V2 说明
 
 从 V2 开始，这个仓库的主入口应以:

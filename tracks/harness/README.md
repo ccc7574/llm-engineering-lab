@@ -19,6 +19,7 @@
 - 已有 `suite_runner.py` 与 suite manifest，可一键执行 V2 regression suite
 - 已有 GitHub Actions CI launcher，可在 PR / main / schedule 中执行 suite
 - 已支持 changed-scope suite 与 step retry，可把 PR 回归压缩到受影响能力线
+- 已支持 notification digest，可直接输出值班/发布摘要
 
 建议首批任务:
 
@@ -29,3 +30,4 @@
 - `H11` manifest-driven regression suite
 - `H12` CI launcher
 - `H13` changed-scope and flaky retry
+- `H14` notification digest

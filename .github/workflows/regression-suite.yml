@@ -84,9 +84,25 @@ jobs:
             --strict \
             $SUITE_ARGS
 
+      - name: Build Notification Digest
+        if: always()
+        run: |
+          if [ -f runs/regression_suite_report.json ] && [ -f runs/summary_board.json ] && [ -f runs/gate_report.json ]; then
+            python3 code/stage_harness/notification_digest.py \
+              --suite-report runs/regression_suite_report.json \
+              --summary-board runs/summary_board.json \
+              --gate-report runs/gate_report.json \
+              --output runs/notification_digest.json \
+              --md-output runs/notification_digest.md
+          fi
+
       - name: Publish Job Summary
         if: always()
         run: |
+          if [ -f runs/notification_digest.md ]; then
+            cat runs/notification_digest.md >> "$GITHUB_STEP_SUMMARY"
+            printf '\n' >> "$GITHUB_STEP_SUMMARY"
+          fi
           if [ -f runs/regression_suite_report.md ]; then
             cat runs/regression_suite_report.md >> "$GITHUB_STEP_SUMMARY"
           fi

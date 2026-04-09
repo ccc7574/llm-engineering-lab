@@ -38,6 +38,8 @@ class StepResult:
     duration_seconds: float
     return_code: int | None
     attempt_count: int
+    failure_category: str | None
+    failure_summary: str | None
     expected_outputs: list[str]
     missing_outputs: list[str]
     stdout_excerpt: str
@@ -110,6 +112,30 @@ def excerpt(text: str, max_lines: int = 12) -> str:
     return "\n".join(lines[-max_lines:])
 
 
+def classify_failure(
+    return_code: int | None,
+    missing_outputs: list[str],
+    stdout_excerpt: str,
+    stderr_excerpt: str,
+) -> tuple[str | None, str | None]:
+    if return_code == 0 and not missing_outputs:
+        return None, None
+    if return_code is None:
+        return "timeout", "step timed out before producing expected outputs"
+    if missing_outputs:
+        return "artifact_missing", f"missing expected outputs: {', '.join(missing_outputs)}"
+    combined = "\n".join(part for part in [stderr_excerpt, stdout_excerpt] if part).lower()
+    if "syntax_error" in combined or "syntaxerror" in combined:
+        return "syntax_error", "command output contains syntax error"
+    if "assertion_failed" in combined or "assert " in combined:
+        return "test_failure", "tests failed on candidate output"
+    if "module not found" in combined or "modulenotfounderror" in combined or "importerror" in combined:
+        return "dependency_error", "missing import or dependency during step execution"
+    if return_code != 0:
+        return "process_error", f"command exited with non-zero status {return_code}"
+    return "unknown_failure", "step failed for an uncategorized reason"
+
+
 def execute_step_once(step: SuiteStep, repo_root: Path) -> tuple[int | None, list[str], str, str, float]:
     started = time.perf_counter()
     try:
@@ -153,6 +179,12 @@ def run_step(step: SuiteStep, repo_root: Path) -> StepResult:
         final_stdout_excerpt = excerpt(stdout_text)
         final_stderr_excerpt = excerpt(stderr_text)
         passed = return_code == 0 and not missing_outputs
+        failure_category, failure_summary = classify_failure(
+            return_code=return_code,
+            missing_outputs=missing_outputs,
+            stdout_excerpt=final_stdout_excerpt,
+            stderr_excerpt=final_stderr_excerpt,
+        )
         if passed or attempt == step.retries + 1:
             return StepResult(
                 name=step.name,
@@ -161,6 +193,8 @@ def run_step(step: SuiteStep, repo_root: Path) -> StepResult:
                 duration_seconds=total_duration,
                 return_code=final_return_code,
                 attempt_count=attempt,
+                failure_category=failure_category,
+                failure_summary=failure_summary,
                 expected_outputs=step.expected_outputs,
                 missing_outputs=final_missing_outputs,
                 stdout_excerpt=final_stdout_excerpt,
@@ -260,16 +294,17 @@ def format_md_report(payload: dict) -> str:
     lines.extend(
         [
             "",
-            "| Step | Status | Attempts | Duration | Return Code | Missing Outputs |",
-            "| --- | --- | ---: | ---: | ---: | --- |",
+            "| Step | Status | Attempts | Duration | Return Code | Failure Category | Missing Outputs |",
+            "| --- | --- | ---: | ---: | ---: | --- | --- |",
         ]
     )
     for row in payload["results"]:
         missing = ", ".join(row["missing_outputs"]) or "-"
         return_code = "-" if row["return_code"] is None else str(row["return_code"])
+        failure_category = row["failure_category"] or "-"
         lines.append(
             f"| {row['name']} | {row['status']} | {row['attempt_count']} | {row['duration_seconds']:.2f}s | "
-            f"{return_code} | {missing} |"
+            f"{return_code} | {failure_category} | {missing} |"
         )
     return "\n".join(lines) + "\n"
 

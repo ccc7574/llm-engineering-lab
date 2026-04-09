@@ -51,7 +51,42 @@
 - `Harness` 已补到 GitHub Actions CI launcher，可在 PR / main / schedule 中执行 suite。
 - 已新增中文 CI / 回归指南，便于直接交付给中文工程团队使用。
 - `Harness` 已补到 changed-scope suite 和 step retry，可按变更范围压缩 PR 回归。
-- 当前仍未成体系的主要是: 更复杂的 multimodal OCR / table / grounding 联合管线、更长链路的 agentic memory / reflection，以及更深入的 cost / latency / notification integration。
+- `Harness` 已补到 notification digest，可把 suite/gate 结果压缩成值班摘要。
+- 当前仍未成体系的主要是: 更复杂的 multimodal OCR / table / grounding 联合管线、更长链路的 agentic memory / reflection，以及更深入的 cost / latency / external notification integration。
+
+## Session Entry
+
+- Date: 2026-04-10 03:35 CST
+- Goal: 把 Harness 再推进到 failure taxonomy 和 notification digest，让 CI 结果可以直接给人看。
+- Status: 已完成 suite failure taxonomy、digest 生成器、CI summary 接入，以及中文文档更新。
+- Key findings:
+  - 当 suite 变长以后，“让机器能判定”只解决了一半问题，另一半是“让人一眼知道现在该不该发”。
+  - `notification_digest.md` 非常适合作为后续 IM / 邮件 / 飞书通知的正文模板，因为它已经把 headline、severity、failed steps 和 gate 聚合好了。
+  - 当前仓库的 Harness 已经具备 `run -> diff -> summary -> gate -> digest -> CI summary` 的完整最小闭环。
+- Files touched:
+  - `code/stage_harness/suite_runner.py`
+  - `code/stage_harness/notification_digest.py`
+  - `.github/workflows/regression-suite.yml`
+  - `tasks/H14_notification_digest.md`
+  - `code/README.md`
+  - `tasks/README.md`
+  - `tracks/harness/README.md`
+  - `README.md`
+  - `docs/runbook.md`
+  - `docs/ci_regression_guide_zh.md`
+  - `docs/session_handoff.md`
+- Validation:
+  - `python3 -m compileall code/stage_harness`
+  - `python3 code/stage_harness/suite_runner.py --manifest manifests/regression_v2_suite.json --output runs/regression_suite_report.json --md-output runs/regression_suite_report.md --strict --require-ship`
+  - `python3 code/stage_harness/notification_digest.py --suite-report runs/regression_suite_report.json --summary-board runs/summary_board.json --gate-report runs/gate_report.json --output runs/notification_digest.json --md-output runs/notification_digest.md`
+  - 结果:
+    - digest 已生成
+    - 当前 headline=`Regression suite passed`
+    - 当前 severity=`info`
+    - 当前 `ship_ready=true`
+- Next step:
+  - 把 Harness 往 external notification adapter、failure taxonomy 细化、scheduled digest 推进
+  - 或把 Multimodal 往 grounding / multi-page doc pipeline 推进
 
 ## Session Entry
 
