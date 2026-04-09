@@ -128,6 +128,14 @@ python3 eval/testgen_eval.py --data-path datasets/tiny_testgen/eval.jsonl --stra
 python3 code/stage_harness/regression_compare.py --baseline-report runs/testgen_weak.json --candidate-report runs/testgen_targeted.json --output runs/testgen_regression_diff.json
 ```
 
+## `C13`: Agentic Coding Repair Loop
+
+```bash
+python3 eval/agentic_coding_eval.py --data-path datasets/tiny_agentic_coding/eval.jsonl --strategy single_pass --report-path runs/agentic_coding_single_pass.json
+python3 eval/agentic_coding_eval.py --data-path datasets/tiny_agentic_coding/eval.jsonl --strategy repair_loop --report-path runs/agentic_coding_repair_loop.json
+python3 code/stage_harness/regression_compare.py --baseline-report runs/agentic_coding_single_pass.json --candidate-report runs/agentic_coding_repair_loop.json --output runs/agentic_coding_regression_diff.json
+```
+
 ## `H01-H03`: Harness Starter Path
 
 ```bash
@@ -178,6 +186,36 @@ python3 code/stage_harness/regression_compare.py --baseline-report runs/multimod
 python3 code/stage_harness/summary_board.py --runs-dir runs --registry-path runs/run_registry.json --output runs/summary_board.json --md-output runs/summary_board.md
 python3 code/stage_harness/gate_check.py --summary-board runs/summary_board.json --output runs/gate_report.json
 ```
+
+## `H11`: Manifest-Driven Regression Suite
+
+```bash
+python3 code/stage_harness/suite_runner.py --manifest manifests/regression_v2_suite.json --output runs/regression_suite_report.json --md-output runs/regression_suite_report.md
+```
+
+如果要让 suite 在本地直接模拟 CI 放行规则，可以加上 `--strict --require-ship`:
+
+```bash
+python3 code/stage_harness/suite_runner.py --manifest manifests/regression_v2_suite.json --output runs/regression_suite_report.json --md-output runs/regression_suite_report.md --strict --require-ship
+```
+
+## `H12`: CI Launcher
+
+仓库已带 GitHub Actions workflow:
+
+```text
+.github/workflows/regression-suite.yml
+```
+
+它会在 `pull_request`、`push(main)`、`workflow_dispatch` 和定时任务里执行同一条 suite，并上传:
+
+- `runs/regression_suite_report.json`
+- `runs/regression_suite_report.md`
+- `runs/summary_board.json`
+- `runs/summary_board.md`
+- `runs/gate_report.json`
+
+配套中文说明见 [ci_regression_guide_zh.md](/Volumes/ExtaData/newcode/llm-engineering-lab/docs/ci_regression_guide_zh.md)。
 
 ## 2026 V2 说明
 

@@ -16,6 +16,7 @@
 - 已形成最小 execution-based eval 闭环
 - 已有 `tiny_repo_context` 与 `tiny_bugfix` 的 runnable 对照实验
 - `tiny_repo_context` 已支持 query-aware `retrieved` context packing
+- 已有 `tiny_agentic_coding`，可比较 `single_pass` 与 `repair_loop`
 
 建议首批任务:
 
@@ -26,5 +27,6 @@
 - `C10` coding judge / verifier
 - `C11` multi-file patch protocol
 - `C12` test generation
+- `C13` agentic coding loop
 
-当前可直接运行的最小命令见 [runbook.md](/Volumes/ExtaData/newcode/llm-engineering-lab/docs/runbook.md) 中的 `C00-C03` 段落。
+当前可直接运行的最小命令见 [runbook.md](/Volumes/ExtaData/newcode/llm-engineering-lab/docs/runbook.md) 中的 `C00-C13` 段落。

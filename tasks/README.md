@@ -80,7 +80,7 @@ V2 的任务体系会逐步从旧的 `T00-T32` 编号，迁移到按能力线组
 - [C10_coding_judge_verifier.md](/Volumes/ExtaData/newcode/llm-engineering-lab/tasks/C10_coding_judge_verifier.md)
 - [C11_multi_file_bugfix_protocol.md](/Volumes/ExtaData/newcode/llm-engineering-lab/tasks/C11_multi_file_bugfix_protocol.md)
 - [C12_test_generation.md](/Volumes/ExtaData/newcode/llm-engineering-lab/tasks/C12_test_generation.md)
-- `C13` pass@k 与 execution-based eval
+- [C13_agentic_coding_loop.md](/Volumes/ExtaData/newcode/llm-engineering-lab/tasks/C13_agentic_coding_loop.md)
 - `C20` SWE-bench 风格任务拆解
 
 ### `Track M: Multimodal`
@@ -127,6 +127,8 @@ V2 的任务体系会逐步从旧的 `T00-T32` 编号，迁移到按能力线组
 - [H02_regression_harness.md](/Volumes/ExtaData/newcode/llm-engineering-lab/tasks/H02_regression_harness.md)
 - [H03_latency_cost_profiling.md](/Volumes/ExtaData/newcode/llm-engineering-lab/tasks/H03_latency_cost_profiling.md)
 - [H10_release_gate.md](/Volumes/ExtaData/newcode/llm-engineering-lab/tasks/H10_release_gate.md)
+- [H11_manifest_regression_suite.md](/Volumes/ExtaData/newcode/llm-engineering-lab/tasks/H11_manifest_regression_suite.md)
+- [H12_ci_launcher.md](/Volumes/ExtaData/newcode/llm-engineering-lab/tasks/H12_ci_launcher.md)
 - `H20` 周报与复盘模板
 
 ## 旧任务到新任务的映射

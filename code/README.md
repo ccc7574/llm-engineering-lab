@@ -107,6 +107,8 @@ Coding 能力线的最小入口。
 - `patch_runner.py`
 - `testgen_dataset.py`
 - `testgen_runner.py`
+- `agentic_dataset.py`
+- `agentic_runner.py`
 - `execution.py`
 
 用途:
@@ -119,6 +121,7 @@ Coding 能力线的最小入口。
 - 演示 code judge / verifier 如何在候选池里做 rerank
 - 演示 multi-file patch protocol 如何覆盖跨文件修复
 - 演示 test generation 如何区分 reference 和 hidden bug
+- 演示 agentic coding loop 如何把检索、patch、跑测和 repair 串成闭环
 
 ### `stage_harness`
 
@@ -131,11 +134,14 @@ Harness 能力线的最小入口。
 - `regression_compare.py`
 - `summary_board.py`
 - `gate_check.py`
+- `suite_runner.py`
 
 用途:
 
 - 扫描 `runs/` 下的训练资产
 - 输出最小 checkpoint / config registry 视图
+- 用 manifest 顺序执行跨能力线 regression suite
+- 为 CI 提供 strict / require-ship 的统一 suite 入口
 
 ### `stage_agentic`
 

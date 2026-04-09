@@ -34,6 +34,8 @@
   - multi-file patch bugfix 评测样本
 - `tiny_testgen/eval.jsonl`
   - 测试生成与 hidden bug 检测评测样本
+- `tiny_agentic_coding/eval.jsonl`
+  - agentic coding 检索、补丁、跑测与自修复评测样本
 - `tiny_agentic/eval.jsonl`
   - agentic 工具调用与多步执行评测样本
 - `tiny_agentic_memory/eval.jsonl`

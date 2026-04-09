@@ -43,6 +43,19 @@ TRACK_CONFIG = {
         "quality_gate": 0.05,
         "cost_metrics": ["avg_touched_files_count", "avg_patch_recall"],
     },
+    "agentic_coding": {
+        "label": "Coding Agentic Repair",
+        "primary_metric": "task_success_rate",
+        "quality_gate": 0.05,
+        "cost_metrics": [
+            "avg_repo_reads",
+            "avg_test_runs",
+            "avg_patch_attempts",
+            "avg_repair_attempts",
+            "avg_relevant_context_recall",
+            "avg_patch_recall",
+        ],
+    },
     "multimodal": {
         "label": "Multimodal",
         "primary_metric": "task_success_rate",

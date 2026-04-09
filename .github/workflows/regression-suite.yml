@@ -1,0 +1,73 @@
+name: regression-suite
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+    inputs:
+      manifest:
+        description: "Suite manifest path"
+        required: false
+        default: "manifests/regression_v2_suite.json"
+        type: string
+      require_ship:
+        description: "Fail unless gate decision is ship"
+        required: false
+        default: true
+        type: boolean
+  schedule:
+    - cron: "20 18 * * *"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: regression-suite-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  regression:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      SUITE_MANIFEST: ${{ inputs.manifest || 'manifests/regression_v2_suite.json' }}
+      REQUIRE_SHIP: ${{ inputs.require_ship != false }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Run Regression Suite
+        run: |
+          python3 code/stage_harness/suite_runner.py \
+            --manifest "$SUITE_MANIFEST" \
+            --output runs/regression_suite_report.json \
+            --md-output runs/regression_suite_report.md \
+            --strict \
+            $( [ "$REQUIRE_SHIP" = "true" ] && printf '%s' '--require-ship' )
+
+      - name: Publish Job Summary
+        if: always()
+        run: |
+          if [ -f runs/regression_suite_report.md ]; then
+            cat runs/regression_suite_report.md >> "$GITHUB_STEP_SUMMARY"
+          fi
+          if [ -f runs/summary_board.md ]; then
+            printf '\n## Summary Board\n\n' >> "$GITHUB_STEP_SUMMARY"
+            cat runs/summary_board.md >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Upload Regression Artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: regression-suite-${{ github.run_id }}
+          path: |
+            runs/*.json
+            runs/*.md

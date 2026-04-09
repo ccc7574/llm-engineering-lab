@@ -1,0 +1,186 @@
+{
+  "suite_name": "v2_regression_suite",
+  "description": "Run the current V2 cross-track evals, diffs, summary board and release gate in one deterministic sequence.",
+  "steps": [
+    {
+      "name": "coding_eval_weak",
+      "command": ["python3", "eval/coding_eval.py", "--data-path", "datasets/tiny_coding/eval.jsonl", "--strategy", "weak", "--report-path", "runs/coding_eval_weak.json"],
+      "expected_outputs": ["runs/coding_eval_weak.json"]
+    },
+    {
+      "name": "coding_eval_heuristic",
+      "command": ["python3", "eval/coding_eval.py", "--data-path", "datasets/tiny_coding/eval.jsonl", "--strategy", "heuristic", "--report-path", "runs/coding_eval_heuristic.json"],
+      "expected_outputs": ["runs/coding_eval_heuristic.json"]
+    },
+    {
+      "name": "coding_regression_diff",
+      "command": ["python3", "code/stage_harness/regression_compare.py", "--baseline-report", "runs/coding_eval_weak.json", "--candidate-report", "runs/coding_eval_heuristic.json", "--output", "runs/coding_regression_diff.json"],
+      "expected_outputs": ["runs/coding_regression_diff.json"]
+    },
+    {
+      "name": "repo_context_local_only",
+      "command": ["python3", "eval/repo_context_eval.py", "--data-path", "datasets/tiny_repo_context/eval.jsonl", "--strategy", "local_only", "--report-path", "runs/repo_context_local_only.json"],
+      "expected_outputs": ["runs/repo_context_local_only.json"]
+    },
+    {
+      "name": "repo_context_retrieved",
+      "command": ["python3", "eval/repo_context_eval.py", "--data-path", "datasets/tiny_repo_context/eval.jsonl", "--strategy", "retrieved", "--report-path", "runs/repo_context_retrieved.json"],
+      "expected_outputs": ["runs/repo_context_retrieved.json"]
+    },
+    {
+      "name": "repo_context_regression_diff",
+      "command": ["python3", "code/stage_harness/regression_compare.py", "--baseline-report", "runs/repo_context_local_only.json", "--candidate-report", "runs/repo_context_retrieved.json", "--output", "runs/repo_context_regression_diff.json"],
+      "expected_outputs": ["runs/repo_context_regression_diff.json"]
+    },
+    {
+      "name": "bugfix_buggy",
+      "command": ["python3", "eval/bugfix_eval.py", "--data-path", "datasets/tiny_bugfix/eval.jsonl", "--strategy", "buggy", "--report-path", "runs/bugfix_buggy.json"],
+      "expected_outputs": ["runs/bugfix_buggy.json"]
+    },
+    {
+      "name": "bugfix_heuristic",
+      "command": ["python3", "eval/bugfix_eval.py", "--data-path", "datasets/tiny_bugfix/eval.jsonl", "--strategy", "heuristic", "--report-path", "runs/bugfix_heuristic.json"],
+      "expected_outputs": ["runs/bugfix_heuristic.json"]
+    },
+    {
+      "name": "bugfix_regression_diff",
+      "command": ["python3", "code/stage_harness/regression_compare.py", "--baseline-report", "runs/bugfix_buggy.json", "--candidate-report", "runs/bugfix_heuristic.json", "--output", "runs/bugfix_regression_diff.json"],
+      "expected_outputs": ["runs/bugfix_regression_diff.json"]
+    },
+    {
+      "name": "bugfix_judge_first_candidate",
+      "command": ["python3", "eval/bugfix_judge_eval.py", "--data-path", "datasets/tiny_bugfix/eval.jsonl", "--strategy", "first_candidate", "--report-path", "runs/bugfix_judge_first_candidate.json"],
+      "expected_outputs": ["runs/bugfix_judge_first_candidate.json"]
+    },
+    {
+      "name": "bugfix_judge_rerank",
+      "command": ["python3", "eval/bugfix_judge_eval.py", "--data-path", "datasets/tiny_bugfix/eval.jsonl", "--strategy", "judge_rerank", "--report-path", "runs/bugfix_judge_rerank.json"],
+      "expected_outputs": ["runs/bugfix_judge_rerank.json"]
+    },
+    {
+      "name": "bugfix_judge_regression_diff",
+      "command": ["python3", "code/stage_harness/regression_compare.py", "--baseline-report", "runs/bugfix_judge_first_candidate.json", "--candidate-report", "runs/bugfix_judge_rerank.json", "--output", "runs/bugfix_judge_regression_diff.json"],
+      "expected_outputs": ["runs/bugfix_judge_regression_diff.json"]
+    },
+    {
+      "name": "multifile_bugfix_single_file",
+      "command": ["python3", "eval/multifile_bugfix_eval.py", "--data-path", "datasets/tiny_multifile_bugfix/eval.jsonl", "--strategy", "single_file", "--report-path", "runs/multifile_bugfix_single_file.json"],
+      "expected_outputs": ["runs/multifile_bugfix_single_file.json"]
+    },
+    {
+      "name": "multifile_bugfix_patch_protocol",
+      "command": ["python3", "eval/multifile_bugfix_eval.py", "--data-path", "datasets/tiny_multifile_bugfix/eval.jsonl", "--strategy", "patch_protocol", "--report-path", "runs/multifile_bugfix_patch_protocol.json"],
+      "expected_outputs": ["runs/multifile_bugfix_patch_protocol.json"]
+    },
+    {
+      "name": "multifile_bugfix_regression_diff",
+      "command": ["python3", "code/stage_harness/regression_compare.py", "--baseline-report", "runs/multifile_bugfix_single_file.json", "--candidate-report", "runs/multifile_bugfix_patch_protocol.json", "--output", "runs/multifile_bugfix_regression_diff.json"],
+      "expected_outputs": ["runs/multifile_bugfix_regression_diff.json"]
+    },
+    {
+      "name": "testgen_weak",
+      "command": ["python3", "eval/testgen_eval.py", "--data-path", "datasets/tiny_testgen/eval.jsonl", "--strategy", "weak", "--report-path", "runs/testgen_weak.json"],
+      "expected_outputs": ["runs/testgen_weak.json"]
+    },
+    {
+      "name": "testgen_targeted",
+      "command": ["python3", "eval/testgen_eval.py", "--data-path", "datasets/tiny_testgen/eval.jsonl", "--strategy", "targeted", "--report-path", "runs/testgen_targeted.json"],
+      "expected_outputs": ["runs/testgen_targeted.json"]
+    },
+    {
+      "name": "testgen_regression_diff",
+      "command": ["python3", "code/stage_harness/regression_compare.py", "--baseline-report", "runs/testgen_weak.json", "--candidate-report", "runs/testgen_targeted.json", "--output", "runs/testgen_regression_diff.json"],
+      "expected_outputs": ["runs/testgen_regression_diff.json"]
+    },
+    {
+      "name": "agentic_direct",
+      "command": ["python3", "eval/agentic_eval.py", "--data-path", "datasets/tiny_agentic/eval.jsonl", "--strategy", "direct", "--report-path", "runs/agentic_direct.json"],
+      "expected_outputs": ["runs/agentic_direct.json"]
+    },
+    {
+      "name": "agentic_tool_use",
+      "command": ["python3", "eval/agentic_eval.py", "--data-path", "datasets/tiny_agentic/eval.jsonl", "--strategy", "tool_use", "--report-path", "runs/agentic_tool_use.json"],
+      "expected_outputs": ["runs/agentic_tool_use.json"]
+    },
+    {
+      "name": "agentic_regression_diff",
+      "command": ["python3", "code/stage_harness/regression_compare.py", "--baseline-report", "runs/agentic_direct.json", "--candidate-report", "runs/agentic_tool_use.json", "--output", "runs/agentic_regression_diff.json"],
+      "expected_outputs": ["runs/agentic_regression_diff.json"]
+    },
+    {
+      "name": "agentic_memory_tool_use",
+      "command": ["python3", "eval/agentic_eval.py", "--data-path", "datasets/tiny_agentic_memory/eval.jsonl", "--strategy", "tool_use", "--report-path", "runs/agentic_memory_tool_use.json"],
+      "expected_outputs": ["runs/agentic_memory_tool_use.json"]
+    },
+    {
+      "name": "agentic_memory_stateful",
+      "command": ["python3", "eval/agentic_eval.py", "--data-path", "datasets/tiny_agentic_memory/eval.jsonl", "--strategy", "stateful", "--report-path", "runs/agentic_memory_stateful.json"],
+      "expected_outputs": ["runs/agentic_memory_stateful.json"]
+    },
+    {
+      "name": "agentic_memory_regression_diff",
+      "command": ["python3", "code/stage_harness/regression_compare.py", "--baseline-report", "runs/agentic_memory_tool_use.json", "--candidate-report", "runs/agentic_memory_stateful.json", "--output", "runs/agentic_memory_regression_diff.json"],
+      "expected_outputs": ["runs/agentic_memory_regression_diff.json"]
+    },
+    {
+      "name": "agentic_coding_single_pass",
+      "command": ["python3", "eval/agentic_coding_eval.py", "--data-path", "datasets/tiny_agentic_coding/eval.jsonl", "--strategy", "single_pass", "--report-path", "runs/agentic_coding_single_pass.json"],
+      "expected_outputs": ["runs/agentic_coding_single_pass.json"]
+    },
+    {
+      "name": "agentic_coding_repair_loop",
+      "command": ["python3", "eval/agentic_coding_eval.py", "--data-path", "datasets/tiny_agentic_coding/eval.jsonl", "--strategy", "repair_loop", "--report-path", "runs/agentic_coding_repair_loop.json"],
+      "expected_outputs": ["runs/agentic_coding_repair_loop.json"]
+    },
+    {
+      "name": "agentic_coding_regression_diff",
+      "command": ["python3", "code/stage_harness/regression_compare.py", "--baseline-report", "runs/agentic_coding_single_pass.json", "--candidate-report", "runs/agentic_coding_repair_loop.json", "--output", "runs/agentic_coding_regression_diff.json"],
+      "expected_outputs": ["runs/agentic_coding_regression_diff.json"]
+    },
+    {
+      "name": "multimodal_text_only",
+      "command": ["python3", "eval/multimodal_eval.py", "--data-path", "datasets/tiny_multimodal/eval.jsonl", "--strategy", "text_only", "--report-path", "runs/multimodal_text_only.json"],
+      "expected_outputs": ["runs/multimodal_text_only.json"]
+    },
+    {
+      "name": "multimodal_vision_augmented",
+      "command": ["python3", "eval/multimodal_eval.py", "--data-path", "datasets/tiny_multimodal/eval.jsonl", "--strategy", "vision_augmented", "--report-path", "runs/multimodal_vision_augmented.json"],
+      "expected_outputs": ["runs/multimodal_vision_augmented.json"]
+    },
+    {
+      "name": "multimodal_regression_diff",
+      "command": ["python3", "code/stage_harness/regression_compare.py", "--baseline-report", "runs/multimodal_text_only.json", "--candidate-report", "runs/multimodal_vision_augmented.json", "--output", "runs/multimodal_regression_diff.json"],
+      "expected_outputs": ["runs/multimodal_regression_diff.json"]
+    },
+    {
+      "name": "multimodal_noisy_ocr_only",
+      "command": ["python3", "eval/multimodal_eval.py", "--data-path", "datasets/tiny_multimodal_noisy/eval.jsonl", "--strategy", "ocr_only", "--report-path", "runs/multimodal_noisy_ocr_only.json"],
+      "expected_outputs": ["runs/multimodal_noisy_ocr_only.json"]
+    },
+    {
+      "name": "multimodal_noisy_structured_pipeline",
+      "command": ["python3", "eval/multimodal_eval.py", "--data-path", "datasets/tiny_multimodal_noisy/eval.jsonl", "--strategy", "structured_pipeline", "--report-path", "runs/multimodal_noisy_structured_pipeline.json"],
+      "expected_outputs": ["runs/multimodal_noisy_structured_pipeline.json"]
+    },
+    {
+      "name": "multimodal_noisy_regression_diff",
+      "command": ["python3", "code/stage_harness/regression_compare.py", "--baseline-report", "runs/multimodal_noisy_ocr_only.json", "--candidate-report", "runs/multimodal_noisy_structured_pipeline.json", "--output", "runs/multimodal_noisy_regression_diff.json"],
+      "expected_outputs": ["runs/multimodal_noisy_regression_diff.json"]
+    },
+    {
+      "name": "run_registry",
+      "command": ["python3", "code/stage_harness/report_runs.py", "--runs-dir", "runs", "--output", "runs/run_registry.json"],
+      "expected_outputs": ["runs/run_registry.json"]
+    },
+    {
+      "name": "summary_board",
+      "command": ["python3", "code/stage_harness/summary_board.py", "--runs-dir", "runs", "--registry-path", "runs/run_registry.json", "--output", "runs/summary_board.json", "--md-output", "runs/summary_board.md"],
+      "expected_outputs": ["runs/summary_board.json", "runs/summary_board.md"]
+    },
+    {
+      "name": "gate_check",
+      "command": ["python3", "code/stage_harness/gate_check.py", "--summary-board", "runs/summary_board.json", "--output", "runs/gate_report.json"],
+      "expected_outputs": ["runs/gate_report.json"]
+    }
+  ]
+}

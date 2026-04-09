@@ -46,7 +46,119 @@
 - `Multimodal` 已有两层 runnable 路线，可比较 `text-only vs vision-augmented` 以及 `ocr_only vs structured_pipeline`。
 - `Harness` 已能把 summary board 转成 `ship / hold / block` 的 gate report。
 - `Coding` 已补到 test generation，可用 `bug_detection_rate` 评测测试质量。
-- 当前仍未成体系的主要是: 更复杂的 multimodal OCR / table / grounding 联合管线、更长链路的 agentic memory / reflection，以及更深的 agentic coding / harness automation。
+- `Coding` 已补到 agentic coding loop，可比较 `single_pass` 与 `repair_loop`。
+- `Harness` 已补到 manifest-driven regression suite，可一键执行 cross-track eval、summary 和 gate。
+- `Harness` 已补到 GitHub Actions CI launcher，可在 PR / main / schedule 中执行 suite。
+- 已新增中文 CI / 回归指南，便于直接交付给中文工程团队使用。
+- 当前仍未成体系的主要是: 更复杂的 multimodal OCR / table / grounding 联合管线、更长链路的 agentic memory / reflection，以及更深入的 cost / latency / flaky retry integration。
+
+## Session Entry
+
+- Date: 2026-04-10 03:00 CST
+- Goal: 把 regression suite 从“本地可跑”推进到“CI 可直接执行和放行”的状态。
+- Status: 已完成 suite strict mode、require-ship gate、GitHub Actions workflow 和 CI 文档接入。
+- Key findings:
+  - suite runner 如果不支持严格退出码，CI 只能“跑完”，不能真正“拦住不该发的版本”。
+  - 把本地 suite 和 CI suite 保持为同一个 manifest，是降低维护成本的关键。
+  - 当前仓库已经具备接近真实团队的最小发布链: `manifest -> suite runner -> summary board -> gate -> CI artifact`。
+- Files touched:
+  - `code/stage_harness/suite_runner.py`
+  - `.github/workflows/regression-suite.yml`
+  - `tasks/H12_ci_launcher.md`
+  - `code/README.md`
+  - `tasks/README.md`
+  - `tracks/harness/README.md`
+  - `README.md`
+  - `docs/runbook.md`
+  - `docs/session_handoff.md`
+- Validation:
+  - `python3 -m compileall code/stage_harness`
+  - `python3 code/stage_harness/suite_runner.py --manifest manifests/regression_v2_suite.json --output runs/regression_suite_report.json --md-output runs/regression_suite_report.md --strict --require-ship`
+  - 结果:
+    - suite `36/36 passed`
+    - suite `overall_status=passed`
+    - suite `release_decision=ship`
+    - strict mode 本地通过，可直接映射到 CI
+- Next step:
+  - 把 Harness 往 flaky retry / changed-scope suite / scheduled regression 通知推进
+  - 或把 Multimodal 往 grounding / page routing / multi-page doc pipeline 推进
+
+## Session Entry
+
+- Date: 2026-04-10 02:45 CST
+- Goal: 把 Harness 再推进到 manifest-driven regression suite，让 cross-track 回归从命令清单升级到可执行 suite。
+- Status: 已完成 suite manifest、suite runner、suite report artifact，以及 Harness 文档接入。
+- Key findings:
+  - 当回归步骤超过十几条时，真正影响团队交付效率的已经不是“有没有 eval”，而是“有没有一条稳定的发布前 suite”。
+  - suite manifest 非常适合教学，因为它把“发布前要检查什么”从隐藏经验变成了显式资产。
+  - 现在仓库已经具备 `eval -> regression diff -> summary board -> gate -> suite report` 的完整最小发布链。
+- Files touched:
+  - `code/stage_harness/suite_runner.py`
+  - `manifests/regression_v2_suite.json`
+  - `tasks/H11_manifest_regression_suite.md`
+  - `code/README.md`
+  - `tasks/README.md`
+  - `tracks/harness/README.md`
+  - `README.md`
+  - `docs/runbook.md`
+  - `docs/session_handoff.md`
+- Validation:
+  - `python3 -m compileall code/stage_harness`
+  - `python3 code/stage_harness/suite_runner.py --manifest manifests/regression_v2_suite.json --output runs/regression_suite_report.json --md-output runs/regression_suite_report.md`
+  - 结果:
+    - suite steps: `36/36 passed`
+    - suite `overall_status=passed`
+    - suite `release_decision=ship`
+    - 新增 artifacts:
+      - `runs/regression_suite_report.json`
+      - `runs/regression_suite_report.md`
+- Next step:
+  - 把 Harness 往 CI launcher / scheduled regression / flaky retry 策略推进
+  - 或把 Multimodal 往 grounding / page routing / structured extraction pipeline 推进
+
+## Session Entry
+
+- Date: 2026-04-10 02:30 CST
+- Goal: 把 Coding 再推进到更像真实团队的 agentic coding loop，并把新路线接进 harness 与交付文档。
+- Status: 已完成 tiny agentic coding 数据、repair loop runner / eval、回归产物、summary board 与 gate report 接入。
+- Key findings:
+  - 对非算法工程师来说，coding agent 的关键分水岭不是“能不能写出 patch”，而是“失败后会不会继续读仓库、跑测试并修第二轮”。
+  - `single_pass -> repair_loop` 的对照把 repo retrieval、patch recall、test feedback、repair success 连成了一个非常清晰的教学闭环。
+  - 当前 `Coding` 线已经形成 `completion -> repo context -> bugfix -> judge -> multi-file patch -> test generation -> agentic coding` 的连续工作流。
+- Files touched:
+  - `code/stage_coding/agentic_dataset.py`
+  - `code/stage_coding/agentic_runner.py`
+  - `eval/agentic_coding_eval.py`
+  - `datasets/tiny_agentic_coding/eval.jsonl`
+  - `tasks/C13_agentic_coding_loop.md`
+  - `code/README.md`
+  - `datasets/README.md`
+  - `eval/README.md`
+  - `tasks/README.md`
+  - `tracks/coding/README.md`
+  - `docs/runbook.md`
+  - `README.md`
+  - `code/stage_harness/summary_board.py`
+  - `docs/session_handoff.md`
+- Validation:
+  - `python3 -m compileall code/stage_coding eval/agentic_coding_eval.py code/stage_harness`
+  - `python3 eval/agentic_coding_eval.py --data-path datasets/tiny_agentic_coding/eval.jsonl --strategy single_pass --report-path runs/agentic_coding_single_pass.json`
+  - `python3 eval/agentic_coding_eval.py --data-path datasets/tiny_agentic_coding/eval.jsonl --strategy repair_loop --report-path runs/agentic_coding_repair_loop.json`
+  - `python3 code/stage_harness/regression_compare.py --baseline-report runs/agentic_coding_single_pass.json --candidate-report runs/agentic_coding_repair_loop.json --output runs/agentic_coding_regression_diff.json`
+  - `python3 code/stage_harness/report_runs.py --runs-dir runs --output runs/run_registry.json`
+  - `python3 code/stage_harness/summary_board.py --runs-dir runs --registry-path runs/run_registry.json --output runs/summary_board.json --md-output runs/summary_board.md`
+  - `python3 code/stage_harness/gate_check.py --summary-board runs/summary_board.json --output runs/gate_report.json`
+  - 结果:
+    - agentic coding: `0/3 -> 3/3`
+    - `task_success_rate +1.000`
+    - `recovery_success_rate +1.000`
+    - `avg_relevant_context_recall +0.500`
+    - `avg_patch_recall +0.500`
+    - summary board: `11` 条 regression rows，已包含 `Coding Agentic Repair`
+    - gate report: `overall_gate=ship`
+- Next step:
+  - 把 Harness 往 manifest-driven regression suite / CI launcher 推进
+  - 或把 Coding 往 patch diff protocol / test repair / pass@k 推进
 
 ## Session Entry
 
