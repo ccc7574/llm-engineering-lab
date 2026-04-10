@@ -14,3 +14,7 @@
 - `Coding`
 - `Agentic`
 - `Harness`
+
+推荐入口:
+
+- [domain_copilot_playbook.md](/Volumes/ExtaData/newcode/llm-engineering-lab/cases/mid_company/domain_copilot_playbook.md)

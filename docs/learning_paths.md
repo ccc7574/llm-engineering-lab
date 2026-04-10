@@ -32,13 +32,13 @@
 
 当前可直接对应的现有任务:
 
-- [T00_bootstrap.md](/Volumes/ExtaData/newcode/llm-engineering-lab/tasks/T00_bootstrap.md)
-- [T01_data_pipeline.md](/Volumes/ExtaData/newcode/llm-engineering-lab/tasks/T01_data_pipeline.md)
-- [T02_context_debug.md](/Volumes/ExtaData/newcode/llm-engineering-lab/tasks/T02_context_debug.md)
-- [T03_transformer_block.md](/Volumes/ExtaData/newcode/llm-engineering-lab/tasks/T03_transformer_block.md)
-- [T10_sft_for_assistant.md](/Volumes/ExtaData/newcode/llm-engineering-lab/tasks/T10_sft_for_assistant.md)
-- [T11_structured_output.md](/Volumes/ExtaData/newcode/llm-engineering-lab/tasks/T11_structured_output.md)
-- [T12_eval_pack.md](/Volumes/ExtaData/newcode/llm-engineering-lab/tasks/T12_eval_pack.md)
+- [P00_minimal_pretraining_loop.md](/Volumes/ExtaData/newcode/llm-engineering-lab/tasks/P00_minimal_pretraining_loop.md)
+- [P01_token_batch_loss.md](/Volumes/ExtaData/newcode/llm-engineering-lab/tasks/P01_token_batch_loss.md)
+- [P02_context_usage_and_attention.md](/Volumes/ExtaData/newcode/llm-engineering-lab/tasks/P02_context_usage_and_attention.md)
+- [P03_transformer_block_dissection.md](/Volumes/ExtaData/newcode/llm-engineering-lab/tasks/P03_transformer_block_dissection.md)
+- [S00_instruction_tuning.md](/Volumes/ExtaData/newcode/llm-engineering-lab/tasks/S00_instruction_tuning.md)
+- [S01_structured_output_and_protocol.md](/Volumes/ExtaData/newcode/llm-engineering-lab/tasks/S01_structured_output_and_protocol.md)
+- [S02_minimal_eval_pack.md](/Volumes/ExtaData/newcode/llm-engineering-lab/tasks/S02_minimal_eval_pack.md)
 
 ## 路径 2: Capability Optimization
 
@@ -68,8 +68,13 @@
 
 当前仓库中已经有最小底座的部分:
 
-- `S10` 与 `S11` 对应 reasoning trace、self-consistency、verifier
-- 其余模块需要在 V2 中继续补齐
+- [P10_data_mixture_and_sampling.md](/Volumes/ExtaData/newcode/llm-engineering-lab/tasks/P10_data_mixture_and_sampling.md)
+- [P11_continued_pretraining_and_domain_adaptation.md](/Volumes/ExtaData/newcode/llm-engineering-lab/tasks/P11_continued_pretraining_and_domain_adaptation.md)
+- [P12_context_length_extension.md](/Volumes/ExtaData/newcode/llm-engineering-lab/tasks/P12_context_length_extension.md)
+- [S10_reasoning_trace_sft.md](/Volumes/ExtaData/newcode/llm-engineering-lab/tasks/S10_reasoning_trace_sft.md)
+- [S11_self_consistency_and_verifier.md](/Volumes/ExtaData/newcode/llm-engineering-lab/tasks/S11_self_consistency_and_verifier.md)
+- [S12_rejection_sampling_route.md](/Volumes/ExtaData/newcode/llm-engineering-lab/tasks/S12_rejection_sampling_route.md)
+- 其中 `S20-S21` 路线的代码实现仍待补齐
 
 ## 路径 3: Production-Minded Engineering
 

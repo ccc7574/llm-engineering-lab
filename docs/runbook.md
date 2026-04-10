@@ -89,7 +89,28 @@ python3 code/stage4_verifier/rerank.py --checkpoint runs/stage4_verifier/ckpt.pt
 
 ## `S20-S21`: Toy Alignment
 
-当前仓库尚未实现 `code/stage5_toy_alignment/` 下的 DPO / GRPO 脚本。这个阶段目前只有任务文档和数据占位，还不能直接运行。
+```bash
+python3 code/stage5_toy_alignment/train_dpo.py \
+  --data-path datasets/tiny_preferences/train.jsonl \
+  --init-from runs/stage2_sft_smoke/ckpt.pt \
+  --out-dir runs/stage5_dpo
+
+python3 code/stage5_toy_alignment/train_grpo.py \
+  --data-path datasets/tiny_preferences/train.jsonl \
+  --init-from runs/stage2_sft_smoke/ckpt.pt \
+  --out-dir runs/stage5_grpo
+```
+
+这两条路线当前都是教学级最小实现:
+
+- `train_dpo.py` 使用 pairwise DPO loss
+- `train_grpo.py` 使用 reward-guided 的相对更新近似
+
+重点不是追求大规模 alignment 效果，而是让读者看懂:
+
+- chosen / rejected 对怎样变成训练信号
+- reference model 为什么重要
+- 偏好优化和 SFT、rejection sampling 的边界是什么
 
 ## `C00-C03`: Coding Starter Path
 

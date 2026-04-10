@@ -14,3 +14,7 @@
 - `Agentic`
 - `Harness`
 - `Coding`
+
+推荐入口:
+
+- [api_first_playbook.md](/Volumes/ExtaData/newcode/llm-engineering-lab/cases/small_team/api_first_playbook.md)

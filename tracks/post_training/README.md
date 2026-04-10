@@ -11,12 +11,23 @@
 
 建议任务:
 
-- `S00` 到 `S02`
-- `S10` 到 `S12`
-- `S20` 到 `S22`
+- [S00_instruction_tuning.md](/Volumes/ExtaData/newcode/llm-engineering-lab/tasks/S00_instruction_tuning.md)
+- [S01_structured_output_and_protocol.md](/Volumes/ExtaData/newcode/llm-engineering-lab/tasks/S01_structured_output_and_protocol.md)
+- [S02_minimal_eval_pack.md](/Volumes/ExtaData/newcode/llm-engineering-lab/tasks/S02_minimal_eval_pack.md)
+- [S10_reasoning_trace_sft.md](/Volumes/ExtaData/newcode/llm-engineering-lab/tasks/S10_reasoning_trace_sft.md)
+- [S11_self_consistency_and_verifier.md](/Volumes/ExtaData/newcode/llm-engineering-lab/tasks/S11_self_consistency_and_verifier.md)
+- [S12_rejection_sampling_route.md](/Volumes/ExtaData/newcode/llm-engineering-lab/tasks/S12_rejection_sampling_route.md)
+- [S20_toy_dpo.md](/Volumes/ExtaData/newcode/llm-engineering-lab/tasks/S20_toy_dpo.md)
+- [S21_toy_grpo.md](/Volumes/ExtaData/newcode/llm-engineering-lab/tasks/S21_toy_grpo.md)
+- [S22_post_training_review.md](/Volumes/ExtaData/newcode/llm-engineering-lab/tasks/S22_post_training_review.md)
 
 当前仓库中最直接相关的实现:
 
 - [stage2_sft](/Volumes/ExtaData/newcode/llm-engineering-lab/code/stage2_sft)
 - [stage3_reasoning](/Volumes/ExtaData/newcode/llm-engineering-lab/code/stage3_reasoning)
 - [stage4_verifier](/Volumes/ExtaData/newcode/llm-engineering-lab/code/stage4_verifier)
+
+当前主要缺口:
+
+- `S12` rejection sampling 仍缺 runnable 脚本
+- `S20-S21` 已有 toy runnable 入口，但还缺更完整的 alignment eval 与结果可视化

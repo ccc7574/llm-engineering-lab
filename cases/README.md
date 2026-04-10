@@ -15,3 +15,9 @@
 - 帮助读者理解为什么同一种技术路线，在不同团队里会有完全不同的最优解
 - 避免把大厂做法不加区分地套到所有团队
 - 把“工程取舍”变成显式内容，而不是隐含前提
+
+当前已补的案例入口:
+
+- [model_platform_playbook.md](/Volumes/ExtaData/newcode/llm-engineering-lab/cases/bigtech/model_platform_playbook.md)
+- [domain_copilot_playbook.md](/Volumes/ExtaData/newcode/llm-engineering-lab/cases/mid_company/domain_copilot_playbook.md)
+- [api_first_playbook.md](/Volumes/ExtaData/newcode/llm-engineering-lab/cases/small_team/api_first_playbook.md)

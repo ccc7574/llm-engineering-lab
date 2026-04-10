@@ -37,14 +37,14 @@ V2 的任务体系会逐步从旧的 `T00-T32` 编号，迁移到按能力线组
 
 建议任务:
 
-- `P00` 最小预训练闭环
-- `P01` token、batch、loss
-- `P02` 上下文利用与 attention
-- `P03` transformer block 拆解
-- `P10` data mixture 与采样策略
-- `P11` continued pretraining / domain adaptation
-- `P12` context length 扩展
-- `P20` 预训练失败模式复盘
+- [P00_minimal_pretraining_loop.md](/Volumes/ExtaData/newcode/llm-engineering-lab/tasks/P00_minimal_pretraining_loop.md)
+- [P01_token_batch_loss.md](/Volumes/ExtaData/newcode/llm-engineering-lab/tasks/P01_token_batch_loss.md)
+- [P02_context_usage_and_attention.md](/Volumes/ExtaData/newcode/llm-engineering-lab/tasks/P02_context_usage_and_attention.md)
+- [P03_transformer_block_dissection.md](/Volumes/ExtaData/newcode/llm-engineering-lab/tasks/P03_transformer_block_dissection.md)
+- [P10_data_mixture_and_sampling.md](/Volumes/ExtaData/newcode/llm-engineering-lab/tasks/P10_data_mixture_and_sampling.md)
+- [P11_continued_pretraining_and_domain_adaptation.md](/Volumes/ExtaData/newcode/llm-engineering-lab/tasks/P11_continued_pretraining_and_domain_adaptation.md)
+- [P12_context_length_extension.md](/Volumes/ExtaData/newcode/llm-engineering-lab/tasks/P12_context_length_extension.md)
+- [P20_pretraining_failure_review.md](/Volumes/ExtaData/newcode/llm-engineering-lab/tasks/P20_pretraining_failure_review.md)
 
 ### `Track S: Post-Training`
 
@@ -55,15 +55,15 @@ V2 的任务体系会逐步从旧的 `T00-T32` 编号，迁移到按能力线组
 
 建议任务:
 
-- `S00` instruction tuning
-- `S01` structured output
-- `S02` eval pack
-- `S10` reasoning trace SFT
-- `S11` self-consistency 与 verifier
-- `S12` rejection sampling
-- `S20` toy DPO
-- `S21` toy GRPO
-- `S22` 后训练路线复盘
+- [S00_instruction_tuning.md](/Volumes/ExtaData/newcode/llm-engineering-lab/tasks/S00_instruction_tuning.md)
+- [S01_structured_output_and_protocol.md](/Volumes/ExtaData/newcode/llm-engineering-lab/tasks/S01_structured_output_and_protocol.md)
+- [S02_minimal_eval_pack.md](/Volumes/ExtaData/newcode/llm-engineering-lab/tasks/S02_minimal_eval_pack.md)
+- [S10_reasoning_trace_sft.md](/Volumes/ExtaData/newcode/llm-engineering-lab/tasks/S10_reasoning_trace_sft.md)
+- [S11_self_consistency_and_verifier.md](/Volumes/ExtaData/newcode/llm-engineering-lab/tasks/S11_self_consistency_and_verifier.md)
+- [S12_rejection_sampling_route.md](/Volumes/ExtaData/newcode/llm-engineering-lab/tasks/S12_rejection_sampling_route.md)
+- [S20_toy_dpo.md](/Volumes/ExtaData/newcode/llm-engineering-lab/tasks/S20_toy_dpo.md)
+- [S21_toy_grpo.md](/Volumes/ExtaData/newcode/llm-engineering-lab/tasks/S21_toy_grpo.md)
+- [S22_post_training_review.md](/Volumes/ExtaData/newcode/llm-engineering-lab/tasks/S22_post_training_review.md)
 
 ### `Track C: Coding`
 

@@ -62,7 +62,68 @@
 - `Harness` 已把 notification policy gate 接进 workflow，可在 CI 中强制执行。
 - `Harness` 已补到 failure-category-aware routing，可按 failure taxonomy 直接分流并对 diff/gate 做分类级守门。
 - `Harness` 已补到 PR comment diagnostics，可对 GitHub API 权限/上下文失败给出结构化诊断和处理建议。
+- `Pretraining` 与 `Post-Training` 的 V2 任务体系已补齐，不再只有旧 `T*` 过渡编号。
+- `Post-Training` 已补到 runnable `stage5_toy_alignment`，可跑 toy DPO / GRPO-like。
+- 三类公司案例层已补到 playbook 级文档，可按团队规模代入真实路线。
 - 当前仍未成体系的主要是: 更复杂的 multimodal OCR / table / grounding 联合管线、更长链路的 agentic memory / reflection，以及更深入的 cost / latency / live routing integration。
+
+## Session Entry
+
+- Date: 2026-04-10 23:18 CST
+- Goal: 做一次完整缺口盘点并按优先级继续执行，优先补齐 `P/S` 任务体系、落地 `stage5_toy_alignment`，并做厚公司案例层。
+- Status: 已完成 delivery backlog、`P00-P20` 与 `S00-S22` 任务卡、toy DPO / GRPO-like 代码、案例层 playbook、测试与文档更新，正准备提交与 push。
+- Key findings:
+  - 当前仓库最大的结构性缺口不是某个单脚本，而是 `roadmap -> learning path -> task -> runnable code -> company case` 之间存在断层。
+  - `stage5_toy_alignment` 最大的教学陷阱是直接比较 completion 总 logprob，会被长度偏置误导；必须按 supervised token 数归一化。
+  - 案例层如果只有一句“适合什么公司”，对读者没有代入感，至少要补到团队画像、30/60/90 天路线和不该做的事。
+- Files touched:
+  - `docs/delivery_backlog.md`
+  - `tasks/P00_minimal_pretraining_loop.md`
+  - `tasks/P01_token_batch_loss.md`
+  - `tasks/P02_context_usage_and_attention.md`
+  - `tasks/P03_transformer_block_dissection.md`
+  - `tasks/P10_data_mixture_and_sampling.md`
+  - `tasks/P11_continued_pretraining_and_domain_adaptation.md`
+  - `tasks/P12_context_length_extension.md`
+  - `tasks/P20_pretraining_failure_review.md`
+  - `tasks/S00_instruction_tuning.md`
+  - `tasks/S01_structured_output_and_protocol.md`
+  - `tasks/S02_minimal_eval_pack.md`
+  - `tasks/S10_reasoning_trace_sft.md`
+  - `tasks/S11_self_consistency_and_verifier.md`
+  - `tasks/S12_rejection_sampling_route.md`
+  - `tasks/S20_toy_dpo.md`
+  - `tasks/S21_toy_grpo.md`
+  - `tasks/S22_post_training_review.md`
+  - `tasks/README.md`
+  - `tracks/pretraining/README.md`
+  - `tracks/post_training/README.md`
+  - `code/stage5_toy_alignment/__init__.py`
+  - `code/stage5_toy_alignment/dataset.py`
+  - `code/stage5_toy_alignment/utils.py`
+  - `code/stage5_toy_alignment/train_dpo.py`
+  - `code/stage5_toy_alignment/train_grpo.py`
+  - `tests/test_stage5_toy_alignment.py`
+  - `code/README.md`
+  - `docs/runbook.md`
+  - `docs/learning_paths.md`
+  - `cases/README.md`
+  - `cases/bigtech/README.md`
+  - `cases/bigtech/model_platform_playbook.md`
+  - `cases/mid_company/README.md`
+  - `cases/mid_company/domain_copilot_playbook.md`
+  - `cases/small_team/README.md`
+  - `cases/small_team/api_first_playbook.md`
+  - `README.md`
+  - `docs/session_handoff.md`
+- Validation:
+  - `python3 -m py_compile code/stage5_toy_alignment/__init__.py code/stage5_toy_alignment/dataset.py code/stage5_toy_alignment/utils.py code/stage5_toy_alignment/train_dpo.py code/stage5_toy_alignment/train_grpo.py`
+  - `python3 code/stage5_toy_alignment/train_dpo.py --data-path datasets/tiny_preferences/train.jsonl --init-from runs/stage2_sft_smoke/ckpt.pt --out-dir runs/stage5_dpo_smoke --max-iters 3 --eval-interval 1 --batch-size 2`
+  - `python3 code/stage5_toy_alignment/train_grpo.py --data-path datasets/tiny_preferences/train.jsonl --init-from runs/stage2_sft_smoke/ckpt.pt --out-dir runs/stage5_grpo_smoke --max-iters 3 --eval-interval 1 --batch-size 2`
+  - `python3 -m unittest discover -s tests`
+- Next step:
+  - 提交并 push 到远程仓库
+  - 继续把 backlog 第 4 项的 Harness live adapter 安全层落地
 
 ## Session Entry
 

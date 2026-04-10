@@ -15,3 +15,7 @@
 - `Post-Training`
 - `Coding`
 - `Harness`
+
+推荐入口:
+
+- [model_platform_playbook.md](/Volumes/ExtaData/newcode/llm-engineering-lab/cases/bigtech/model_platform_playbook.md)
