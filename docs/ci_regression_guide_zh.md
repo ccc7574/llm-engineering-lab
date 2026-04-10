@@ -122,6 +122,7 @@ python3 code/stage_harness/suite_runner.py \
 当前 `coding` scope 已覆盖:
 
 - `coding`
+- `coding_passk`
 - `repo_context`
 - `bugfix`
 - `multifile_bugfix`

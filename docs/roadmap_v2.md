@@ -205,8 +205,11 @@ llm-engineering-lab/
 - `C02` bugfix 任务微调
 - `C03` test generation 与执行反馈
 - `C10` coding verifier / judge
-- `C11` pass@k 与 execution-based eval
+- `C11` multi-file patch protocol
+- `C12` test generation
+- `C13` agentic coding loop
 - `C20` SWE-bench 风格任务拆解
+- `C21` pass@k 与 candidate sampling
 
 ## Track M: Multimodal
 

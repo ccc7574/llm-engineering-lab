@@ -27,8 +27,8 @@
 6. [done] 补 `Agentic` 的 reflection / agent eval
    - 当前到 state / recovery 为止，离真实团队常见的 planner-reflection-observer 仍差一层。
 
-7. [partial] `Coding` 已补 SWE-bench 风格任务，继续补 `pass@k`
-   - 当前有 completion、bugfix、testgen、agentic coding 和 SWE-bench 风格 triage，但还缺 test-time sampling / `pass@k` 视角。
+7. [done] 补 `Coding` 的 SWE-bench 风格任务和 `pass@k`
+   - 当前 `Coding` 已覆盖 completion、bugfix、judge、testgen、agentic coding、SWE-bench 风格 triage 和 test-time sampling / `pass@k`。
 
 8. 把 `Harness` 从 regression 扩到 golden artifacts 治理
    - 包括 baseline 版本化、artifact 生命周期、快照保真、失败样本回放。
@@ -48,6 +48,6 @@
 
 按以下顺序推进:
 
-1. `Coding` 的 `pass@k` 与更真实 test-time sampling
-2. 中英双语主线与角色导向路径
-3. 更完整的 artifact / baseline 治理
+1. 中英双语主线与角色导向路径
+2. 更完整的 artifact / baseline 治理
+3. 为关键任务补更多可视化资产

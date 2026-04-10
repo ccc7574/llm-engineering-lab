@@ -18,6 +18,7 @@
 - `tiny_repo_context` 已支持 query-aware `retrieved` context packing
 - 已有 `tiny_agentic_coding`，可比较 `single_pass` 与 `repair_loop`
 - 已有 `tiny_swebench_lite`，可比较 `issue_localized` 与 `triage_loop`
+- 已有 `tiny_coding_passk`，可比较 `single_sample` 与 `sample_k`
 
 建议首批任务:
 
@@ -30,5 +31,6 @@
 - `C12` test generation
 - `C13` agentic coding loop
 - `C20` SWE-bench 风格任务拆解
+- `C21` pass@k 与 candidate sampling
 
-当前可直接运行的最小命令见 [runbook.md](/Volumes/ExtaData/newcode/llm-engineering-lab/docs/runbook.md) 中的 `C00-C20` 段落。
+当前可直接运行的最小命令见 [runbook.md](/Volumes/ExtaData/newcode/llm-engineering-lab/docs/runbook.md) 中的 `C00-C21` 段落。

@@ -171,6 +171,20 @@ python3 code/stage_harness/regression_compare.py --baseline-report runs/swebench
 - failing test output 是否真的驱动了后续 triage
 - `avg_repo_reads`、`avg_test_runs`、`avg_patch_attempts` 和 `avg_triage_reads` 带来了多少额外搜索成本
 
+## `C21`: pass@k 与 Candidate Sampling
+
+```bash
+python3 eval/coding_passk_eval.py --data-path datasets/tiny_coding_passk/eval.jsonl --strategy single_sample --k 3 --report-path runs/coding_passk_single_sample.json
+python3 eval/coding_passk_eval.py --data-path datasets/tiny_coding_passk/eval.jsonl --strategy sample_k --k 3 --report-path runs/coding_passk_sample_k.json
+python3 code/stage_harness/regression_compare.py --baseline-report runs/coding_passk_single_sample.json --candidate-report runs/coding_passk_sample_k.json --output runs/coding_passk_regression_diff.json
+```
+
+这条路径主要看:
+
+- greedy 第一发失败时，候选池里是否已经出现可通过实现
+- `pass@1` 和 `pass@k` 的差距是否值得额外执行成本
+- `avg_candidates_sampled`、`avg_execution_checks`、`avg_first_pass_index` 是否仍在团队可接受范围内
+
 ## `H01-H03`: Harness Starter Path
 
 ```bash

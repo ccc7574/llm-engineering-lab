@@ -114,6 +114,8 @@ Coding 能力线的最小入口。
 - `agentic_runner.py`
 - `swebench_dataset.py`
 - `swebench_runner.py`
+- `passk_dataset.py`
+- `passk_runner.py`
 - `execution.py`
 
 用途:
@@ -128,6 +130,7 @@ Coding 能力线的最小入口。
 - 演示 test generation 如何区分 reference 和 hidden bug
 - 演示 agentic coding loop 如何把检索、patch、跑测和 repair 串成闭环
 - 演示 SWE-bench 风格任务如何从 issue + failing test output 做 triage 和修复
+- 演示多候选 test-time sampling 如何把 coding 评测从 pass@1 推进到 pass@k
 
 ### `stage_harness`
 

@@ -82,6 +82,7 @@ V2 的任务体系会逐步从旧的 `T00-T32` 编号，迁移到按能力线组
 - [C12_test_generation.md](/Volumes/ExtaData/newcode/llm-engineering-lab/tasks/C12_test_generation.md)
 - [C13_agentic_coding_loop.md](/Volumes/ExtaData/newcode/llm-engineering-lab/tasks/C13_agentic_coding_loop.md)
 - [C20_swebench_style_task_decomposition.md](/Volumes/ExtaData/newcode/llm-engineering-lab/tasks/C20_swebench_style_task_decomposition.md)
+- [C21_pass_at_k_and_candidate_sampling.md](/Volumes/ExtaData/newcode/llm-engineering-lab/tasks/C21_pass_at_k_and_candidate_sampling.md)
 
 ### `Track M: Multimodal`
 

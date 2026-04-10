@@ -40,6 +40,7 @@
 
 - execution success rate
 - pass@1 / pass@k
+- average candidates sampled / first pass index
 - syntax error rate
 - failure type distribution
 - repo context vs local-only 对照

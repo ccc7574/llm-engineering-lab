@@ -43,6 +43,12 @@ TRACK_CONFIG = {
         "quality_gate": 0.05,
         "cost_metrics": [],
     },
+    "coding_passk": {
+        "label": "Coding Pass@K",
+        "primary_metric": "pass_at_k",
+        "quality_gate": 0.05,
+        "cost_metrics": ["avg_candidates_sampled", "avg_execution_checks", "avg_first_pass_index"],
+    },
     "swebench": {
         "label": "Coding SWE-bench Lite",
         "primary_metric": "task_success_rate",

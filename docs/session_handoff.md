@@ -47,6 +47,7 @@
 - `Harness` 已能把 summary board 转成 `ship / hold / block` 的 gate report。
 - `Coding` 已补到 test generation，可用 `bug_detection_rate` 评测测试质量。
 - `Coding` 已补到 agentic coding loop，可比较 `single_pass` 与 `repair_loop`。
+- `Coding` 已补到 `pass@k` / candidate sampling，可比较 `single_sample` 与 `sample_k`。
 - `Coding` 已补到 SWE-bench 风格 triage / repair，可比较 `issue_localized` 与 `triage_loop`。
 - `Harness` 已补到 manifest-driven regression suite，可一键执行 cross-track eval、summary 和 gate。
 - `Harness` 已补到 GitHub Actions CI launcher，可在 PR / main / schedule 中执行 suite。
@@ -69,7 +70,45 @@
 - 三类公司案例层已补到 playbook 级文档，可按团队规模代入真实路线。
 - `Multimodal` 已补到 grounding / multi-page document pipeline，并接入 regression suite。
 - `Agentic` 已补到 reflection / self-check 对照实验，并接入 regression suite。
-- 当前仍未成体系的主要是: `Coding` 的 `pass@k` / sampling 视角、更复杂的 multimodal OCR / table / grounding 联合管线、更长链路的 agentic planner / observer 机制，以及更深入的 cost / latency / live routing integration。
+- 当前仍未成体系的主要是: 更复杂的 multimodal OCR / table / grounding 联合管线、更长链路的 agentic planner / observer 机制，以及更深入的 cost / latency / live routing integration。
+
+## Session Entry
+
+- Date: 2026-04-10 23:18 CST
+- Goal: 完成 backlog 第 7 项的第二阶段，把 Coding 补到 `pass@k` 与 test-time sampling，并接入统一回归链。
+- Status: 已完成 tiny pass@k 数据集、sampling runner / eval、suite 接线、测试和文档更新，正准备提交与 push。
+- Key findings:
+  - 对 coding 来说，`pass@1` 往往只反映 greedy 质量，而 `pass@k` 才更接近真实团队“多采几次再决定”的工作方式。
+  - 如果只汇报 `pass@k` 而不记录 `avg_candidates_sampled`、`avg_execution_checks`、`avg_first_pass_index`，团队会高估 sampling 收益、低估执行成本。
+  - `pass@k` 最适合作为 `Coding` 和 `Harness` 的交叉教学案例，因为它天然要求把候选生成、执行反馈和回归治理一起看。
+- Files touched:
+  - `datasets/tiny_coding_passk/eval.jsonl`
+  - `code/stage_coding/passk_dataset.py`
+  - `code/stage_coding/passk_runner.py`
+  - `eval/coding_passk_eval.py`
+  - `tests/test_coding_passk.py`
+  - `tasks/C21_pass_at_k_and_candidate_sampling.md`
+  - `tasks/README.md`
+  - `tracks/coding/README.md`
+  - `docs/roadmap_v2.md`
+  - `code/README.md`
+  - `eval/README.md`
+  - `code/stage_harness/summary_board.py`
+  - `manifests/regression_v2_suite.json`
+  - `README.md`
+  - `docs/runbook.md`
+  - `docs/ci_regression_guide_zh.md`
+  - `docs/delivery_backlog.md`
+  - `docs/session_handoff.md`
+- Validation:
+  - `python3 -m py_compile code/stage_coding/passk_dataset.py code/stage_coding/passk_runner.py eval/coding_passk_eval.py`
+  - `python3 eval/coding_passk_eval.py --data-path datasets/tiny_coding_passk/eval.jsonl --strategy single_sample --k 3 --report-path runs/coding_passk_single_sample.json`
+  - `python3 eval/coding_passk_eval.py --data-path datasets/tiny_coding_passk/eval.jsonl --strategy sample_k --k 3 --report-path runs/coding_passk_sample_k.json`
+  - `python3 -m unittest discover -s tests`
+  - `python3 code/stage_harness/suite_runner.py --manifest manifests/regression_v2_suite.json --output runs/regression_suite_report.json --md-output runs/regression_suite_report.md --strict --require-ship`
+- Next step:
+  - 提交并 push 到远程仓库
+  - 继续做中英双语主线与角色导向路径
 
 ## Session Entry
 
