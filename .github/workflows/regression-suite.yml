@@ -283,9 +283,32 @@ PY
             echo "notification dispatch skipped"
           fi
 
+      - name: Build Release Note
+        if: always()
+        run: |
+          if [ -f runs/summary_board.json ] && [ -f runs/regression_suite_report.json ] && [ -f runs/notification_digest.json ] && [ -f runs/notification_review_summary.json ] && [ -f runs/harness_trend_board.json ]; then
+            dispatch_args=()
+            if [ -f runs/notification_dispatch_result.json ]; then
+              dispatch_args+=(--dispatch-result runs/notification_dispatch_result.json)
+            fi
+            python3 code/stage_harness/release_note.py \
+              --summary-board runs/summary_board.json \
+              --suite-report runs/regression_suite_report.json \
+              --digest runs/notification_digest.json \
+              --review-summary runs/notification_review_summary.json \
+              --trend-board runs/harness_trend_board.json \
+              "${dispatch_args[@]}" \
+              --output runs/release_note.json \
+              --md-output runs/release_note.md
+          fi
+
       - name: Publish Job Summary
         if: always()
         run: |
+          if [ -f runs/release_note.md ]; then
+            cat runs/release_note.md >> "$GITHUB_STEP_SUMMARY"
+            printf '\n' >> "$GITHUB_STEP_SUMMARY"
+          fi
           if [ -f runs/harness_trend_board.md ]; then
             cat runs/harness_trend_board.md >> "$GITHUB_STEP_SUMMARY"
             printf '\n' >> "$GITHUB_STEP_SUMMARY"

@@ -11,6 +11,7 @@ import urllib.error
 
 from code.stage_harness.notification_dispatch import build_idempotency_key, execute_dispatch
 from code.stage_harness.notification_dispatch_policy import evaluate_policy
+from code.stage_harness.release_note import build_release_note, format_markdown as format_release_note_markdown
 from code.stage_harness.notification_review_summary import build_summary, format_markdown
 from code.stage_harness.trend_board import build_trend_board
 
@@ -303,6 +304,75 @@ class NotificationHarnessTests(unittest.TestCase):
         self.assertEqual(first["final_status"], "dispatched")
         self.assertEqual(second["final_status"], "skipped_duplicate")
         self.assertTrue(second["skipped_duplicate"])
+
+    def test_release_note_rolls_up_core_artifacts(self) -> None:
+        summary_board = {
+            "rows": [
+                {
+                    "label": "Agentic",
+                    "status": "passed",
+                    "primary_metric": "task_success_rate",
+                    "quality_delta": 1.0,
+                },
+                {
+                    "label": "Coding Repo Context",
+                    "status": "flat",
+                    "primary_metric": "pass_at_1",
+                    "quality_delta": 0.0,
+                },
+            ]
+        }
+        suite_report = {
+            "overall_status": "passed",
+            "steps_passed": 36,
+            "steps_total": 36,
+        }
+        digest = {"headline": "Regression suite passed", "active_scopes": ["harness"]}
+        review_summary = {
+            "headline": "Regression suite passed",
+            "ship_ready": True,
+            "policy_gate_decision": "ship",
+            "overall_gate": "ship",
+            "event_name": "schedule",
+            "failed_steps": [],
+            "reviewer_notes": ["Regression suite is ship-ready from the current suite and release gate perspective."],
+        }
+        trend_board = {
+            "current_snapshot": {
+                "suite": {
+                    "total_duration_seconds": 14.0,
+                    "slowest_steps": [{"name": "agentic_tool_use", "duration_seconds": 0.66, "status": "passed", "attempt_count": 1}],
+                }
+            },
+            "comparison": {
+                "suite_duration_delta_seconds": 1.2,
+                "track_cost_drifts": [
+                    {
+                        "label": "Agentic",
+                        "metric": "avg_steps",
+                        "baseline_delta": 0.2,
+                        "current_delta": 1.0,
+                        "drift": 0.8,
+                    }
+                ],
+            },
+        }
+        dispatch_result = {"final_status": "dry_run"}
+
+        payload = build_release_note(
+            summary_board=summary_board,
+            suite_report=suite_report,
+            digest=digest,
+            review_summary=review_summary,
+            trend_board=trend_board,
+            dispatch_result=dispatch_result,
+        )
+        markdown = format_release_note_markdown(payload)
+
+        self.assertEqual(payload["release_status"], "ready")
+        self.assertEqual(payload["dispatch_status"], "dry_run")
+        self.assertIn("Reviewer Checklist", markdown)
+        self.assertIn("Cost Drift", markdown)
 
 
 if __name__ == "__main__":

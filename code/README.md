@@ -146,6 +146,7 @@ Harness 能力线的最小入口。
 - `notification_dispatch_policy.py`
 - `notification_review_summary.py`
 - `trend_board.py`
+- `release_note.py`
 
 用途:
 
@@ -167,6 +168,7 @@ Harness 能力线的最小入口。
 - 把 release gate、route gate 和 dispatch gate 压缩成 reviewer summary
 - 生成 suite duration / cost drift 的 trend snapshot 与 board
 - 支持 dispatch retry、幂等键和结构化 dispatch result artifact
+- 生成 PR comment / release note 所需的统一 reviewer artifact
 
 ### `stage_agentic`
 

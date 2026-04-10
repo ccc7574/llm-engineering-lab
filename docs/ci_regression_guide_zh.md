@@ -51,6 +51,9 @@
 - review summary:
   - `runs/notification_review_summary.json`
   - `runs/notification_review_summary.md`
+- release note:
+  - `runs/release_note.json`
+  - `runs/release_note.md`
 - summary board:
   - `runs/summary_board.json`
   - `runs/summary_board.md`
@@ -143,7 +146,8 @@ workflow 会做这些事:
 11. 生成 route matrix / diff / lint / policy gate
 12. 基于 dispatch policy 判断是否允许真实发送
 13. 生成 review summary
-14. 把 trend board、review summary、digest、route diff、suite report 和 summary board 写进 GitHub Job Summary
+14. 生成 release note
+15. 把 release note、trend board、review summary、digest、route diff、suite report 和 summary board 写进 GitHub Job Summary
 
 如果通过 `workflow_dispatch` 显式传入:
 
@@ -173,6 +177,19 @@ workflow 会做这些事:
 - failed steps 和 failure counts
 
 如果团队成员不想逐个翻 route diff、policy gate 和 digest，这个文件应该是第一入口。
+
+### `runs/release_note.md`
+
+看给 reviewer / release owner 的统一发布说明:
+
+- release status
+- reviewer checklist
+- track statuses
+- slowest steps
+- cost drift
+- dispatch status
+
+如果团队后续要接 PR comment bot 或 release note 自动发布，这个文件就是最直接的上游输入。
 
 ### `runs/harness_trend_board.md`
 
@@ -358,6 +375,7 @@ workflow 会做这些事:
 - dispatch policy
 - review summary
 - trend board
+- release note
 
 ## 当前还没做的部分
 

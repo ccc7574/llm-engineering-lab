@@ -64,6 +64,35 @@
 
 ## Session Entry
 
+- Date: 2026-04-10 21:31 CST
+- Goal: 给 Harness 补统一 PR comment / release note 生成器，并接进 workflow。
+- Status: 已完成 release note 脚本、workflow 接线、测试、文档更新和本地验证，正准备提交与 push。
+- Key findings:
+  - 当 trend board、review summary、digest、suite report 都已经存在时，再让 reviewer 手工拼接结论没有必要，应该收敛成单一 artifact。
+  - release note 这层最好不要再自己推导一套新状态，而是只消费已有 artifact，避免多源真相。
+  - 当前设计已经足够支撑 Job Summary、后续 PR comment bot 和 release owner 审阅，不需要先引入 GitHub API 写回动作。
+- Files touched:
+  - `code/stage_harness/release_note.py`
+  - `tests/test_notification_harness.py`
+  - `.github/workflows/regression-suite.yml`
+  - `tasks/H28_pr_comment_and_release_note.md`
+  - `tasks/README.md`
+  - `tracks/harness/README.md`
+  - `code/README.md`
+  - `README.md`
+  - `docs/runbook.md`
+  - `docs/ci_regression_guide_zh.md`
+  - `docs/session_handoff.md`
+- Validation:
+  - `python3 -m unittest discover -s tests`
+  - `python3 code/stage_harness/release_note.py --summary-board runs/summary_board.json --suite-report runs/regression_suite_report.json --digest runs/notification_digest.json --review-summary runs/notification_review_summary.json --trend-board runs/harness_trend_board.json --dispatch-result runs/notification_dispatch_result.json --output runs/release_note.json --md-output runs/release_note.md`
+  - `python3 code/stage_harness/suite_runner.py --manifest manifests/regression_v2_suite.json --output runs/regression_suite_report.json --md-output runs/regression_suite_report.md --strict --require-ship`
+- Next step:
+  - 提交并 push 到远程仓库
+  - 继续把 Harness 往 provider-level backoff / ack 和真正的 PR comment 回写集成推进
+
+## Session Entry
+
 - Date: 2026-04-10 21:18 CST
 - Goal: 给 live notification dispatch 补 retry / idempotency / 结果报告，并接进 workflow。
 - Status: 已完成 dispatch 重试、幂等键、状态文件、结果 artifact、测试、文档更新和本地验证，正准备提交与 push。

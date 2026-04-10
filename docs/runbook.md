@@ -478,6 +478,41 @@ python3 code/stage_harness/trend_board.py \
 - 当前各 track 的 cost signal
 - 相对上一版 snapshot 的 duration drift 和 cost drift
 
+## `H28`: PR Comment / Release Note
+
+如果要把 suite、review summary、trend board 和 dispatch 状态压成统一发布说明，可以执行:
+
+```bash
+python3 code/stage_harness/release_note.py \
+  --summary-board runs/summary_board.json \
+  --suite-report runs/regression_suite_report.json \
+  --digest runs/notification_digest.json \
+  --review-summary runs/notification_review_summary.json \
+  --trend-board runs/harness_trend_board.json \
+  --output runs/release_note.json \
+  --md-output runs/release_note.md
+```
+
+如果本次 run 还产生了 dispatch result，也可以一并接入:
+
+```bash
+python3 code/stage_harness/release_note.py \
+  --summary-board runs/summary_board.json \
+  --suite-report runs/regression_suite_report.json \
+  --digest runs/notification_digest.json \
+  --review-summary runs/notification_review_summary.json \
+  --trend-board runs/harness_trend_board.json \
+  --dispatch-result runs/notification_dispatch_result.json \
+  --output runs/release_note.json \
+  --md-output runs/release_note.md
+```
+
+这个 artifact 适合:
+
+- GitHub Job Summary 顶部总览
+- 后续 PR comment bot
+- release owner 的统一放行说明
+
 ## 2026 V2 说明
 
 从 V2 开始，这个仓库的主入口应以:
