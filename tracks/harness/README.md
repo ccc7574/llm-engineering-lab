@@ -33,6 +33,7 @@
 - 已支持 latency / cost trend board，可沉淀当前 snapshot 并比较 step duration / cost drift
 - 已支持 dispatch retry / idempotency，可减少 webhook 抖动和重复发送风险
 - 已支持 release note 生成，可把 reviewer / release owner 需要的结论压成统一 artifact
+- 已支持 provider-aware dispatch ack / backoff，可区分 rate limit、永久拒绝和临时失败
 
 建议首批任务:
 
@@ -57,3 +58,4 @@
 - `H26` latency / cost trend board
 - `H27` dispatch retry and idempotency
 - `H28` PR comment and release note
+- `H29` provider-aware backoff and ack

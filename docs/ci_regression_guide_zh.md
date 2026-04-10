@@ -252,6 +252,15 @@ workflow 会做这些事:
 - 有没有真的发出去
 - 发了几次才成功
 - 是否被 duplicate guard 抑制
+- 是 provider rate limit、永久拒绝，还是临时网络问题
+
+现在 dispatch result 还会带上:
+
+- `provider`
+- `ack_status`
+- `failure_category`
+- `attempts[*].retryable`
+- `attempts[*].next_delay_seconds`
 
 ### `code/stage_harness/notification_route.py`
 
@@ -381,12 +390,11 @@ workflow 会做这些事:
 
 这套系统已经够支撑最小交付，但离真实一线团队的完整平台还有几步:
 
-- PR comment / release note 自动生成
 - 更细粒度的通知路由策略，比如 failure category 直接联动 route / dispatch
 - 更精细的 changed-scope 依赖图，而不只是 scope tag
 - failure taxonomy 与 route policy 的进一步联动
 - live adapter 的签名校验、重试和幂等保护
-- provider 级 ack / rate-limit / backoff 策略细化
+- 真正的 GitHub PR comment 回写
 
 ## 建议的团队使用方式
 

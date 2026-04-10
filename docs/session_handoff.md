@@ -64,6 +64,34 @@
 
 ## Session Entry
 
+- Date: 2026-04-10 21:45 CST
+- Goal: 把 dispatch 从通用重试推进到 provider-aware ack / backoff。
+- Status: 已完成 Slack / 飞书 ack 分类、rate-limit / provider_error / permanent_rejection 区分、测试、文档更新和本地验证，正准备提交与 push。
+- Key findings:
+  - dispatch 做到 retry / idempotency 之后，下一层核心不是“再多重试几次”，而是“只在真正可重试的 provider 响应上重试”。
+  - Slack 和飞书至少应该在 ack 语义上拆开，否则 `200` 但 body 表示失败的场景会被误判。
+  - 当前 dispatch result 已经足够作为值班和 release owner 的诊断输入，不再只是一个粗粒度的成功/失败标记。
+- Files touched:
+  - `code/stage_harness/notification_dispatch.py`
+  - `tests/test_notification_harness.py`
+  - `tasks/H29_provider_backoff_and_ack.md`
+  - `tasks/README.md`
+  - `tracks/harness/README.md`
+  - `code/README.md`
+  - `README.md`
+  - `docs/runbook.md`
+  - `docs/ci_regression_guide_zh.md`
+  - `docs/session_handoff.md`
+- Validation:
+  - `python3 -m unittest discover -s tests`
+  - `python3 -m py_compile code/stage_harness/notification_dispatch.py`
+  - `python3 code/stage_harness/suite_runner.py --manifest manifests/regression_v2_suite.json --output runs/regression_suite_report.json --md-output runs/regression_suite_report.md --strict --require-ship`
+- Next step:
+  - 提交并 push 到远程仓库
+  - 继续把 Harness 往真正的 PR comment 回写和 failure-category-aware routing 推进
+
+## Session Entry
+
 - Date: 2026-04-10 21:31 CST
 - Goal: 给 Harness 补统一 PR comment / release note 生成器，并接进 workflow。
 - Status: 已完成 release note 脚本、workflow 接线、测试、文档更新和本地验证，正准备提交与 push。

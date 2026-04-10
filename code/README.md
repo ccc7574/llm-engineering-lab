@@ -169,6 +169,7 @@ Harness 能力线的最小入口。
 - 生成 suite duration / cost drift 的 trend snapshot 与 board
 - 支持 dispatch retry、幂等键和结构化 dispatch result artifact
 - 生成 PR comment / release note 所需的统一 reviewer artifact
+- 支持 provider-aware ack 解析和 channel-specific backoff 分类
 
 ### `stage_agentic`
 

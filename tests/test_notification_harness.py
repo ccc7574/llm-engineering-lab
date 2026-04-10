@@ -9,7 +9,11 @@ from pathlib import Path
 from unittest import mock
 import urllib.error
 
-from code.stage_harness.notification_dispatch import build_idempotency_key, execute_dispatch
+from code.stage_harness.notification_dispatch import (
+    build_idempotency_key,
+    classify_dispatch_response,
+    execute_dispatch,
+)
 from code.stage_harness.notification_dispatch_policy import evaluate_policy
 from code.stage_harness.release_note import build_release_note, format_markdown as format_release_note_markdown
 from code.stage_harness.notification_review_summary import build_summary, format_markdown
@@ -240,7 +244,16 @@ class NotificationHarnessTests(unittest.TestCase):
         payload = {"text": "hello"}
         responses = [
             urllib.error.URLError("temporary network failure"),
-            mock.Mock(__enter__=mock.Mock(return_value=mock.Mock(getcode=mock.Mock(return_value=200), read=mock.Mock(return_value=b"ok"))), __exit__=mock.Mock(return_value=False)),
+            mock.Mock(
+                __enter__=mock.Mock(
+                    return_value=mock.Mock(
+                        getcode=mock.Mock(return_value=200),
+                        read=mock.Mock(return_value=b"ok"),
+                        headers={},
+                    )
+                ),
+                __exit__=mock.Mock(return_value=False),
+            ),
         ]
 
         with tempfile.TemporaryDirectory() as tmp_dir, mock.patch(
@@ -274,6 +287,7 @@ class NotificationHarnessTests(unittest.TestCase):
                         return_value=mock.Mock(
                             getcode=mock.Mock(return_value=200),
                             read=mock.Mock(return_value=b"ok"),
+                            headers={},
                         )
                     ),
                     __exit__=mock.Mock(return_value=False),
@@ -304,6 +318,30 @@ class NotificationHarnessTests(unittest.TestCase):
         self.assertEqual(first["final_status"], "dispatched")
         self.assertEqual(second["final_status"], "skipped_duplicate")
         self.assertTrue(second["skipped_duplicate"])
+
+    def test_provider_ack_classifies_slack_permanent_rejection(self) -> None:
+        classification = classify_dispatch_response(
+            channel="slack_webhook",
+            http_status=404,
+            response_text="channel_not_found",
+            headers={},
+        )
+
+        self.assertEqual(classification["ack_status"], "rejected")
+        self.assertEqual(classification["failure_category"], "permanent_rejection")
+        self.assertFalse(classification["retryable"])
+
+    def test_provider_ack_classifies_feishu_json_success(self) -> None:
+        classification = classify_dispatch_response(
+            channel="feishu_webhook",
+            http_status=200,
+            response_text=json.dumps({"code": 0, "msg": "success"}),
+            headers={},
+        )
+
+        self.assertEqual(classification["ack_status"], "ok")
+        self.assertEqual(classification["failure_category"], "success")
+        self.assertFalse(classification["retryable"])
 
     def test_release_note_rolls_up_core_artifacts(self) -> None:
         summary_board = {

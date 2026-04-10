@@ -311,6 +311,19 @@ python3 code/stage_harness/notification_dispatch.py \
 - 遇到临时 webhook 错误时做最小重试
 - 对同一 idempotency key 的成功发送做重复抑制
 
+当前 dispatch result 还会额外记录:
+
+- `provider`
+- `ack_status`
+- `failure_category`
+- `attempts[*].retryable`
+- `attempts[*].next_delay_seconds`
+
+并且不同 channel 会使用不同的 base backoff:
+
+- `slack_webhook`: `1.0s`
+- `feishu_webhook`: `1.5s`
+
 ## `H17`: Notification Routing Policy
 
 如果要查看当前 digest 在不同事件下会路由到哪个通道:
