@@ -276,6 +276,68 @@ python3 code/stage_harness/suite_runner.py --manifest manifests/regression_v2_su
 python3 code/stage_harness/suite_runner.py --manifest manifests/regression_v2_suite.json --output runs/regression_suite_report.json --md-output runs/regression_suite_report.md --strict --require-ship
 ```
 
+当前 suite 还会顺带生成:
+
+- `runs/artifact_catalog.json`
+- `runs/artifact_catalog.md`
+
+## `H34`: Artifact Catalog And Lifecycle
+
+```bash
+python3 code/stage_harness/artifact_catalog.py \
+  --runs-dir runs \
+  --manifest manifests/regression_v2_suite.json \
+  --policy-path manifests/artifact_lifecycle_policy.json \
+  --output runs/artifact_catalog.json \
+  --md-output runs/artifact_catalog.md
+```
+
+这条路径主要看:
+
+- `runs/` 下哪些 artifact 应该作为发布证据保留
+- 哪些 artifact 只是为了 replay 或调试
+- suite manifest 的 expected outputs 是否和实际产物对得上
+
+## `H35`: Baseline Snapshot Governance
+
+```bash
+python3 code/stage_harness/baseline_snapshot.py \
+  --catalog runs/artifact_catalog.json \
+  --label ship-ready-2026-04-10 \
+  --output-root artifacts/baselines
+```
+
+如果你只想把更严格的 ship 证据固化成 baseline，也可以只保留 `promote_on_ship`:
+
+```bash
+python3 code/stage_harness/baseline_snapshot.py \
+  --catalog runs/artifact_catalog.json \
+  --label ship-only-2026-04-10 \
+  --output-root artifacts/baselines \
+  --include-lifecycle promote_on_ship
+```
+
+这条路径主要看:
+
+- 哪些 artifact 被纳入 baseline
+- 复制后的哈希是否一致
+- snapshot 是否能作为未来 drift 对比的稳定参照
+
+## `H36`: Failure Replay Plan
+
+```bash
+python3 code/stage_harness/failure_replay.py \
+  --suite-report runs/regression_suite_report.json \
+  --output runs/failure_replay_plan.json \
+  --md-output runs/failure_replay_plan.md
+```
+
+这条路径主要看:
+
+- 当前 suite 失败了哪些 step
+- 每个 step 的 replay command 是什么
+- `stdout_excerpt` 里是否已经暴露了可直接重放的失败样本
+
 ## `H12`: CI Launcher
 
 仓库已带 GitHub Actions workflow:

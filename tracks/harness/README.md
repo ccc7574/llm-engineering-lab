@@ -38,6 +38,9 @@
 - 已支持 failure-category-aware routing，可按权限失败和 report 解析失败直接分流到不同 channel
 - 已支持 PR comment diagnostics，可在 403/404/422 时给出结构化权限诊断和处理建议
 - 已支持 live adapter 安全边界，可做 provider host 校验和 Feishu secret 签名
+- 已支持 artifact catalog，可给 `runs/` 下产物打生命周期标签
+- 已支持 baseline snapshot，可把关键 artifact 固化到版本化目录
+- 已支持 failure replay plan，可从 suite report 直接抽出失败重放命令
 
 建议首批任务:
 
@@ -67,3 +70,6 @@
 - `H31` failure-category-aware routing
 - `H32` PR comment diagnostics
 - `H33` live adapter security
+- `H34` artifact catalog and lifecycle
+- `H35` baseline snapshot governance
+- `H36` failure replay plan

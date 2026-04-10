@@ -144,6 +144,9 @@ Harness 能力线的最小入口。
 - `summary_board.py`
 - `gate_check.py`
 - `suite_runner.py`
+- `artifact_catalog.py`
+- `baseline_snapshot.py`
+- `failure_replay.py`
 - `notification_digest.py`
 - `notification_payloads.py`
 - `notification_dispatch.py`
@@ -184,6 +187,7 @@ Harness 能力线的最小入口。
 - 支持 failure-category-aware route matching、matrix/diff 维度扩展与 policy gate 守门
 - 支持 PR comment GitHub API 失败诊断和 markdown 结果摘要
 - 支持 live webhook host 校验、Feishu secret 签名和 dispatch security artifact
+- 支持 artifact catalog、baseline snapshot 和 failure replay plan，把产物治理也纳入标准链路
 
 ### `stage_agentic`
 

@@ -297,6 +297,11 @@
       "name": "gate_check",
       "command": ["python3", "code/stage_harness/gate_check.py", "--summary-board", "runs/summary_board.json", "--output", "runs/gate_report.json"],
       "expected_outputs": ["runs/gate_report.json"]
+    },
+    {
+      "name": "artifact_catalog",
+      "command": ["python3", "code/stage_harness/artifact_catalog.py", "--runs-dir", "runs", "--manifest", "manifests/regression_v2_suite.json", "--policy-path", "manifests/artifact_lifecycle_policy.json", "--output", "runs/artifact_catalog.json", "--md-output", "runs/artifact_catalog.md"],
+      "expected_outputs": ["runs/artifact_catalog.json", "runs/artifact_catalog.md"]
     }
   ]
 }

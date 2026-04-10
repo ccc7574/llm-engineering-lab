@@ -23,6 +23,12 @@
 - suite report:
   - `runs/regression_suite_report.json`
   - `runs/regression_suite_report.md`
+- artifact catalog:
+  - `runs/artifact_catalog.json`
+  - `runs/artifact_catalog.md`
+- failure replay plan:
+  - `runs/failure_replay_plan.json`
+  - `runs/failure_replay_plan.md`
 - notification digest:
   - `runs/notification_digest.json`
   - `runs/notification_digest.md`
@@ -163,6 +169,8 @@ workflow 会做这些事:
 14. 生成 release note
 15. 在 `pull_request` 下尝试回写 PR comment
 16. 把 release note、trend board、review summary、digest、route diff、suite report 和 summary board 写进 GitHub Job Summary
+
+当前 suite 还会额外生成 artifact catalog，用来回答“这次产物里哪些应该被保留成基线，哪些只适合 replay 或调试”。
 
 如果通过 `workflow_dispatch` 显式传入:
 
@@ -387,6 +395,35 @@ workflow 会做这些事:
 
 如果团队要把这套东西继续接到自动化发布流程，这个文件通常是最直接的输入。
 
+### `runs/artifact_catalog.md`
+
+看当前 `runs/` 下每个 artifact 的治理归属:
+
+- `promote_on_ship`
+- `retain_for_replay`
+- `ephemeral_debug`
+
+这个文件适合:
+
+- release owner 判断哪些文件该跟发布一起存档
+- 平台同学检查 expected outputs 是否真的落盘
+- 后续 baseline snapshot 决定“该拷哪些，不该拷哪些”
+
+### `runs/failure_replay_plan.md`
+
+看 suite 失败后最直接的重放入口:
+
+- 哪个 step 失败了
+- failure category 是什么
+- replay command 是什么
+- `stdout_excerpt` 里已经暴露了哪些失败样本
+
+这个文件适合:
+
+- 值班同学快速重放失败步骤
+- reviewer 判断这次失败是否值得阻断
+- 把“失败分析”变成标准化后续动作，而不是口头约定
+
 ## 当前 suite 覆盖了什么
 
 当前 manifest 已覆盖:
@@ -407,6 +444,7 @@ workflow 会做这些事:
 - Run Registry
 - Summary Board
 - Gate Check
+- Artifact Catalog
 
 当前 suite 执行策略还包括:
 
@@ -418,6 +456,7 @@ workflow 会做这些事:
 - Slack / 飞书 payload artifact
 - dry-run / webhook dispatch
 - route policy artifact
+- artifact catalog / lifecycle artifact
 - route override
 - 更细的 runtime failure taxonomy
 - failure-category-aware routing

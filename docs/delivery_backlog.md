@@ -30,8 +30,8 @@
 7. [done] 补 `Coding` 的 SWE-bench 风格任务和 `pass@k`
    - 当前 `Coding` 已覆盖 completion、bugfix、judge、testgen、agentic coding、SWE-bench 风格 triage 和 test-time sampling / `pass@k`。
 
-8. 把 `Harness` 从 regression 扩到 golden artifacts 治理
-   - 包括 baseline 版本化、artifact 生命周期、快照保真、失败样本回放。
+8. [partial] 把 `Harness` 从 regression 扩到 golden artifacts 治理
+   - 当前已补 artifact catalog、baseline snapshot 和 failure replay plan；后续还可继续往更细粒度失败样本回放推进。
 
 ## P2: 完整交付层
 
@@ -48,6 +48,6 @@
 
 按以下顺序推进:
 
-1. 更完整的 artifact / baseline 治理
+1. 把 artifact / baseline 治理继续推进到更细粒度 replay
 2. 为关键任务补更多可视化资产
 3. 补更多英文交付细节文档

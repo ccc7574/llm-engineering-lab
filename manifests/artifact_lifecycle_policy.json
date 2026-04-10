@@ -1,0 +1,113 @@
+{
+  "rules": [
+    {
+      "pattern": "runs/regression_suite_report.json",
+      "category": "suite_report",
+      "lifecycle": "promote_on_ship"
+    },
+    {
+      "pattern": "runs/regression_suite_report.md",
+      "category": "suite_report_markdown",
+      "lifecycle": "promote_on_ship"
+    },
+    {
+      "pattern": "runs/summary_board.json",
+      "category": "summary_board",
+      "lifecycle": "promote_on_ship"
+    },
+    {
+      "pattern": "runs/summary_board.md",
+      "category": "summary_board_markdown",
+      "lifecycle": "promote_on_ship"
+    },
+    {
+      "pattern": "runs/gate_report.json",
+      "category": "gate_report",
+      "lifecycle": "promote_on_ship"
+    },
+    {
+      "pattern": "runs/*_regression_diff.json",
+      "category": "regression_diff",
+      "lifecycle": "promote_on_ship"
+    },
+    {
+      "pattern": "runs/harness_trend_snapshot*.json",
+      "category": "trend_snapshot",
+      "lifecycle": "promote_on_ship"
+    },
+    {
+      "pattern": "runs/harness_trend_board*.json",
+      "category": "trend_board",
+      "lifecycle": "promote_on_ship"
+    },
+    {
+      "pattern": "runs/harness_trend_board*.md",
+      "category": "trend_board_markdown",
+      "lifecycle": "promote_on_ship"
+    },
+    {
+      "pattern": "runs/release_note.*",
+      "category": "release_note",
+      "lifecycle": "promote_on_ship"
+    },
+    {
+      "pattern": "runs/notification_review_summary.*",
+      "category": "review_summary",
+      "lifecycle": "promote_on_ship"
+    },
+    {
+      "pattern": "runs/artifact_catalog.json",
+      "category": "artifact_catalog",
+      "lifecycle": "promote_on_ship"
+    },
+    {
+      "pattern": "runs/artifact_catalog.md",
+      "category": "artifact_catalog_markdown",
+      "lifecycle": "promote_on_ship"
+    },
+    {
+      "pattern": "runs/*_replay_plan.json",
+      "category": "replay_plan",
+      "lifecycle": "retain_for_replay"
+    },
+    {
+      "pattern": "runs/*_replay_plan.md",
+      "category": "replay_plan_markdown",
+      "lifecycle": "retain_for_replay"
+    },
+    {
+      "pattern": "runs/*_result.json",
+      "category": "result_artifact",
+      "lifecycle": "retain_for_replay"
+    },
+    {
+      "pattern": "runs/*_result.md",
+      "category": "result_artifact_markdown",
+      "lifecycle": "retain_for_replay"
+    },
+    {
+      "pattern": "runs/*_route*.json",
+      "category": "routing_artifact",
+      "lifecycle": "retain_for_replay"
+    },
+    {
+      "pattern": "runs/*_route*.md",
+      "category": "routing_artifact_markdown",
+      "lifecycle": "retain_for_replay"
+    },
+    {
+      "pattern": "runs/*.json",
+      "category": "eval_report",
+      "lifecycle": "retain_for_replay"
+    },
+    {
+      "pattern": "runs/*.md",
+      "category": "markdown_artifact",
+      "lifecycle": "retain_for_replay"
+    }
+  ],
+  "default": {
+    "category": "auxiliary",
+    "lifecycle": "ephemeral_debug"
+  }
+}

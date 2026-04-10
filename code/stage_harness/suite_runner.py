@@ -15,7 +15,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from common.runtime import ensure_dir
 
 
-META_STEP_NAMES = {"run_registry", "summary_board", "gate_check"}
+META_STEP_NAMES = {"run_registry", "summary_board", "gate_check", "artifact_catalog"}
 
 
 @dataclass
@@ -263,6 +263,8 @@ def clean_regression_artifacts(repo_root: Path, steps: list[SuiteStep]) -> None:
         "runs/summary_board.md",
         "runs/gate_report.json",
         "runs/run_registry.json",
+        "runs/artifact_catalog.json",
+        "runs/artifact_catalog.md",
         "runs/regression_suite_report.json",
         "runs/regression_suite_report.md",
     ]

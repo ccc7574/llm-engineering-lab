@@ -70,7 +70,46 @@
 - 三类公司案例层已补到 playbook 级文档，可按团队规模代入真实路线。
 - `Multimodal` 已补到 grounding / multi-page document pipeline，并接入 regression suite。
 - `Agentic` 已补到 reflection / self-check 对照实验，并接入 regression suite。
-- 当前仍未成体系的主要是: 更复杂的 multimodal OCR / table / grounding 联合管线、更长链路的 agentic planner / observer 机制，以及更深入的 cost / latency / live routing integration。
+- 当前仍未成体系的主要是: 更复杂的 multimodal OCR / table / grounding 联合管线、更长链路的 agentic planner / observer 机制，以及更细粒度的 failure sample replay / live routing integration。
+
+## Session Entry
+
+- Date: 2026-04-10 23:40 CST
+- Goal: 推进 backlog 第 8 项，把 Harness 从 regression 扩到 artifact / baseline 治理。
+- Status: 已完成 artifact catalog、baseline snapshot、failure replay plan、suite 接线、测试和文档更新；下一步是提交与 push，并决定是否继续做更细粒度 failure sample replay。
+- Key findings:
+  - artifact 治理最容易做坏的地方不是“不会复制文件”，而是不先定义生命周期，结果 baseline 目录会被调试产物污染。
+  - baseline snapshot 不该只是目录拷贝，至少要保留来源和哈希验证，否则以后 drift 对比时没有信任基础。
+  - failure replay 更适合作为 suite 后处理命令，而不是强行塞进 suite step，因为它天然依赖最终 `regression_suite_report.json`。
+- Files touched:
+  - `code/stage_harness/artifact_catalog.py`
+  - `code/stage_harness/baseline_snapshot.py`
+  - `code/stage_harness/failure_replay.py`
+  - `manifests/artifact_lifecycle_policy.json`
+  - `manifests/regression_v2_suite.json`
+  - `code/stage_harness/suite_runner.py`
+  - `tests/test_artifact_governance.py`
+  - `tasks/H34_artifact_catalog_and_lifecycle.md`
+  - `tasks/H35_baseline_snapshot_governance.md`
+  - `tasks/H36_failure_replay_plan.md`
+  - `tasks/README.md`
+  - `tracks/harness/README.md`
+  - `code/README.md`
+  - `README.md`
+  - `docs/runbook.md`
+  - `docs/ci_regression_guide_zh.md`
+  - `docs/delivery_backlog.md`
+  - `docs/session_handoff.md`
+- Validation:
+  - `python3 -m py_compile code/stage_harness/artifact_catalog.py code/stage_harness/baseline_snapshot.py code/stage_harness/failure_replay.py`
+  - `python3 -m unittest tests/test_artifact_governance.py`
+  - `python3 code/stage_harness/artifact_catalog.py --runs-dir runs --manifest manifests/regression_v2_suite.json --policy-path manifests/artifact_lifecycle_policy.json --output runs/artifact_catalog.json --md-output runs/artifact_catalog.md`
+  - `python3 code/stage_harness/baseline_snapshot.py --catalog runs/artifact_catalog.json --label ship-ready-2026-04-10 --output-root artifacts/baselines`
+  - `python3 code/stage_harness/failure_replay.py --suite-report runs/regression_suite_report.json --output runs/failure_replay_plan.json --md-output runs/failure_replay_plan.md`
+- Next step:
+  - 跑全量 `unittest` 与 manifest suite
+  - 提交并 push 到远程仓库
+  - 继续做更细粒度 replay 或可视化资产
 
 ## Session Entry
 
