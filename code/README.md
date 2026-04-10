@@ -177,6 +177,7 @@ Harness 能力线的最小入口。
 - 支持 marker-based PR comment upsert 和结构化回写结果
 - 支持 failure-category-aware route matching、matrix/diff 维度扩展与 policy gate 守门
 - 支持 PR comment GitHub API 失败诊断和 markdown 结果摘要
+- 支持 live webhook host 校验、Feishu secret 签名和 dispatch security artifact
 
 ### `stage_agentic`
 

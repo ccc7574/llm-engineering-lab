@@ -62,10 +62,38 @@
 - `Harness` 已把 notification policy gate 接进 workflow，可在 CI 中强制执行。
 - `Harness` 已补到 failure-category-aware routing，可按 failure taxonomy 直接分流并对 diff/gate 做分类级守门。
 - `Harness` 已补到 PR comment diagnostics，可对 GitHub API 权限/上下文失败给出结构化诊断和处理建议。
+- `Harness` 已补到 live adapter security，可做 provider host 校验和 Feishu secret 签名。
 - `Pretraining` 与 `Post-Training` 的 V2 任务体系已补齐，不再只有旧 `T*` 过渡编号。
 - `Post-Training` 已补到 runnable `stage5_toy_alignment`，可跑 toy DPO / GRPO-like。
 - 三类公司案例层已补到 playbook 级文档，可按团队规模代入真实路线。
 - 当前仍未成体系的主要是: 更复杂的 multimodal OCR / table / grounding 联合管线、更长链路的 agentic memory / reflection，以及更深入的 cost / latency / live routing integration。
+
+## Session Entry
+
+- Date: 2026-04-10 23:34 CST
+- Goal: 落地 backlog 第 4 项，为 live notification adapter 增加安全边界。
+- Status: 已完成 webhook host 校验、Feishu secret 签名、dispatch security artifact、测试与文档更新，正准备提交与 push。
+- Key findings:
+  - 对 live webhook 来说，最现实的第一层安全不是复杂密钥管理，而是先拒绝错误 host 和非 `https` URL。
+  - Feishu custom bot 的 secret 不该只存在于平台配置里，dispatch result 也要显式记录“这次是否签名发送”。
+  - `security` 字段进入 result artifact 后，值班和 release owner 不必再靠猜测判断这次发送是否满足团队安全要求。
+- Files touched:
+  - `code/stage_harness/notification_dispatch.py`
+  - `tests/test_notification_harness.py`
+  - `tasks/H33_live_adapter_security.md`
+  - `tasks/README.md`
+  - `tracks/harness/README.md`
+  - `code/README.md`
+  - `README.md`
+  - `docs/runbook.md`
+  - `docs/ci_regression_guide_zh.md`
+  - `docs/session_handoff.md`
+- Validation:
+  - `python3 -m unittest discover -s tests`
+  - `python3 -m py_compile code/stage_harness/notification_dispatch.py`
+- Next step:
+  - 提交并 push 到远程仓库
+  - 继续做 backlog 第 5 项的 multimodal grounding / multi-page doc pipeline
 
 ## Session Entry
 

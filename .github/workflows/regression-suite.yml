@@ -268,6 +268,7 @@ PY
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
           FEISHU_WEBHOOK_URL: ${{ secrets.FEISHU_WEBHOOK_URL }}
+          FEISHU_WEBHOOK_SECRET: ${{ secrets.FEISHU_WEBHOOK_SECRET }}
         run: |
           if [ "${{ steps.notification_dispatch_policy.outputs.allow_dispatch }}" = "true" ] && [ "${{ steps.notification_route.outputs.channel }}" = "slack_webhook" ] && [ -f "${{ steps.notification_route.outputs.payload_path }}" ] && [ -n "$SLACK_WEBHOOK_URL" ]; then
             python3 code/stage_harness/notification_dispatch.py \

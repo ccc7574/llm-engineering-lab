@@ -273,8 +273,15 @@ workflow 会做这些事:
 - `provider`
 - `ack_status`
 - `failure_category`
+- `security`
 - `attempts[*].retryable`
 - `attempts[*].next_delay_seconds`
+
+现在 live dispatch 还会额外做:
+
+- provider host allowlist 校验
+- 非 `https` webhook 拒绝
+- 飞书 secret 签名注入
 
 ### `code/stage_harness/notification_route.py`
 

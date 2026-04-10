@@ -10,9 +10,11 @@ from unittest import mock
 import urllib.error
 
 from code.stage_harness.notification_dispatch import (
+    build_feishu_signature,
     build_idempotency_key,
     classify_dispatch_response,
     execute_dispatch,
+    validate_webhook_url,
 )
 from code.stage_harness.notification_route import select_route
 from code.stage_harness.notification_route_lint import lint_routes
@@ -322,7 +324,7 @@ class NotificationHarnessTests(unittest.TestCase):
             result = execute_dispatch(
                 channel="slack_webhook",
                 payload=payload,
-                webhook_url="https://example.invalid/webhook",
+                webhook_url="https://hooks.slack.com/services/T000/B000/demo",
                 dry_run=False,
                 max_attempts=2,
                 retry_delay_seconds=0.1,
@@ -355,7 +357,7 @@ class NotificationHarnessTests(unittest.TestCase):
                 first = execute_dispatch(
                     channel="slack_webhook",
                     payload=payload,
-                    webhook_url="https://example.invalid/webhook",
+                    webhook_url="https://hooks.slack.com/services/T000/B000/demo",
                     dry_run=False,
                     max_attempts=1,
                     retry_delay_seconds=0.0,
@@ -366,7 +368,7 @@ class NotificationHarnessTests(unittest.TestCase):
             second = execute_dispatch(
                 channel="slack_webhook",
                 payload=payload,
-                webhook_url="https://example.invalid/webhook",
+                webhook_url="https://hooks.slack.com/services/T000/B000/demo",
                 dry_run=False,
                 max_attempts=1,
                 retry_delay_seconds=0.0,
@@ -377,6 +379,68 @@ class NotificationHarnessTests(unittest.TestCase):
         self.assertEqual(first["final_status"], "dispatched")
         self.assertEqual(second["final_status"], "skipped_duplicate")
         self.assertTrue(second["skipped_duplicate"])
+
+    def test_dispatch_rejects_untrusted_webhook_host(self) -> None:
+        payload = {"text": "hello"}
+        result = execute_dispatch(
+            channel="slack_webhook",
+            payload=payload,
+            webhook_url="https://example.invalid/webhook",
+            dry_run=False,
+            max_attempts=1,
+            retry_delay_seconds=0.0,
+            idempotency_key=build_idempotency_key("slack_webhook", payload, None),
+            signing_secret=None,
+            state_path=Path("runs/dispatch_state_unused.json"),
+        )
+
+        self.assertEqual(result["final_status"], "untrusted_webhook_host")
+        self.assertEqual(result["failure_category"], "configuration_error")
+        self.assertFalse(result["dispatched"])
+
+    def test_validate_webhook_url_accepts_provider_host(self) -> None:
+        validation = validate_webhook_url("feishu_webhook", "https://open.feishu.cn/open-apis/bot/v2/hook/demo")
+        self.assertTrue(validation["ok"])
+        self.assertEqual(validation["host"], "open.feishu.cn")
+
+    def test_dispatch_signs_feishu_request_when_secret_present(self) -> None:
+        payload = {"msg_type": "text", "content": {"text": "hello"}}
+        captured_request = {}
+
+        def fake_urlopen(request: object, timeout: int = 10) -> object:
+            captured_request["request"] = request
+            return mock.Mock(
+                __enter__=mock.Mock(
+                    return_value=mock.Mock(
+                        getcode=mock.Mock(return_value=200),
+                        read=mock.Mock(return_value=json.dumps({"code": 0, "msg": "success"}).encode("utf-8")),
+                        headers={},
+                    )
+                ),
+                __exit__=mock.Mock(return_value=False),
+            )
+
+        with tempfile.TemporaryDirectory() as tmp_dir, mock.patch(
+            "code.stage_harness.notification_dispatch.urllib.request.urlopen",
+            side_effect=fake_urlopen,
+        ), mock.patch("code.stage_harness.notification_dispatch.time.time", return_value=1700000000):
+            result = execute_dispatch(
+                channel="feishu_webhook",
+                payload=payload,
+                webhook_url="https://open.feishu.cn/open-apis/bot/v2/hook/demo",
+                dry_run=False,
+                max_attempts=1,
+                retry_delay_seconds=0.0,
+                idempotency_key=build_idempotency_key("feishu_webhook", payload, None),
+                signing_secret="demo-secret",
+                state_path=Path(tmp_dir) / "dispatch_state.json",
+            )
+
+        request_body = json.loads(captured_request["request"].data.decode("utf-8"))
+        self.assertEqual(request_body["timestamp"], "1700000000")
+        self.assertEqual(request_body["sign"], build_feishu_signature("demo-secret", 1700000000))
+        self.assertTrue(result["security"]["signed_request"])
+        self.assertEqual(result["security"]["signature_mode"], "feishu_custom_bot_secret")
 
     def test_provider_ack_classifies_slack_permanent_rejection(self) -> None:
         classification = classify_dispatch_response(

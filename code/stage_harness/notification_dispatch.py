@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 import argparse
+import base64
 import hashlib
+import hmac
 import json
 import os
 import time
@@ -10,12 +12,21 @@ import urllib.error
 import urllib.request
 from datetime import datetime
 from pathlib import Path
+from urllib.parse import urlparse
 
 
 CHANNEL_CONFIG = {
-    "slack_webhook": {"provider": "slack", "base_backoff_seconds": 1.0},
-    "feishu_webhook": {"provider": "feishu", "base_backoff_seconds": 1.5},
-    "stdout": {"provider": "stdout", "base_backoff_seconds": 0.0},
+    "slack_webhook": {
+        "provider": "slack",
+        "base_backoff_seconds": 1.0,
+        "allowed_hosts": {"hooks.slack.com", "hooks.slack-gov.com"},
+    },
+    "feishu_webhook": {
+        "provider": "feishu",
+        "base_backoff_seconds": 1.5,
+        "allowed_hosts": {"open.feishu.cn", "open.larksuite.com"},
+    },
+    "stdout": {"provider": "stdout", "base_backoff_seconds": 0.0, "allowed_hosts": set()},
 }
 
 
@@ -28,6 +39,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--max-attempts", type=int, default=3)
     parser.add_argument("--retry-delay-seconds", type=float, default=1.0)
     parser.add_argument("--idempotency-key", default=None)
+    parser.add_argument("--signing-secret", default=None)
     parser.add_argument("--state-path", default="runs/notification_dispatch_state.json")
     parser.add_argument("--output", default=None)
     return parser.parse_args()
@@ -47,6 +59,103 @@ def resolve_webhook_url(channel: str, explicit: str | None) -> str | None:
     if not env_var:
         return None
     return os.environ.get(env_var)
+
+
+def resolve_signing_secret(channel: str, explicit: str | None) -> str | None:
+    if explicit:
+        return explicit
+    env_var = {
+        "feishu_webhook": "FEISHU_WEBHOOK_SECRET",
+    }.get(channel)
+    if not env_var:
+        return None
+    return os.environ.get(env_var)
+
+
+def detect_webhook_source(channel: str, explicit: str | None) -> str:
+    if explicit:
+        return "argument"
+    env_var = {
+        "slack_webhook": "SLACK_WEBHOOK_URL",
+        "feishu_webhook": "FEISHU_WEBHOOK_URL",
+    }.get(channel)
+    if env_var and os.environ.get(env_var):
+        return env_var
+    return "missing"
+
+
+def detect_signing_secret_source(channel: str, explicit: str | None) -> str:
+    if explicit:
+        return "argument"
+    env_var = {
+        "feishu_webhook": "FEISHU_WEBHOOK_SECRET",
+    }.get(channel)
+    if env_var and os.environ.get(env_var):
+        return env_var
+    return "none"
+
+
+def validate_webhook_url(channel: str, webhook_url: str | None) -> dict:
+    if not webhook_url:
+        return {
+            "ok": False,
+            "category": "missing_webhook",
+            "message": "missing webhook url",
+            "host": None,
+            "scheme": None,
+        }
+    parsed = urlparse(webhook_url)
+    host = (parsed.hostname or "").lower()
+    allowed_hosts = CHANNEL_CONFIG.get(channel, {}).get("allowed_hosts", set())
+    if parsed.scheme != "https":
+        return {
+            "ok": False,
+            "category": "invalid_webhook_scheme",
+            "message": "webhook url must use https",
+            "host": host,
+            "scheme": parsed.scheme or None,
+        }
+    if allowed_hosts and host not in allowed_hosts:
+        return {
+            "ok": False,
+            "category": "untrusted_webhook_host",
+            "message": f"webhook host {host!r} is not allowed for channel {channel}",
+            "host": host,
+            "scheme": parsed.scheme,
+        }
+    return {
+        "ok": True,
+        "category": "validated",
+        "message": "webhook url passed provider host validation",
+        "host": host,
+        "scheme": parsed.scheme,
+    }
+
+
+def build_feishu_signature(secret: str, timestamp: int) -> str:
+    string_to_sign = f"{timestamp}\n{secret}".encode("utf-8")
+    signature = hmac.new(string_to_sign, digestmod=hashlib.sha256).digest()
+    return base64.b64encode(signature).decode("utf-8")
+
+
+def prepare_dispatch_request(
+    channel: str,
+    payload: dict,
+    signing_secret: str | None,
+) -> tuple[dict, dict]:
+    request_payload = dict(payload)
+    security_context = {
+        "signed_request": False,
+        "signature_mode": "none",
+        "signing_secret_present": bool(signing_secret),
+    }
+    if channel == "feishu_webhook" and signing_secret:
+        timestamp = int(time.time())
+        request_payload["timestamp"] = str(timestamp)
+        request_payload["sign"] = build_feishu_signature(signing_secret, timestamp)
+        security_context["signed_request"] = True
+        security_context["signature_mode"] = "feishu_custom_bot_secret"
+    return request_payload, security_context
 
 
 def build_idempotency_key(channel: str, payload: dict, explicit: str | None) -> str:
@@ -225,8 +334,15 @@ def execute_dispatch(
     max_attempts: int,
     retry_delay_seconds: float,
     idempotency_key: str,
+    signing_secret: str | None = None,
+    webhook_source: str | None = None,
+    signing_secret_source: str | None = None,
     state_path: str | Path,
 ) -> dict:
+    webhook_source = webhook_source or ("provided" if webhook_url else "missing")
+    signing_secret_source = signing_secret_source or ("provided" if signing_secret else "none")
+    url_validation = validate_webhook_url(channel, webhook_url)
+    request_payload, security_context = prepare_dispatch_request(channel, payload, signing_secret)
     state = load_state(state_path)
     duplicate_record = already_dispatched(state, idempotency_key)
     if duplicate_record:
@@ -245,6 +361,12 @@ def execute_dispatch(
             "ack_status": duplicate_record.get("ack_status"),
             "failure_category": "duplicate_suppressed",
             "response_text": "duplicate dispatch suppressed by idempotency state",
+            "security": {
+                "webhook_source": webhook_source,
+                "signing_secret_source": signing_secret_source,
+                "url_validation": url_validation,
+                **security_context,
+            },
         }
 
     if channel == "stdout":
@@ -262,25 +384,37 @@ def execute_dispatch(
             "http_status": None,
             "ack_status": "local_print",
             "failure_category": "not_applicable",
-            "response_text": json.dumps(payload, indent=2, ensure_ascii=False),
+            "response_text": json.dumps(request_payload, indent=2, ensure_ascii=False),
+            "security": {
+                "webhook_source": webhook_source,
+                "signing_secret_source": signing_secret_source,
+                "url_validation": url_validation,
+                **security_context,
+            },
         }
 
-    if not webhook_url:
+    if not url_validation["ok"]:
         return {
             "generated_at": datetime.now().astimezone().isoformat(),
             "channel": channel,
             "provider": CHANNEL_CONFIG.get(channel, {}).get("provider", channel),
             "idempotency_key": idempotency_key,
-            "payload_size_bytes": len(json.dumps(payload, ensure_ascii=False).encode("utf-8")),
-            "final_status": "missing_webhook",
+            "payload_size_bytes": len(json.dumps(request_payload, ensure_ascii=False).encode("utf-8")),
+            "final_status": url_validation["category"],
             "dispatched": False,
             "dry_run": dry_run,
             "skipped_duplicate": False,
             "attempt_count": 0,
             "http_status": None,
-            "ack_status": "missing_webhook",
+            "ack_status": url_validation["category"],
             "failure_category": "configuration_error",
-            "response_text": "missing webhook url",
+            "response_text": url_validation["message"],
+            "security": {
+                "webhook_source": webhook_source,
+                "signing_secret_source": signing_secret_source,
+                "url_validation": url_validation,
+                **security_context,
+            },
         }
 
     if dry_run:
@@ -298,12 +432,18 @@ def execute_dispatch(
             "http_status": None,
             "ack_status": "dry_run",
             "failure_category": "not_applicable",
-            "response_text": json.dumps(payload, indent=2, ensure_ascii=False),
+            "response_text": json.dumps(request_payload, indent=2, ensure_ascii=False),
+            "security": {
+                "webhook_source": webhook_source,
+                "signing_secret_source": signing_secret_source,
+                "url_validation": url_validation,
+                **security_context,
+            },
         }
 
     attempts: list[dict] = []
     for attempt in range(1, max(1, max_attempts) + 1):
-        http_status, response_text, headers = send_webhook(webhook_url, payload, idempotency_key)
+        http_status, response_text, headers = send_webhook(webhook_url, request_payload, idempotency_key)
         classification = classify_dispatch_response(channel, http_status, response_text, headers)
         delay_seconds = compute_backoff_seconds(channel, attempt, classification["retry_after_seconds"])
         attempts.append(
@@ -336,6 +476,12 @@ def execute_dispatch(
                 "failure_category": classification["failure_category"],
                 "response_text": response_text,
                 "attempts": attempts,
+                "security": {
+                    "webhook_source": webhook_source,
+                    "signing_secret_source": signing_secret_source,
+                    "url_validation": url_validation,
+                    **security_context,
+                },
             }
             state.setdefault("records", {})[idempotency_key] = result
             save_state(state_path, state)
@@ -363,6 +509,12 @@ def execute_dispatch(
         "failure_category": attempts[-1]["failure_category"] if attempts else "unknown",
         "response_text": attempts[-1]["response_text"] if attempts else "dispatch failed",
         "attempts": attempts,
+        "security": {
+            "webhook_source": webhook_source,
+            "signing_secret_source": signing_secret_source,
+            "url_validation": url_validation,
+            **security_context,
+        },
     }
     return result
 
@@ -373,6 +525,7 @@ def main() -> None:
     idempotency_key = build_idempotency_key(args.channel, payload, args.idempotency_key)
 
     webhook_url = resolve_webhook_url(args.channel, args.webhook_url)
+    signing_secret = resolve_signing_secret(args.channel, args.signing_secret)
     result = execute_dispatch(
         channel=args.channel,
         payload=payload,
@@ -381,6 +534,9 @@ def main() -> None:
         max_attempts=args.max_attempts,
         retry_delay_seconds=args.retry_delay_seconds,
         idempotency_key=idempotency_key,
+        signing_secret=signing_secret,
+        webhook_source=detect_webhook_source(args.channel, args.webhook_url),
+        signing_secret_source=detect_signing_secret_source(args.channel, args.signing_secret),
         state_path=args.state_path,
     )
 
@@ -401,7 +557,7 @@ def main() -> None:
     if args.channel == "stdout":
         print(result["response_text"])
         return
-    if result["final_status"] == "missing_webhook":
+    if result["final_status"] in {"missing_webhook", "invalid_webhook_scheme", "untrusted_webhook_host"}:
         print(result["response_text"], file=sys.stderr)
         sys.exit(2)
     if result["final_status"] == "failed":

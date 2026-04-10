@@ -314,6 +314,7 @@ python3 code/stage_harness/notification_dispatch.py \
 - `--max-attempts`
 - `--retry-delay-seconds`
 - `--idempotency-key`
+- `--signing-secret`
 - `--state-path`
 - `--output`
 
@@ -337,6 +338,9 @@ python3 code/stage_harness/notification_dispatch.py \
 - `provider`
 - `ack_status`
 - `failure_category`
+- `security.webhook_source`
+- `security.url_validation`
+- `security.signed_request`
 - `attempts[*].retryable`
 - `attempts[*].next_delay_seconds`
 
@@ -344,6 +348,11 @@ python3 code/stage_harness/notification_dispatch.py \
 
 - `slack_webhook`: `1.0s`
 - `feishu_webhook`: `1.5s`
+
+当前 live adapter 还会做两层安全边界:
+
+- `https` + provider host allowlist 校验
+- `feishu_webhook` 在提供 `FEISHU_WEBHOOK_SECRET` 或 `--signing-secret` 时自动注入 `timestamp` 和 `sign`
 
 ## `H17`: Notification Routing Policy
 
