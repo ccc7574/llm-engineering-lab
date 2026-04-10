@@ -43,6 +43,12 @@ TRACK_CONFIG = {
         "quality_gate": 0.05,
         "cost_metrics": [],
     },
+    "swebench": {
+        "label": "Coding SWE-bench Lite",
+        "primary_metric": "task_success_rate",
+        "quality_gate": 0.05,
+        "cost_metrics": ["avg_repo_reads", "avg_test_runs", "avg_patch_attempts", "avg_triage_reads"],
+    },
     "multifile_bugfix": {
         "label": "Coding Multi-File Patch",
         "primary_metric": "pass_at_1",

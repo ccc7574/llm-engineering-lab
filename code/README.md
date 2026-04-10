@@ -112,6 +112,8 @@ Coding 能力线的最小入口。
 - `testgen_runner.py`
 - `agentic_dataset.py`
 - `agentic_runner.py`
+- `swebench_dataset.py`
+- `swebench_runner.py`
 - `execution.py`
 
 用途:
@@ -125,6 +127,7 @@ Coding 能力线的最小入口。
 - 演示 multi-file patch protocol 如何覆盖跨文件修复
 - 演示 test generation 如何区分 reference 和 hidden bug
 - 演示 agentic coding loop 如何把检索、patch、跑测和 repair 串成闭环
+- 演示 SWE-bench 风格任务如何从 issue + failing test output 做 triage 和修复
 
 ### `stage_harness`
 

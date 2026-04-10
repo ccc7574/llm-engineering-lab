@@ -157,6 +157,20 @@ python3 eval/agentic_coding_eval.py --data-path datasets/tiny_agentic_coding/eva
 python3 code/stage_harness/regression_compare.py --baseline-report runs/agentic_coding_single_pass.json --candidate-report runs/agentic_coding_repair_loop.json --output runs/agentic_coding_regression_diff.json
 ```
 
+## `C20`: SWE-bench 风格任务拆解
+
+```bash
+python3 eval/swebench_eval.py --data-path datasets/tiny_swebench_lite/eval.jsonl --strategy issue_localized --report-path runs/swebench_issue_localized.json
+python3 eval/swebench_eval.py --data-path datasets/tiny_swebench_lite/eval.jsonl --strategy triage_loop --report-path runs/swebench_triage_loop.json
+python3 code/stage_harness/regression_compare.py --baseline-report runs/swebench_issue_localized.json --candidate-report runs/swebench_triage_loop.json --output runs/swebench_regression_diff.json
+```
+
+这条路径主要看:
+
+- 只盯 entrypoint 文件为什么会错过共享 helper 的真正缺陷
+- failing test output 是否真的驱动了后续 triage
+- `avg_repo_reads`、`avg_test_runs`、`avg_patch_attempts` 和 `avg_triage_reads` 带来了多少额外搜索成本
+
 ## `H01-H03`: Harness Starter Path
 
 ```bash

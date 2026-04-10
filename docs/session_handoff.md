@@ -47,6 +47,7 @@
 - `Harness` 已能把 summary board 转成 `ship / hold / block` 的 gate report。
 - `Coding` 已补到 test generation，可用 `bug_detection_rate` 评测测试质量。
 - `Coding` 已补到 agentic coding loop，可比较 `single_pass` 与 `repair_loop`。
+- `Coding` 已补到 SWE-bench 风格 triage / repair，可比较 `issue_localized` 与 `triage_loop`。
 - `Harness` 已补到 manifest-driven regression suite，可一键执行 cross-track eval、summary 和 gate。
 - `Harness` 已补到 GitHub Actions CI launcher，可在 PR / main / schedule 中执行 suite。
 - 已新增中文 CI / 回归指南，便于直接交付给中文工程团队使用。
@@ -68,7 +69,45 @@
 - 三类公司案例层已补到 playbook 级文档，可按团队规模代入真实路线。
 - `Multimodal` 已补到 grounding / multi-page document pipeline，并接入 regression suite。
 - `Agentic` 已补到 reflection / self-check 对照实验，并接入 regression suite。
-- 当前仍未成体系的主要是: 更复杂的 multimodal OCR / table / grounding 联合管线、更长链路的 agentic memory / reflection，以及更深入的 cost / latency / live routing integration。
+- 当前仍未成体系的主要是: `Coding` 的 `pass@k` / sampling 视角、更复杂的 multimodal OCR / table / grounding 联合管线、更长链路的 agentic planner / observer 机制，以及更深入的 cost / latency / live routing integration。
+
+## Session Entry
+
+- Date: 2026-04-10 22:55 CST
+- Goal: 落地 backlog 第 7 项的第一阶段，把 Coding 从 agentic coding 推进到 SWE-bench 风格 issue triage / repair。
+- Status: 已完成 tiny SWE-bench lite 数据集、runner / eval、suite 接线、测试与文档更新；下一步是提交与 push，并继续做 `pass@k`。
+- Key findings:
+  - 真实 coding 任务的关键不是“能不能写出 patch”，而是能否从 issue、failing test output 和共享 helper 之间恢复正确上下文。
+  - `issue_localized` 和 `triage_loop` 必须并排保留，否则读者感受不到“只盯 entrypoint”为什么会在真实仓库里失效。
+  - SWE-bench 风格任务进入 suite 后，`Coding` 线终于不再只有函数级修补，而是开始具备仓库工单级 triage 语义。
+- Files touched:
+  - `datasets/tiny_swebench_lite/eval.jsonl`
+  - `code/stage_coding/swebench_dataset.py`
+  - `code/stage_coding/swebench_runner.py`
+  - `eval/swebench_eval.py`
+  - `tests/test_swebench_lite.py`
+  - `tasks/C20_swebench_style_task_decomposition.md`
+  - `tasks/README.md`
+  - `tracks/coding/README.md`
+  - `code/README.md`
+  - `code/stage_harness/summary_board.py`
+  - `code/stage_harness/suite_runner.py`
+  - `manifests/regression_v2_suite.json`
+  - `README.md`
+  - `docs/runbook.md`
+  - `docs/ci_regression_guide_zh.md`
+  - `docs/delivery_backlog.md`
+  - `docs/session_handoff.md`
+- Validation:
+  - `python3 -m py_compile code/stage_coding/swebench_dataset.py code/stage_coding/swebench_runner.py eval/swebench_eval.py`
+  - `python3 eval/swebench_eval.py --data-path datasets/tiny_swebench_lite/eval.jsonl --strategy issue_localized --report-path runs/swebench_issue_localized.json`
+  - `python3 eval/swebench_eval.py --data-path datasets/tiny_swebench_lite/eval.jsonl --strategy triage_loop --report-path runs/swebench_triage_loop.json`
+  - `python3 code/stage_harness/regression_compare.py --baseline-report runs/swebench_issue_localized.json --candidate-report runs/swebench_triage_loop.json --output runs/swebench_regression_diff.json`
+  - `python3 -m unittest discover -s tests`
+  - `python3 code/stage_harness/suite_runner.py --manifest manifests/regression_v2_suite.json --output runs/regression_suite_report.json --md-output runs/regression_suite_report.md --strict --require-ship`
+- Next step:
+  - 提交并 push 到远程仓库
+  - 继续做 `Coding` 的 `pass@k`
 
 ## Session Entry
 

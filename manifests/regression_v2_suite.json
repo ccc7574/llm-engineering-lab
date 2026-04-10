@@ -14,12 +14,14 @@
       "eval/multifile_bugfix_eval.py",
       "eval/testgen_eval.py",
       "eval/agentic_coding_eval.py",
+      "eval/swebench_eval.py",
       "datasets/tiny_coding/**",
       "datasets/tiny_repo_context/**",
       "datasets/tiny_bugfix/**",
       "datasets/tiny_multifile_bugfix/**",
       "datasets/tiny_testgen/**",
       "datasets/tiny_agentic_coding/**",
+      "datasets/tiny_swebench_lite/**",
       "tracks/coding/**",
       "tasks/C*.md"
     ],
@@ -203,6 +205,21 @@
       "name": "agentic_coding_regression_diff",
       "command": ["python3", "code/stage_harness/regression_compare.py", "--baseline-report", "runs/agentic_coding_single_pass.json", "--candidate-report", "runs/agentic_coding_repair_loop.json", "--output", "runs/agentic_coding_regression_diff.json"],
       "expected_outputs": ["runs/agentic_coding_regression_diff.json"]
+    },
+    {
+      "name": "swebench_issue_localized",
+      "command": ["python3", "eval/swebench_eval.py", "--data-path", "datasets/tiny_swebench_lite/eval.jsonl", "--strategy", "issue_localized", "--report-path", "runs/swebench_issue_localized.json"],
+      "expected_outputs": ["runs/swebench_issue_localized.json"]
+    },
+    {
+      "name": "swebench_triage_loop",
+      "command": ["python3", "eval/swebench_eval.py", "--data-path", "datasets/tiny_swebench_lite/eval.jsonl", "--strategy", "triage_loop", "--report-path", "runs/swebench_triage_loop.json"],
+      "expected_outputs": ["runs/swebench_triage_loop.json"]
+    },
+    {
+      "name": "swebench_regression_diff",
+      "command": ["python3", "code/stage_harness/regression_compare.py", "--baseline-report", "runs/swebench_issue_localized.json", "--candidate-report", "runs/swebench_triage_loop.json", "--output", "runs/swebench_regression_diff.json"],
+      "expected_outputs": ["runs/swebench_regression_diff.json"]
     },
     {
       "name": "multimodal_text_only",

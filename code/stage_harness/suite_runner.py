@@ -73,6 +73,7 @@ def infer_scope_tags(step_name: str) -> list[str]:
             "multifile_bugfix_",
             "testgen_",
             "agentic_coding_",
+            "swebench_",
         )
     ):
         return ["coding"]

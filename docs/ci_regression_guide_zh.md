@@ -119,6 +119,16 @@ python3 code/stage_harness/suite_runner.py \
 - 希望先拿到更快反馈
 - 希望避免旧的 regression diff artifact 污染当前结果
 
+当前 `coding` scope 已覆盖:
+
+- `coding`
+- `repo_context`
+- `bugfix`
+- `multifile_bugfix`
+- `testgen`
+- `agentic_coding`
+- `swebench`
+
 ## CI 怎么运行
 
 workflow 文件是:
