@@ -1,5 +1,7 @@
 # LLM Engineering Lab
 
+英文主入口见 [README_EN.md](/Volumes/ExtaData/newcode/llm-engineering-lab/README_EN.md)。
+
 `LLM Engineering Lab` 是一个面向非算法工程师的沉浸式模型工程实验室。
 
 它不再把自己定义成“最小内部 AI 助手演练仓库”，而是把读者放进一个更接近 2026 真实团队协作的学习环境里: 你需要像模型团队的新工程师一样，围绕预训练、后训练、coding、多模态、agentic、harness 六条能力线，连续完成一组真实工单，逐步理解、掌握并实践模型优化。
@@ -60,6 +62,8 @@
 - `Production-minded`: 能从真实约束出发做取舍、回归和复盘
 
 学习路径总览见 [learning_paths.md](/Volumes/ExtaData/newcode/llm-engineering-lab/docs/learning_paths.md)。
+
+按角色拆分的 2 / 4 / 6 周路线见 [role_learning_paths.md](/Volumes/ExtaData/newcode/llm-engineering-lab/docs/role_learning_paths.md)。
 
 ## 三类公司案例层
 
@@ -211,8 +215,13 @@ llm-engineering-lab/
 ## 相关文档
 
 - [project_charter.md](/Volumes/ExtaData/newcode/llm-engineering-lab/docs/project_charter.md)
+- [project_charter_en.md](/Volumes/ExtaData/newcode/llm-engineering-lab/docs/project_charter_en.md)
 - [roadmap_v2.md](/Volumes/ExtaData/newcode/llm-engineering-lab/docs/roadmap_v2.md)
+- [roadmap_v2_en.md](/Volumes/ExtaData/newcode/llm-engineering-lab/docs/roadmap_v2_en.md)
 - [learning_paths.md](/Volumes/ExtaData/newcode/llm-engineering-lab/docs/learning_paths.md)
+- [learning_paths_en.md](/Volumes/ExtaData/newcode/llm-engineering-lab/docs/learning_paths_en.md)
+- [role_learning_paths.md](/Volumes/ExtaData/newcode/llm-engineering-lab/docs/role_learning_paths.md)
+- [role_learning_paths_en.md](/Volumes/ExtaData/newcode/llm-engineering-lab/docs/role_learning_paths_en.md)
 - [runbook.md](/Volumes/ExtaData/newcode/llm-engineering-lab/docs/runbook.md)
 - [session_handoff.md](/Volumes/ExtaData/newcode/llm-engineering-lab/docs/session_handoff.md)
 - [tasks/README.md](/Volumes/ExtaData/newcode/llm-engineering-lab/tasks/README.md)

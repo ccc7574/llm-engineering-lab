@@ -6,6 +6,8 @@
 
 如果 `roadmap_v2.md` 解决的是“项目要建设什么”，那么这个文件解决的是“读者应该怎么学”。
 
+如果你更关心“按岗位怎么排 2 / 4 / 6 周学习计划”，直接看 [role_learning_paths.md](/Volumes/ExtaData/newcode/llm-engineering-lab/docs/role_learning_paths.md)。
+
 ## 路径 1: Core Intuition
 
 适合:

@@ -74,6 +74,33 @@
 
 ## Session Entry
 
+- Date: 2026-04-10 23:24 CST
+- Goal: 完成 backlog 第 9-10 项，把中英双语入口文档和角色导向学习路径补齐。
+- Status: 已完成英文 README / charter / roadmap / learning paths，以及中英文角色路径文档；下一步是提交与 push，并转向 artifact / baseline 治理。
+- Key findings:
+  - “补英文文档”如果只翻一个 README，没有角色路线和总纲链接，仍然不构成交付入口。
+  - 角色导向路径不能只列任务编号，必须明确 2 / 4 / 6 周目标、适用岗位和常见误区，否则工程师很难代入自己的工作。
+  - 现在仓库已经具备中文主线、英文主线和角色主线三套入口，后续更适合补治理和可视化，而不是继续扩散高层叙事。
+- Files touched:
+  - `README.md`
+  - `README_EN.md`
+  - `docs/project_charter_en.md`
+  - `docs/roadmap_v2_en.md`
+  - `docs/learning_paths.md`
+  - `docs/learning_paths_en.md`
+  - `docs/role_learning_paths.md`
+  - `docs/role_learning_paths_en.md`
+  - `docs/delivery_backlog.md`
+  - `docs/session_handoff.md`
+- Validation:
+  - 入口链接已更新到 `README.md`
+  - `docs/delivery_backlog.md` 已将第 9-10 项标记为完成
+- Next step:
+  - 提交并 push 到远程仓库
+  - 继续做 artifact / baseline 治理
+
+## Session Entry
+
 - Date: 2026-04-10 23:18 CST
 - Goal: 完成 backlog 第 7 项的第二阶段，把 Coding 补到 `pass@k` 与 test-time sampling，并接入统一回归链。
 - Status: 已完成 tiny pass@k 数据集、sampling runner / eval、suite 接线、测试和文档更新，正准备提交与 push。
