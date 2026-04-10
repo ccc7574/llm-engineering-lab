@@ -4,6 +4,10 @@
 
 真实模型团队做预训练优化时，首先改的通常不是网络结构，而是数据分布。对工程师来说，理解 mixture 和 sampling 比理解更多 trick 更重要。
 
+参考图:
+
+- [pretraining_data_mixture_map.svg](/Volumes/ExtaData/newcode/llm-engineering-lab/assets/figures/pretraining_data_mixture_map.svg)
+
 ## 任务目标
 
 - 设计最小多源数据混合方案
@@ -50,4 +54,3 @@
 
 - 对应 roadmap: `P10`
 - 下一步进入 `P11`
-

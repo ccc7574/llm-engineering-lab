@@ -74,6 +74,31 @@
 
 ## Session Entry
 
+- Date: 2026-04-11 00:46 CST
+- Goal: 继续补交付级可视化资产，优先覆盖预训练、多模态 grounding 和 agent reflection。
+- Status: 已完成 3 张新 SVG，并接回 `P10`、`M04`、`A11` 与 figures index，XML 校验已通过；下一步是提交与 push，然后继续补英文交付细节。
+- Key findings:
+  - 预训练线最缺的不是“Transformer 结构图”，而是能让工程师看懂 mixture manifest、短跑训练、回滚门槛之间关系的控制面板视角。
+  - 多模态任务里最容易被忽略的不是 OCR，而是 page routing 和 region grounding 是两个不同决策层。
+  - agent reflection 如果不把收益、成本和 guardrail 画在同一张图里，读者会误以为“多一步 self-critique”天然更高级。
+- Files touched:
+  - `assets/figures/pretraining_data_mixture_map.svg`
+  - `assets/figures/multimodal_grounding_pipeline.svg`
+  - `assets/figures/agentic_reflection_loop.svg`
+  - `assets/figures/README.md`
+  - `tasks/P10_data_mixture_and_sampling.md`
+  - `tasks/M04_grounding_and_multipage_pipeline.md`
+  - `tasks/A11_reflection_and_agent_eval.md`
+  - `docs/delivery_backlog.md`
+  - `docs/session_handoff.md`
+- Validation:
+  - `python3` XML parse 校验 `pretraining_data_mixture_map.svg`、`multimodal_grounding_pipeline.svg`、`agentic_reflection_loop.svg` 通过
+- Next step:
+  - 提交并 push
+  - 继续补英文交付细节
+
+## Session Entry
+
 - Date: 2026-04-11 00:28 CST
 - Goal: 把 Harness 的 failure replay 从 step 级提升到 task/sample 级，并补齐配套文档。
 - Status: 已完成 `failure_replay.py` 细粒度回放、测试扩展和文档更新；下一步是跑全量验证、提交与 push，然后继续转回 backlog 里的可视化与英文交付细节。

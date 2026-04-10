@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 560" width="960" height="560">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f0f1a"/>
+      <stop offset="100%" stop-color="#1a1a2e"/>
+    </linearGradient>
+    <linearGradient id="purple" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#7c3aed"/>
+      <stop offset="100%" stop-color="#a855f7"/>
+    </linearGradient>
+    <linearGradient id="orange" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#ea580c"/>
+      <stop offset="100%" stop-color="#f97316"/>
+    </linearGradient>
+    <linearGradient id="blue" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#1d4ed8"/>
+      <stop offset="100%" stop-color="#3b82f6"/>
+    </linearGradient>
+    <linearGradient id="green" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#059669"/>
+      <stop offset="100%" stop-color="#10b981"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#ca8a04"/>
+      <stop offset="100%" stop-color="#eab308"/>
+    </linearGradient>
+    <marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#a855f7"/>
+    </marker>
+  </defs>
+
+  <rect width="960" height="560" rx="14" fill="url(#bg)"/>
+  <text x="480" y="36" fill="#e2e8f0" font-family="'SF Mono', 'Fira Code', monospace" font-size="16" text-anchor="middle" font-weight="bold">Pretraining Data Mixture Map</text>
+  <text x="480" y="56" fill="#94a3b8" font-family="'SF Mono', 'Fira Code', monospace" font-size="11" text-anchor="middle">P10: source weighting, curriculum phases, and rollback-safe evaluation</text>
+
+  <rect x="36" y="84" width="888" height="438" rx="14" fill="#0f172a" stroke="#334155" stroke-width="1.2"/>
+
+  <rect x="62" y="116" width="206" height="320" rx="12" fill="#111827" stroke="#7c3aed" stroke-width="1.4"/>
+  <rect x="62" y="116" width="206" height="20" rx="12" fill="url(#purple)"/>
+  <text x="165" y="130" fill="#f5f3ff" font-family="'SF Mono', 'Fira Code', monospace" font-size="9.2" text-anchor="middle" font-weight="bold">SOURCE POOL</text>
+  <rect x="82" y="156" width="166" height="64" rx="9" fill="#0f172a" stroke="#a855f7" stroke-width="1.1"/>
+  <text x="165" y="178" fill="#e9d5ff" font-family="'SF Mono', 'Fira Code', monospace" font-size="11" text-anchor="middle">General Corpus</text>
+  <text x="165" y="198" fill="#c4b5fd" font-family="'SF Mono', 'Fira Code', monospace" font-size="9" text-anchor="middle">web + docs + broad language prior</text>
+  <rect x="82" y="236" width="166" height="64" rx="9" fill="#0f172a" stroke="#3b82f6" stroke-width="1.1"/>
+  <text x="165" y="258" fill="#bfdbfe" font-family="'SF Mono', 'Fira Code', monospace" font-size="11" text-anchor="middle">Domain Corpus</text>
+  <text x="165" y="278" fill="#93c5fd" font-family="'SF Mono', 'Fira Code', monospace" font-size="9" text-anchor="middle">tickets, KB, policy, workflow data</text>
+  <rect x="82" y="316" width="166" height="64" rx="9" fill="#0f172a" stroke="#10b981" stroke-width="1.1"/>
+  <text x="165" y="338" fill="#bbf7d0" font-family="'SF Mono', 'Fira Code', monospace" font-size="11" text-anchor="middle">Hard Example Cache</text>
+  <text x="165" y="358" fill="#86efac" font-family="'SF Mono', 'Fira Code', monospace" font-size="9" text-anchor="middle">failure samples and drift probes</text>
+
+  <rect x="306" y="116" width="330" height="320" rx="12" fill="#111827" stroke="#1d4ed8" stroke-width="1.4"/>
+  <rect x="306" y="116" width="330" height="20" rx="12" fill="url(#blue)"/>
+  <text x="471" y="130" fill="#eff6ff" font-family="'SF Mono', 'Fira Code', monospace" font-size="9.2" text-anchor="middle" font-weight="bold">MIXTURE CONTROL PLANE</text>
+  <text x="330" y="170" fill="#93c5fd" font-family="'SF Mono', 'Fira Code', monospace" font-size="11">1. Define mixture manifest</text>
+  <text x="330" y="192" fill="#e2e8f0" font-family="'SF Mono', 'Fira Code', monospace" font-size="9.2">uniform vs domain-upweighted vs phased curriculum</text>
+  <text x="330" y="228" fill="#93c5fd" font-family="'SF Mono', 'Fira Code', monospace" font-size="11">2. Choose sampling policy</text>
+  <text x="330" y="250" fill="#e2e8f0" font-family="'SF Mono', 'Fira Code', monospace" font-size="9.2">temperature, shard caps, replay ratio for failures</text>
+  <text x="330" y="286" fill="#93c5fd" font-family="'SF Mono', 'Fira Code', monospace" font-size="11">3. Run short training sprint</text>
+  <text x="330" y="308" fill="#e2e8f0" font-family="'SF Mono', 'Fira Code', monospace" font-size="9.2">tiny budget first, do not commit full compute yet</text>
+  <text x="330" y="344" fill="#93c5fd" font-family="'SF Mono', 'Fira Code', monospace" font-size="11">4. Compare domain gain vs general regression</text>
+  <text x="330" y="366" fill="#e2e8f0" font-family="'SF Mono', 'Fira Code', monospace" font-size="9.2">same prompts, same eval gates, same rollback baseline</text>
+  <rect x="330" y="388" width="282" height="30" rx="8" fill="#0f172a" stroke="#334155" stroke-width="1"/>
+  <text x="471" y="408" fill="#94a3b8" font-family="'SF Mono', 'Fira Code', monospace" font-size="9" text-anchor="middle">data changes are model changes; treat mixture files like code</text>
+
+  <rect x="674" y="116" width="224" height="320" rx="12" fill="#111827" stroke="#ea580c" stroke-width="1.4"/>
+  <rect x="674" y="116" width="224" height="20" rx="12" fill="url(#orange)"/>
+  <text x="786" y="130" fill="#fff7ed" font-family="'SF Mono', 'Fira Code', monospace" font-size="9.2" text-anchor="middle" font-weight="bold">OBSERVED EFFECTS</text>
+  <text x="696" y="170" fill="#fdba74" font-family="'SF Mono', 'Fira Code', monospace" font-size="11">Domain wins</text>
+  <text x="696" y="192" fill="#e2e8f0" font-family="'SF Mono', 'Fira Code', monospace" font-size="9.2">better jargon recall, fewer protocol misses</text>
+  <text x="696" y="228" fill="#fdba74" font-family="'SF Mono', 'Fira Code', monospace" font-size="11">Regression risks</text>
+  <text x="696" y="250" fill="#e2e8f0" font-family="'SF Mono', 'Fira Code', monospace" font-size="9.2">style collapse, forgetting, brittle shortcuts</text>
+  <text x="696" y="286" fill="#fdba74" font-family="'SF Mono', 'Fira Code', monospace" font-size="11">Metrics to watch</text>
+  <text x="696" y="308" fill="#e2e8f0" font-family="'SF Mono', 'Fira Code', monospace" font-size="9.2">loss split, domain eval, regression board, cost</text>
+  <text x="696" y="344" fill="#fdba74" font-family="'SF Mono', 'Fira Code', monospace" font-size="11">Ship rule</text>
+  <text x="696" y="366" fill="#e2e8f0" font-family="'SF Mono', 'Fira Code', monospace" font-size="9.2">promote only when domain gain beats general drift</text>
+
+  <line x1="248" y1="188" x2="306" y2="188" stroke="#a855f7" stroke-width="1.8" marker-end="url(#arrow)"/>
+  <line x1="248" y1="268" x2="306" y2="268" stroke="#3b82f6" stroke-width="1.8" marker-end="url(#arrow)"/>
+  <line x1="248" y1="348" x2="306" y2="348" stroke="#10b981" stroke-width="1.8" marker-end="url(#arrow)"/>
+  <line x1="636" y1="276" x2="674" y2="276" stroke="#f97316" stroke-width="1.8" marker-end="url(#arrow)"/>
+
+  <rect x="90" y="460" width="780" height="42" rx="10" fill="#111827" stroke="#eab308" stroke-width="1.2"/>
+  <text x="480" y="482" fill="#fde68a" font-family="'SF Mono', 'Fira Code', monospace" font-size="10.2" text-anchor="middle">Real team habit: update mixture manifest, run short sprint, compare eval deltas, then either promote, rebalance, or roll back.</text>
+  <text x="480" y="497" fill="#94a3b8" font-family="'SF Mono', 'Fira Code', monospace" font-size="8.8" text-anchor="middle">The lesson is not "more domain data is better"; the lesson is "sampling policy defines which capabilities stay alive".</text>
+</svg>

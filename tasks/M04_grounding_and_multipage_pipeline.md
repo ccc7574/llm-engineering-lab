@@ -10,6 +10,10 @@
 
 如果没有 page routing 和 region grounding，多模态系统很容易在“看见了文档”但“看错了位置”这一层出错。
 
+参考图:
+
+- [multimodal_grounding_pipeline.svg](/Volumes/ExtaData/newcode/llm-engineering-lab/assets/figures/multimodal_grounding_pipeline.svg)
+
 ## 任务目标
 
 - 增加 multi-page document routing 任务

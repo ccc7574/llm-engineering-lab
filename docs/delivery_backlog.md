@@ -42,7 +42,7 @@
    - 已为后端、平台、应用、MLE 四类工程师补出中英文 2 / 4 / 6 周建议路线。
 
 11. [partial] 为关键任务补更多可视化资产
-   - 当前已补 Harness artifact governance 图和 Coding eval ladder 图；后续继续补训练/评测架构图、路由图、案例决策图。
+   - 当前已补 Harness artifact governance、Coding eval ladder、Post-Training alignment、Company route map、Pretraining data mixture、Multimodal grounding 和 Agentic reflection 图；后续继续补更多训练/评测架构图和案例决策图。
 
 ## 当前执行顺序
 
