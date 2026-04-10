@@ -40,6 +40,11 @@ on:
           - none
           - slack_webhook
           - feishu_webhook
+      require_policy_gate:
+        description: "Fail unless notification policy gate passes"
+        required: false
+        default: true
+        type: boolean
   schedule:
     - cron: "20 18 * * *"
 
@@ -60,6 +65,7 @@ jobs:
       REQUIRE_SHIP: ${{ inputs.require_ship != false }}
       NOTIFY_CHANNEL: ${{ inputs.notify_channel || 'none' }}
       ROUTE_OVERRIDE_CHANNEL: ${{ inputs.route_override_channel || 'none' }}
+      REQUIRE_POLICY_GATE: ${{ inputs.require_policy_gate != false }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -160,6 +166,54 @@ PY
             printf 'payload_path=%s\n' "$payload" >> "$GITHUB_OUTPUT"
           fi
 
+      - name: Build Notification Route Matrix
+        if: always()
+        run: |
+          python3 code/stage_harness/notification_route_matrix.py \
+            --routes manifests/notification_routes_baseline.json \
+            --output runs/notification_route_matrix_baseline.json \
+            --md-output runs/notification_route_matrix_baseline.md
+          python3 code/stage_harness/notification_route_matrix.py \
+            --routes manifests/notification_routes.json \
+            --output runs/notification_route_matrix_candidate.json \
+            --md-output runs/notification_route_matrix_candidate.md
+
+      - name: Route Lint
+        if: always()
+        run: |
+          python3 code/stage_harness/notification_route_lint.py \
+            --routes manifests/notification_routes.json \
+            --output runs/notification_route_lint.json
+
+      - name: Route Policy Diff
+        if: always()
+        run: |
+          python3 code/stage_harness/notification_route_diff.py \
+            --baseline runs/notification_route_matrix_baseline.json \
+            --candidate runs/notification_route_matrix_candidate.json \
+            --output runs/notification_route_diff.json \
+            --md-output runs/notification_route_diff.md
+
+      - name: Route Policy Gate
+        if: always()
+        run: |
+          python3 code/stage_harness/notification_policy_gate.py \
+            --route-diff runs/notification_route_diff.json \
+            --policy manifests/notification_policy_gate.json \
+            --output runs/notification_policy_gate.json
+
+      - name: Enforce Notification Policy Gate
+        if: always() && env.REQUIRE_POLICY_GATE == 'true'
+        run: |
+          python3 - <<'PY'
+import json
+from pathlib import Path
+payload=json.loads(Path('runs/notification_policy_gate.json').read_text())
+if payload['decision'] != 'ship':
+    raise SystemExit(f"notification policy gate failed: {payload['reason']}")
+print(payload['decision'])
+PY
+
       - name: Optional Notification Dispatch
         if: always()
         env:
@@ -185,7 +239,12 @@ PY
             cat runs/notification_digest.md >> "$GITHUB_STEP_SUMMARY"
             printf '\n' >> "$GITHUB_STEP_SUMMARY"
           fi
+          if [ -f runs/notification_route_diff.md ]; then
+            printf '\n## Notification Route Diff\n\n' >> "$GITHUB_STEP_SUMMARY"
+            cat runs/notification_route_diff.md >> "$GITHUB_STEP_SUMMARY"
+          fi
           if [ -f runs/regression_suite_report.md ]; then
+            printf '\n## Regression Suite\n\n' >> "$GITHUB_STEP_SUMMARY"
             cat runs/regression_suite_report.md >> "$GITHUB_STEP_SUMMARY"
           fi
           if [ -f runs/summary_board.md ]; then

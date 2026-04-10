@@ -59,7 +59,38 @@
 - `Harness` 已补到 route matrix，可把 routing policy 导出成可审阅 artifact。
 - `Harness` 已补到 route diff，可比较 baseline 和 candidate policy 的行为变化。
 - `Harness` 已补到 route lint 和 policy gate，可自动守住通知策略边界。
-- 当前仍未成体系的主要是: 更复杂的 multimodal OCR / table / grounding 联合管线、更长链路的 agentic memory / reflection，以及更深入的 cost / latency / live policy integration。
+- `Harness` 已把 notification policy gate 接进 workflow，可在 CI 中强制执行。
+- 当前仍未成体系的主要是: 更复杂的 multimodal OCR / table / grounding 联合管线、更长链路的 agentic memory / reflection，以及更深入的 cost / latency / live routing integration。
+
+## Session Entry
+
+- Date: 2026-04-10 05:35 CST
+- Goal: 把 notification policy gate 正式接进 workflow，让通知策略守门进入 CI 默认路径。
+- Status: 已完成 workflow 内建 route matrix / diff / lint / gate 步骤，以及对应文档更新。
+- Key findings:
+  - 通知策略只有在进入 workflow 之后，才真正从“本地工具”变成“团队约束”。
+  - 现在 GitHub Job Summary 已经能同时展示 digest、route diff、suite、summary 四层视图，review 成本明显更低。
+  - 当前 Harness 的通知链已经不只是可分析，而是已经可以在 CI 中直接被执行和拦截。
+- Files touched:
+  - `.github/workflows/regression-suite.yml`
+  - `tasks/H23_workflow_policy_gate.md`
+  - `tasks/README.md`
+  - `tracks/harness/README.md`
+  - `code/README.md`
+  - `README.md`
+  - `docs/runbook.md`
+  - `docs/ci_regression_guide_zh.md`
+  - `docs/session_handoff.md`
+- Validation:
+  - workflow 逻辑已更新，使用现有本地脚本链:
+    - `notification_route_matrix.py`
+    - `notification_route_diff.py`
+    - `notification_route_lint.py`
+    - `notification_policy_gate.py`
+  - 本地对应命令已全部跑通
+- Next step:
+  - 把 Harness 往 route summary compression、scheduled-only dispatch policy、live adapter integration 推进
+  - 或把 Multimodal 往 grounding / multi-page doc pipeline 推进
 
 ## Session Entry
 

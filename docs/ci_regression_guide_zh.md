@@ -127,12 +127,14 @@ workflow 会做这些事:
 7. 生成 notification digest
 8. 生成 Slack / 飞书 payload artifact
 9. 基于 routing policy 选择 channel
-10. 把 digest、suite report 和 summary board 写进 GitHub Job Summary
+10. 生成 route matrix / diff / lint / policy gate
+11. 把 digest、route diff、suite report 和 summary board 写进 GitHub Job Summary
 
 如果通过 `workflow_dispatch` 显式传入:
 
 - `notify_channel`
 - `route_override_channel`
+- `require_policy_gate`
 
 并且仓库 secret 已配置，workflow 还可以继续做可选 dispatch。
 
@@ -221,6 +223,8 @@ workflow 会做这些事:
 - policy review 最终结论
 - 说明“这次通知规则变化是否超出团队约定边界”
 
+现在这条 gate 已经可以直接进入 workflow。
+
 ### `runs/regression_suite_report.md`
 
 看整条 suite 是否跑完，哪些 step 失败，哪些产物缺失。
@@ -291,6 +295,7 @@ workflow 会做这些事:
 - 更精细的 changed-scope 依赖图，而不只是 scope tag
 - failure taxonomy 与 route policy 的进一步联动
 - route diff / gate 接进 CI 的 policy regression 检查
+- route review artifact 写进 GitHub Job Summary
 
 ## 建议的团队使用方式
 

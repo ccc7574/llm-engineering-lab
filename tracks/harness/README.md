@@ -27,6 +27,7 @@
 - 已支持 route matrix，可把 policy 行为导出成可审阅 artifact
 - 已支持 route diff，可比较 baseline 和 candidate policy 的行为变化
 - 已支持 route lint 和 policy gate，可自动守住通知策略边界
+- 已把 notification policy gate 接进 workflow，可在 CI 中强制执行
 
 建议首批任务:
 
@@ -45,3 +46,4 @@
 - `H19` notification route matrix
 - `H21` notification policy regression
 - `H22` notification policy gate
+- `H23` workflow policy gate

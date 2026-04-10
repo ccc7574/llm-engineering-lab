@@ -159,6 +159,7 @@ Harness 能力线的最小入口。
 - 生成 route matrix 作为 policy review artifact
 - 比较 baseline vs candidate route matrix
 - 对 route manifest 做 lint，对 route diff 做 gate
+- 在 workflow 中执行 notification policy review/gate
 
 ### `stage_agentic`
 

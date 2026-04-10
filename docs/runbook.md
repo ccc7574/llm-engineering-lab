@@ -367,6 +367,10 @@ python3 code/stage_harness/notification_policy_gate.py \
   --output runs/notification_policy_gate.json
 ```
 
+如果要在 CI 里也强制执行这条 gate，workflow_dispatch 现在支持:
+
+- `require_policy_gate=true`
+
 ## 2026 V2 说明
 
 从 V2 开始，这个仓库的主入口应以:
