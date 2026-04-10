@@ -64,6 +64,35 @@
 
 ## Session Entry
 
+- Date: 2026-04-10 21:02 CST
+- Goal: 给 Harness 补 latency / cost trend board，并接进 workflow 默认产物。
+- Status: 已完成 trend board 脚本、workflow 接线、测试扩展、文档更新和本地验证，正准备提交与 push。
+- Key findings:
+  - 现有 `summary_board` 已经有 cost signal，`regression_suite_report` 已经有 step duration，差的是把它们沉淀成可持续比较的 snapshot。
+  - 对真实团队来说，trend board 不只是“看这次慢不慢”，更重要的是让 schedule run 能持续观察复杂度和耗时热点。
+  - 当前设计支持先产出 current snapshot，再在未来接入 baseline snapshot 做 drift 对比，不需要一开始就依赖外部存储系统。
+- Files touched:
+  - `code/stage_harness/trend_board.py`
+  - `tests/test_notification_harness.py`
+  - `.github/workflows/regression-suite.yml`
+  - `tasks/H26_latency_cost_trend_board.md`
+  - `tasks/README.md`
+  - `tracks/harness/README.md`
+  - `code/README.md`
+  - `README.md`
+  - `docs/runbook.md`
+  - `docs/ci_regression_guide_zh.md`
+  - `docs/session_handoff.md`
+- Validation:
+  - `python3 -m unittest discover -s tests`
+  - `python3 code/stage_harness/trend_board.py --summary-board runs/summary_board.json --suite-report runs/regression_suite_report.json --snapshot-output runs/harness_trend_snapshot.json --output runs/harness_trend_board.json --md-output runs/harness_trend_board.md`
+  - `python3 code/stage_harness/trend_board.py --summary-board /Volumes/ExtaData/newcode/llm-engineering-lab/runs/summary_board.json --suite-report /Volumes/ExtaData/newcode/llm-engineering-lab/runs/regression_suite_report.json --baseline-snapshot /Volumes/ExtaData/newcode/llm-engineering-lab/runs/harness_trend_snapshot.json --snapshot-output /Volumes/ExtaData/newcode/llm-engineering-lab/runs/harness_trend_snapshot_compare.json --output /Volumes/ExtaData/newcode/llm-engineering-lab/runs/harness_trend_board_compare.json --md-output /Volumes/ExtaData/newcode/llm-engineering-lab/runs/harness_trend_board_compare.md`
+- Next step:
+  - 提交并 push 到远程仓库
+  - 继续把 Harness 往 dispatch retry / idempotency、PR comment / release note 自动生成推进
+
+## Session Entry
+
 - Date: 2026-04-10 20:42 CST
 - Goal: 修复 notification policy gate 的可选开关语义，并给通知链补自动化测试。
 - Status: 已完成 policy gate report/enforce 语义拆分、通知链测试补齐和 handoff 状态修正。

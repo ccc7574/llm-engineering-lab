@@ -9,6 +9,7 @@ from pathlib import Path
 
 from code.stage_harness.notification_dispatch_policy import evaluate_policy
 from code.stage_harness.notification_review_summary import build_summary, format_markdown
+from code.stage_harness.trend_board import build_trend_board
 
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
@@ -177,6 +178,59 @@ class NotificationHarnessTests(unittest.TestCase):
         self.assertFalse(summary["dispatch_allowed"])
         self.assertIn("suppressed by dispatch policy", "\n".join(summary["reviewer_notes"]))
         self.assertIn("Dispatch allowed: false", markdown)
+
+    def test_trend_board_compares_snapshot_drift(self) -> None:
+        summary_board = {
+            "runs_dir": "runs",
+            "rows": [
+                {
+                    "track_key": "agentic",
+                    "label": "Agentic",
+                    "status": "passed",
+                    "primary_metric": "task_success_rate",
+                    "quality_delta": 1.0,
+                    "cost_signals": [{"metric": "avg_steps", "delta": 1.0}],
+                }
+            ],
+        }
+        suite_report = {
+            "manifest": "manifests/regression_v2_suite.json",
+            "run_mode": "full",
+            "overall_status": "passed",
+            "release_decision": "ship",
+            "steps_total": 2,
+            "steps_passed": 2,
+            "results": [
+                {"name": "step_a", "status": "passed", "duration_seconds": 1.2, "attempt_count": 1},
+                {"name": "step_b", "status": "passed", "duration_seconds": 0.4, "attempt_count": 1},
+            ],
+        }
+        baseline_snapshot = {
+            "suite": {
+                "total_duration_seconds": 1.0,
+                "slowest_steps": [{"name": "step_a", "duration_seconds": 0.7, "status": "passed", "attempt_count": 1}],
+            },
+            "tracks": [
+                {
+                    "track_key": "agentic",
+                    "label": "Agentic",
+                    "quality_delta": 0.5,
+                    "cost_signals": {"avg_steps": 0.2},
+                }
+            ],
+        }
+
+        payload = build_trend_board(
+            summary_board=summary_board,
+            suite_report=suite_report,
+            baseline_snapshot=baseline_snapshot,
+            top_steps=3,
+            top_drifts=5,
+        )
+
+        self.assertTrue(payload["baseline_snapshot_present"])
+        self.assertGreater(payload["comparison"]["suite_duration_delta_seconds"], 0)
+        self.assertEqual(payload["comparison"]["track_cost_drifts"][0]["metric"], "avg_steps")
 
 
 if __name__ == "__main__":

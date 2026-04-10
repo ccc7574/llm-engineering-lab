@@ -145,6 +145,7 @@ Harness 能力线的最小入口。
 - `notification_policy_gate.py`
 - `notification_dispatch_policy.py`
 - `notification_review_summary.py`
+- `trend_board.py`
 
 用途:
 
@@ -164,6 +165,7 @@ Harness 能力线的最小入口。
 - 在 workflow 中执行 notification policy review/gate
 - 判断当前 run 是否允许真实 dispatch
 - 把 release gate、route gate 和 dispatch gate 压缩成 reviewer summary
+- 生成 suite duration / cost drift 的 trend snapshot 与 board
 
 ### `stage_agentic`
 

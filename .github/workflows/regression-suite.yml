@@ -110,6 +110,23 @@ jobs:
             --strict \
             $SUITE_ARGS
 
+      - name: Build Harness Trend Board
+        if: always()
+        run: |
+          if [ -f runs/regression_suite_report.json ] && [ -f runs/summary_board.json ]; then
+            baseline_args=()
+            if [ -f manifests/harness_trend_baseline.json ]; then
+              baseline_args+=(--baseline-snapshot manifests/harness_trend_baseline.json)
+            fi
+            python3 code/stage_harness/trend_board.py \
+              --summary-board runs/summary_board.json \
+              --suite-report runs/regression_suite_report.json \
+              --snapshot-output runs/harness_trend_snapshot.json \
+              --output runs/harness_trend_board.json \
+              --md-output runs/harness_trend_board.md \
+              "${baseline_args[@]}"
+          fi
+
       - name: Build Notification Digest
         if: always()
         run: |
@@ -265,6 +282,10 @@ PY
       - name: Publish Job Summary
         if: always()
         run: |
+          if [ -f runs/harness_trend_board.md ]; then
+            cat runs/harness_trend_board.md >> "$GITHUB_STEP_SUMMARY"
+            printf '\n' >> "$GITHUB_STEP_SUMMARY"
+          fi
           if [ -f runs/notification_review_summary.md ]; then
             cat runs/notification_review_summary.md >> "$GITHUB_STEP_SUMMARY"
             printf '\n' >> "$GITHUB_STEP_SUMMARY"

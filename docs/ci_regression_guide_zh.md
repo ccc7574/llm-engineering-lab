@@ -26,6 +26,10 @@
 - notification digest:
   - `runs/notification_digest.json`
   - `runs/notification_digest.md`
+- trend board:
+  - `runs/harness_trend_snapshot.json`
+  - `runs/harness_trend_board.json`
+  - `runs/harness_trend_board.md`
 - external payloads:
   - `runs/notification_slack.json`
   - `runs/notification_feishu.json`
@@ -130,13 +134,14 @@ workflow 会做这些事:
 4. 要求 suite 成功
 5. 要求 gate 决策为 `ship`
 6. 上传 `json/md` 产物为 artifact
-7. 生成 notification digest
-8. 生成 Slack / 飞书 payload artifact
-9. 基于 routing policy 选择 channel
-10. 生成 route matrix / diff / lint / policy gate
-11. 基于 dispatch policy 判断是否允许真实发送
-12. 生成 review summary
-13. 把 review summary、digest、route diff、suite report 和 summary board 写进 GitHub Job Summary
+7. 生成 harness trend board
+8. 生成 notification digest
+9. 生成 Slack / 飞书 payload artifact
+10. 基于 routing policy 选择 channel
+11. 生成 route matrix / diff / lint / policy gate
+12. 基于 dispatch policy 判断是否允许真实发送
+13. 生成 review summary
+14. 把 trend board、review summary、digest、route diff、suite report 和 summary board 写进 GitHub Job Summary
 
 如果通过 `workflow_dispatch` 显式传入:
 
@@ -166,6 +171,21 @@ workflow 会做这些事:
 - failed steps 和 failure counts
 
 如果团队成员不想逐个翻 route diff、policy gate 和 digest，这个文件应该是第一入口。
+
+### `runs/harness_trend_board.md`
+
+看当前 suite 的耗时热点和 cost drift 概览:
+
+- 当前总耗时
+- 最慢 step
+- 各能力线 cost signal
+- 如果提供 baseline snapshot，还能看到 duration drift / cost drift
+
+这个文件适合:
+
+- 定时回归值班
+- release owner 观察“最近是不是越来越慢”
+- 判断复杂度提升是否已经开始侵蚀吞吐或成本
 
 ### `runs/notification_digest.md`
 
@@ -321,12 +341,12 @@ workflow 会做这些事:
 - policy gate
 - dispatch policy
 - review summary
+- trend board
 
 ## 当前还没做的部分
 
 这套系统已经够支撑最小交付，但离真实一线团队的完整平台还有几步:
 
-- latency / cost 趋势面板
 - PR comment / release note 自动生成
 - 更细粒度的通知路由策略，比如 failure category 直接联动 route / dispatch
 - 更精细的 changed-scope 依赖图，而不只是 scope tag

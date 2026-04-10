@@ -30,6 +30,7 @@
 - 已把 notification policy gate 接进 workflow，可在 CI 中强制执行
 - 已支持 dispatch policy，可区分“已路由”和“允许真实外发”
 - 已支持 review summary，可把 release / route / dispatch 三层结论压缩给 reviewer
+- 已支持 latency / cost trend board，可沉淀当前 snapshot 并比较 step duration / cost drift
 
 建议首批任务:
 
@@ -51,3 +52,4 @@
 - `H23` workflow policy gate
 - `H24` notification dispatch policy
 - `H25` notification review summary
+- `H26` latency / cost trend board

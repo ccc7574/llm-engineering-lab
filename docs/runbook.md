@@ -424,6 +424,37 @@ python3 code/stage_harness/notification_review_summary.py \
 
 压成一张适合放在 GitHub Job Summary 顶部的卡片。
 
+## `H26`: Latency / Cost Trend Board
+
+如果要把当前 suite 的耗时热点和各能力线 cost drift 沉淀成 snapshot，可以执行:
+
+```bash
+python3 code/stage_harness/trend_board.py \
+  --summary-board runs/summary_board.json \
+  --suite-report runs/regression_suite_report.json \
+  --snapshot-output runs/harness_trend_snapshot.json \
+  --output runs/harness_trend_board.json \
+  --md-output runs/harness_trend_board.md
+```
+
+如果手上已经有上一版 snapshot，也可以继续做趋势对比:
+
+```bash
+python3 code/stage_harness/trend_board.py \
+  --summary-board runs/summary_board.json \
+  --suite-report runs/regression_suite_report.json \
+  --baseline-snapshot path/to/previous_harness_trend_snapshot.json \
+  --snapshot-output runs/harness_trend_snapshot.json \
+  --output runs/harness_trend_board.json \
+  --md-output runs/harness_trend_board.md
+```
+
+这个 artifact 主要看三类信息:
+
+- 当前 suite 总耗时和最慢 step
+- 当前各 track 的 cost signal
+- 相对上一版 snapshot 的 duration drift 和 cost drift
+
 ## 2026 V2 说明
 
 从 V2 开始，这个仓库的主入口应以:
