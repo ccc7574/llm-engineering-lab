@@ -352,6 +352,21 @@ python3 code/stage_harness/notification_route_diff.py \
   --md-output runs/notification_route_diff.md
 ```
 
+## `H22`: Notification Policy Gate
+
+对通知策略做 lint 和 gate:
+
+```bash
+python3 code/stage_harness/notification_route_lint.py \
+  --routes manifests/notification_routes.json \
+  --output runs/notification_route_lint.json
+
+python3 code/stage_harness/notification_policy_gate.py \
+  --route-diff runs/notification_route_diff.json \
+  --policy manifests/notification_policy_gate.json \
+  --output runs/notification_policy_gate.json
+```
+
 ## 2026 V2 说明
 
 从 V2 开始，这个仓库的主入口应以:

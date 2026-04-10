@@ -58,7 +58,40 @@
 - `Harness` 已补到 route override 与更细 failure taxonomy，可支持临时人工覆盖和更细通知决策。
 - `Harness` 已补到 route matrix，可把 routing policy 导出成可审阅 artifact。
 - `Harness` 已补到 route diff，可比较 baseline 和 candidate policy 的行为变化。
-- 当前仍未成体系的主要是: 更复杂的 multimodal OCR / table / grounding 联合管线、更长链路的 agentic memory / reflection，以及更深入的 cost / latency / CI policy integration。
+- `Harness` 已补到 route lint 和 policy gate，可自动守住通知策略边界。
+- 当前仍未成体系的主要是: 更复杂的 multimodal OCR / table / grounding 联合管线、更长链路的 agentic memory / reflection，以及更深入的 cost / latency / live policy integration。
+
+## Session Entry
+
+- Date: 2026-04-10 05:20 CST
+- Goal: 给通知策略补 lint 和 policy gate，让 route policy 进入可自动守门状态。
+- Status: 已完成 route lint、policy gate、gate policy manifest 和中文文档更新。
+- Key findings:
+  - route diff 只是把变化显式化，真正能进入 CI 守门还需要 route lint 和 gate policy。
+  - 通过 `max_changed_rows + allowed_changes` 这种设计，当前仓库已经能表达“哪些通知策略变化是预期升级，哪些是异常扩散”。
+  - 当前 Harness 的通知链已经从“可观察”推进到“可守门”。
+- Files touched:
+  - `code/stage_harness/notification_route_lint.py`
+  - `code/stage_harness/notification_policy_gate.py`
+  - `manifests/notification_policy_gate.json`
+  - `tasks/H22_notification_policy_gate.md`
+  - `code/README.md`
+  - `tasks/README.md`
+  - `tracks/harness/README.md`
+  - `README.md`
+  - `docs/runbook.md`
+  - `docs/ci_regression_guide_zh.md`
+  - `docs/session_handoff.md`
+- Validation:
+  - `python3 code/stage_harness/notification_route_lint.py --routes manifests/notification_routes.json --output runs/notification_route_lint.json`
+  - `python3 code/stage_harness/notification_policy_gate.py --route-diff runs/notification_route_diff.json --policy manifests/notification_policy_gate.json --output runs/notification_policy_gate.json`
+  - 结果:
+    - route lint 通过
+    - policy gate 通过
+    - 当前 changed rows=3，且都在 allowlist 内
+- Next step:
+  - 把 Harness 往 workflow 内置 policy regression step、route lint summary、scheduled-only live dispatch 推进
+  - 或把 Multimodal 往 grounding / multi-page doc pipeline 推进
 
 ## Session Entry
 

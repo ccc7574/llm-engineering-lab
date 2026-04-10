@@ -1,0 +1,20 @@
+{
+  "max_changed_rows": 3,
+  "allowed_changes": [
+    {
+      "event_name": "schedule",
+      "severity": "info",
+      "gate": "ship"
+    },
+    {
+      "event_name": "schedule",
+      "severity": "info",
+      "gate": "hold"
+    },
+    {
+      "event_name": "schedule",
+      "severity": "info",
+      "gate": "block"
+    }
+  ]
+}

@@ -36,6 +36,9 @@
   - `manifests/notification_routes.json`
   - `code/stage_harness/notification_route_matrix.py`
   - `code/stage_harness/notification_route_diff.py`
+  - `code/stage_harness/notification_route_lint.py`
+  - `code/stage_harness/notification_policy_gate.py`
+  - `manifests/notification_policy_gate.json`
 - summary board:
   - `runs/summary_board.json`
   - `runs/summary_board.md`
@@ -208,6 +211,16 @@ workflow 会做这些事:
 - 判断通知范围是否发生意外扩大
 - 记录“这次通知策略升级到底改变了哪几行行为”
 
+### `runs/notification_policy_gate.json`
+
+看当前 route diff 是否仍在允许范围内。
+
+这个文件适合:
+
+- CI 守门
+- policy review 最终结论
+- 说明“这次通知规则变化是否超出团队约定边界”
+
 ### `runs/regression_suite_report.md`
 
 看整条 suite 是否跑完，哪些 step 失败，哪些产物缺失。
@@ -264,6 +277,8 @@ workflow 会做这些事:
 - 更细的 runtime failure taxonomy
 - route matrix artifact
 - route diff artifact
+- route lint
+- policy gate
 
 ## 当前还没做的部分
 
@@ -275,7 +290,7 @@ workflow 会做这些事:
 - 更细粒度的通知路由策略，比如 schedule 才发、PR 失败才发
 - 更精细的 changed-scope 依赖图，而不只是 scope tag
 - failure taxonomy 与 route policy 的进一步联动
-- route diff 接进 CI 的 policy regression 检查
+- route diff / gate 接进 CI 的 policy regression 检查
 
 ## 建议的团队使用方式
 
