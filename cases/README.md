@@ -21,3 +21,7 @@
 - [model_platform_playbook.md](/Volumes/ExtaData/newcode/llm-engineering-lab/cases/bigtech/model_platform_playbook.md)
 - [domain_copilot_playbook.md](/Volumes/ExtaData/newcode/llm-engineering-lab/cases/mid_company/domain_copilot_playbook.md)
 - [api_first_playbook.md](/Volumes/ExtaData/newcode/llm-engineering-lab/cases/small_team/api_first_playbook.md)
+
+参考图:
+
+- [company_route_map.svg](/Volumes/ExtaData/newcode/llm-engineering-lab/assets/figures/company_route_map.svg)

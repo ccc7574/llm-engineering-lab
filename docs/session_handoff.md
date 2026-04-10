@@ -74,6 +74,29 @@
 
 ## Session Entry
 
+- Date: 2026-04-11 00:08 CST
+- Goal: 继续补第二批交付级 SVG，覆盖 post-training 对齐链和公司规模路线图。
+- Status: 已完成 `post_training_alignment_loop.svg` 和 `company_route_map.svg`，并接到 `S20`、`S21` 与 `cases/README.md`；下一步是提交与 push，并继续看是否还要补训练/评测架构图。
+- Key findings:
+  - 对非算法工程师来说，alignment 最大的理解门槛不是公式，而是看不清 SFT、preference signal、policy update、eval gate 之间的顺序关系。
+  - 公司案例层如果没有一个统一路线图，读者容易把三份 playbook 当成互不相关的散文，而不是同一问题在不同约束下的分岔路径。
+  - 现在图资产已经开始覆盖 Coding、Harness、Post-Training 和 Cases 四块，高层叙事更完整了。
+- Files touched:
+  - `assets/figures/post_training_alignment_loop.svg`
+  - `assets/figures/company_route_map.svg`
+  - `assets/figures/README.md`
+  - `tasks/S20_toy_dpo.md`
+  - `tasks/S21_toy_grpo.md`
+  - `cases/README.md`
+  - `docs/session_handoff.md`
+- Validation:
+  - `python3` XML parse 校验两张 SVG 通过
+- Next step:
+  - 提交并 push 到远程仓库
+  - 继续补训练/评测架构图或案例决策图
+
+## Session Entry
+
 - Date: 2026-04-10 23:55 CST
 - Goal: 开始补关键任务的交付级 SVG 资产，优先覆盖 Harness artifact governance 和 Coding eval ladder。
 - Status: 已完成两张 SVG，并把它们接到 `H34`、`C20`、`C21` 和 figures README；下一步是提交与 push，并继续补更多训练/评测/案例图。

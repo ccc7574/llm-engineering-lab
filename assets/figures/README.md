@@ -11,6 +11,8 @@
 
 - [harness_artifact_governance.svg](/Volumes/ExtaData/newcode/llm-engineering-lab/assets/figures/harness_artifact_governance.svg)
 - [coding_eval_ladder.svg](/Volumes/ExtaData/newcode/llm-engineering-lab/assets/figures/coding_eval_ladder.svg)
+- [post_training_alignment_loop.svg](/Volumes/ExtaData/newcode/llm-engineering-lab/assets/figures/post_training_alignment_loop.svg)
+- [company_route_map.svg](/Volumes/ExtaData/newcode/llm-engineering-lab/assets/figures/company_route_map.svg)
 
 ## 预训练闭环
 

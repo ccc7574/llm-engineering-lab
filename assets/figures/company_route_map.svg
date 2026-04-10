@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 560" width="960" height="560">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f0f1a"/>
+      <stop offset="100%" stop-color="#1a1a2e"/>
+    </linearGradient>
+    <linearGradient id="purple" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#7c3aed"/>
+      <stop offset="100%" stop-color="#a855f7"/>
+    </linearGradient>
+    <linearGradient id="orange" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#ea580c"/>
+      <stop offset="100%" stop-color="#f97316"/>
+    </linearGradient>
+    <linearGradient id="green" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#059669"/>
+      <stop offset="100%" stop-color="#10b981"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="960" height="560" fill="url(#bg)" rx="14"/>
+  <text x="480" y="36" fill="#e2e8f0" font-family="'SF Mono', 'Fira Code', monospace" font-size="16" text-anchor="middle" font-weight="bold">Company Route Map</text>
+  <text x="480" y="56" fill="#94a3b8" font-family="'SF Mono', 'Fira Code', monospace" font-size="11" text-anchor="middle">bigtech vs mid_company vs small_team model engineering priorities</text>
+
+  <rect x="36" y="86" width="888" height="438" fill="#0f172a" rx="14" stroke="#334155" stroke-width="1.2"/>
+
+  <rect x="64" y="116" width="252" height="374" fill="#111827" rx="12" stroke="#7c3aed" stroke-width="1.4"/>
+  <rect x="64" y="116" width="252" height="20" fill="url(#purple)" rx="12"/>
+  <text x="190" y="130" fill="#f5f3ff" font-family="'SF Mono', 'Fira Code', monospace" font-size="9.4" text-anchor="middle" font-weight="bold">BIGTECH</text>
+  <text x="190" y="164" fill="#e9d5ff" font-family="'SF Mono', 'Fira Code', monospace" font-size="11">Pressure</text>
+  <text x="190" y="184" fill="#e2e8f0" font-family="'SF Mono', 'Fira Code', monospace" font-size="9.2">platform scale, safety, rollback discipline</text>
+  <text x="190" y="218" fill="#e9d5ff" font-family="'SF Mono', 'Fira Code', monospace" font-size="11">Priority tracks</text>
+  <text x="190" y="238" fill="#e2e8f0" font-family="'SF Mono', 'Fira Code', monospace" font-size="9.2">Harness -> Pretraining -> Post-Training -> Coding</text>
+  <text x="190" y="272" fill="#e9d5ff" font-family="'SF Mono', 'Fira Code', monospace" font-size="11">30 / 60 / 90</text>
+  <text x="190" y="292" fill="#e2e8f0" font-family="'SF Mono', 'Fira Code', monospace" font-size="9.2">suite + gate -> data mixture + verifier -> release governance</text>
+  <text x="190" y="326" fill="#e9d5ff" font-family="'SF Mono', 'Fira Code', monospace" font-size="11">Do not start with</text>
+  <text x="190" y="346" fill="#e2e8f0" font-family="'SF Mono', 'Fira Code', monospace" font-size="9.2">large tuning without stable eval and rollback</text>
+  <text x="190" y="406" fill="#94a3b8" font-family="'SF Mono', 'Fira Code', monospace" font-size="9" text-anchor="middle">best fit: model platform / release owner teams</text>
+
+  <rect x="354" y="116" width="252" height="374" fill="#111827" rx="12" stroke="#ea580c" stroke-width="1.4"/>
+  <rect x="354" y="116" width="252" height="20" fill="url(#orange)" rx="12"/>
+  <text x="480" y="130" fill="#fff7ed" font-family="'SF Mono', 'Fira Code', monospace" font-size="9.4" text-anchor="middle" font-weight="bold">MID COMPANY</text>
+  <text x="480" y="164" fill="#fdba74" font-family="'SF Mono', 'Fira Code', monospace" font-size="11">Pressure</text>
+  <text x="480" y="184" fill="#e2e8f0" font-family="'SF Mono', 'Fira Code', monospace" font-size="9.2">ROI, vertical depth, limited training budget</text>
+  <text x="480" y="218" fill="#fdba74" font-family="'SF Mono', 'Fira Code', monospace" font-size="11">Priority tracks</text>
+  <text x="480" y="238" fill="#e2e8f0" font-family="'SF Mono', 'Fira Code', monospace" font-size="9.2">Post-Training -> Coding -> Agentic -> Harness</text>
+  <text x="480" y="272" fill="#fdba74" font-family="'SF Mono', 'Fira Code', monospace" font-size="11">30 / 60 / 90</text>
+  <text x="480" y="292" fill="#e2e8f0" font-family="'SF Mono', 'Fira Code', monospace" font-size="9.2">SFT + eval -> verifier + workflow -> release summary</text>
+  <text x="480" y="326" fill="#fdba74" font-family="'SF Mono', 'Fira Code', monospace" font-size="11">Do not start with</text>
+  <text x="480" y="346" fill="#e2e8f0" font-family="'SF Mono', 'Fira Code', monospace" font-size="9.2">heavy pretraining before business signal is clear</text>
+  <text x="480" y="406" fill="#94a3b8" font-family="'SF Mono', 'Fira Code', monospace" font-size="9" text-anchor="middle">best fit: domain copilot and quality / cost balancing teams</text>
+
+  <rect x="644" y="116" width="252" height="374" fill="#111827" rx="12" stroke="#059669" stroke-width="1.4"/>
+  <rect x="644" y="116" width="252" height="20" fill="url(#green)" rx="12"/>
+  <text x="770" y="130" fill="#ecfdf5" font-family="'SF Mono', 'Fira Code', monospace" font-size="9.4" text-anchor="middle" font-weight="bold">SMALL TEAM</text>
+  <text x="770" y="164" fill="#86efac" font-family="'SF Mono', 'Fira Code', monospace" font-size="11">Pressure</text>
+  <text x="770" y="184" fill="#e2e8f0" font-family="'SF Mono', 'Fira Code', monospace" font-size="9.2">speed, low cost, tiny tolerance for process overhead</text>
+  <text x="770" y="218" fill="#86efac" font-family="'SF Mono', 'Fira Code', monospace" font-size="11">Priority tracks</text>
+  <text x="770" y="238" fill="#e2e8f0" font-family="'SF Mono', 'Fira Code', monospace" font-size="9.2">Harness -> Post-Training -> Agentic -> Coding</text>
+  <text x="770" y="272" fill="#86efac" font-family="'SF Mono', 'Fira Code', monospace" font-size="11">30 / 60 / 90</text>
+  <text x="770" y="292" fill="#e2e8f0" font-family="'SF Mono', 'Fira Code', monospace" font-size="9.2">API-first loop -> retry and dispatch -> lightweight release rhythm</text>
+  <text x="770" y="326" fill="#86efac" font-family="'SF Mono', 'Fira Code', monospace" font-size="11">Do not start with</text>
+  <text x="770" y="346" fill="#e2e8f0" font-family="'SF Mono', 'Fira Code', monospace" font-size="9.2">owning heavy training before user value is proven</text>
+  <text x="770" y="406" fill="#94a3b8" font-family="'SF Mono', 'Fira Code', monospace" font-size="9" text-anchor="middle">best fit: API-first product and founder-led teams</text>
+
+  <rect x="210" y="506" width="540" height="22" fill="#0f172a" rx="8" stroke="#334155" stroke-width="1"/>
+  <text x="480" y="521" fill="#94a3b8" font-family="'SF Mono', 'Fira Code', monospace" font-size="9" text-anchor="middle">same techniques, different constraints: the right route is defined by team shape, not by hype alone</text>
+</svg>
