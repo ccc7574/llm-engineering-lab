@@ -40,7 +40,7 @@
 - 已支持 live adapter 安全边界，可做 provider host 校验和 Feishu secret 签名
 - 已支持 artifact catalog，可给 `runs/` 下产物打生命周期标签
 - 已支持 baseline snapshot，可把关键 artifact 固化到版本化目录
-- 已支持 failure replay plan，可从 suite report 直接抽出失败重放命令
+- 已支持 failure replay plan，可从 suite report 直接抽出 step 级与 task/sample 级重放命令
 
 建议首批任务:
 

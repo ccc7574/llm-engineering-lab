@@ -70,7 +70,36 @@
 - 三类公司案例层已补到 playbook 级文档，可按团队规模代入真实路线。
 - `Multimodal` 已补到 grounding / multi-page document pipeline，并接入 regression suite。
 - `Agentic` 已补到 reflection / self-check 对照实验，并接入 regression suite。
-- 当前仍未成体系的主要是: 更复杂的 multimodal OCR / table / grounding 联合管线、更长链路的 agentic planner / observer 机制，以及更细粒度的 failure sample replay / live routing integration。
+- 当前仍未成体系的主要是: 更复杂的 multimodal OCR / table / grounding 联合管线、更长链路的 agentic planner / observer 机制，以及更完整的 live routing integration。
+
+## Session Entry
+
+- Date: 2026-04-11 00:28 CST
+- Goal: 把 Harness 的 failure replay 从 step 级提升到 task/sample 级，并补齐配套文档。
+- Status: 已完成 `failure_replay.py` 细粒度回放、测试扩展和文档更新；下一步是跑全量验证、提交与 push，然后继续转回 backlog 里的可视化与英文交付细节。
+- Key findings:
+  - 当前各 eval 报告虽然字段不同，但失败信号已经可以稳定收敛到 `passed / success / pass_at_k_hit / useful` 四类。
+  - 真正能节省值班时间的不是“知道哪个 step 失败”，而是直接拿到带独立 `--task-id` 和 replay report 路径的命令。
+  - suite 全绿并不代表没有可复盘样本，弱策略报告里的失败 task 仍然是很好的教学和调优入口。
+- Files touched:
+  - `code/stage_harness/failure_replay.py`
+  - `tests/test_artifact_governance.py`
+  - `tasks/H36_failure_replay_plan.md`
+  - `docs/runbook.md`
+  - `docs/ci_regression_guide_zh.md`
+  - `docs/delivery_backlog.md`
+  - `tracks/harness/README.md`
+  - `code/README.md`
+  - `README.md`
+  - `docs/session_handoff.md`
+- Validation:
+  - `python3 -m py_compile code/stage_harness/failure_replay.py`
+  - `python3 -m unittest discover -s tests`
+  - `python3 code/stage_harness/suite_runner.py --manifest manifests/regression_v2_suite.json --output runs/regression_suite_report.json --md-output runs/regression_suite_report.md --strict --require-ship`
+  - `python3 code/stage_harness/failure_replay.py --suite-report runs/regression_suite_report.json --output runs/failure_replay_plan.json --md-output runs/failure_replay_plan.md`
+- Next step:
+  - 提交并 push
+  - 继续转向可视化资产和英文交付细节
 
 ## Session Entry
 

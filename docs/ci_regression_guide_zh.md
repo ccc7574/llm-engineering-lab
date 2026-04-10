@@ -416,11 +416,13 @@ workflow 会做这些事:
 - 哪个 step 失败了
 - failure category 是什么
 - replay command 是什么
-- `stdout_excerpt` 里已经暴露了哪些失败样本
+- 哪些 eval report 已经被进一步拆成 task / sample 级 replay
+- task replay 是否已经写到独立 `runs/replay/*.json`
 
 这个文件适合:
 
 - 值班同学快速重放失败步骤
+- 值班同学在 suite 全绿时继续追 weak baseline 的失败样本
 - reviewer 判断这次失败是否值得阻断
 - 把“失败分析”变成标准化后续动作，而不是口头约定
 

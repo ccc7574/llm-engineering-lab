@@ -336,7 +336,18 @@ python3 code/stage_harness/failure_replay.py \
 
 - 当前 suite 失败了哪些 step
 - 每个 step 的 replay command 是什么
-- `stdout_excerpt` 里是否已经暴露了可直接重放的失败样本
+- 哪些 eval report 里已经能直接定位到失败 task / sample
+- 生成的 task replay 是否已经自动改写成独立 `runs/replay/*.json` 输出
+
+如果 suite 虽然整体通过，但你仍然想把弱策略里的失败样本逐个重放，这个 plan 也会继续列出 sample 级命令。例如:
+
+```bash
+python3 eval/coding_eval.py \
+  --data-path datasets/tiny_coding/eval.jsonl \
+  --strategy weak \
+  --task-id reverse_string \
+  --report-path runs/replay/coding_eval_weak__reverse_string.json
+```
 
 ## `H12`: CI Launcher
 

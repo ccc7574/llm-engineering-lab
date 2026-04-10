@@ -163,6 +163,113 @@ class ArtifactGovernanceTests(unittest.TestCase):
             self.assertEqual(payload["failed_step_count"], 1)
             self.assertEqual(payload["rows"][0]["failed_items"], ["reverse_string"])
 
+    def test_failure_replay_cli_emits_failed_sample_commands(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            root = Path(tmp_dir)
+            runs_dir = root / "runs"
+            runs_dir.mkdir()
+            suite_report = root / "suite.json"
+            suite_report.write_text(
+                json.dumps(
+                    {
+                        "results": [
+                            {
+                                "name": "coding_eval_weak",
+                                "status": "passed",
+                                "command": [
+                                    "python3",
+                                    "eval/coding_eval.py",
+                                    "--strategy",
+                                    "weak",
+                                    "--report-path",
+                                    "runs/coding_eval_weak.json",
+                                ],
+                                "expected_outputs": ["runs/coding_eval_weak.json"],
+                                "stdout_excerpt": "",
+                            },
+                            {
+                                "name": "testgen_weak",
+                                "status": "passed",
+                                "command": [
+                                    "python3",
+                                    "eval/testgen_eval.py",
+                                    "--strategy",
+                                    "weak",
+                                    "--report-path",
+                                    "runs/testgen_weak.json",
+                                ],
+                                "expected_outputs": ["runs/testgen_weak.json"],
+                                "stdout_excerpt": "",
+                            },
+                        ]
+                    }
+                ),
+                encoding="utf-8",
+            )
+            (runs_dir / "coding_eval_weak.json").write_text(
+                json.dumps(
+                    {
+                        "results": [
+                            {
+                                "task_id": "reverse_string",
+                                "passed": False,
+                                "failure_type": "assertion_failed",
+                                "failure_message": "assert reverse_string('abc') == 'cba'",
+                            }
+                        ]
+                    }
+                ),
+                encoding="utf-8",
+            )
+            (runs_dir / "testgen_weak.json").write_text(
+                json.dumps(
+                    {
+                        "results": [
+                            {
+                                "task_id": "normalize_env_name_testgen",
+                                "reference_passes": True,
+                                "buggy_caught": False,
+                                "useful": False,
+                            }
+                        ]
+                    }
+                ),
+                encoding="utf-8",
+            )
+            output_path = root / "failure_replay_plan.json"
+
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    str(REPO_ROOT / "code/stage_harness/failure_replay.py"),
+                    "--suite-report",
+                    str(suite_report),
+                    "--output",
+                    str(output_path),
+                ],
+                cwd=REPO_ROOT,
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+            self.assertEqual(result.returncode, 0, msg=result.stderr)
+            payload = json.loads(output_path.read_text(encoding="utf-8"))
+            self.assertEqual(payload["failed_step_count"], 0)
+            self.assertEqual(payload["failed_sample_count"], 2)
+            sample_rows = {(row["name"], row["task_id"]): row for row in payload["sample_rows"]}
+
+            coding_row = sample_rows[("coding_eval_weak", "reverse_string")]
+            self.assertEqual(coding_row["failure_signal"], "passed")
+            self.assertIn("--task-id reverse_string", coding_row["replay_command"])
+            self.assertIn(
+                "--report-path runs/replay/coding_eval_weak__reverse_string.json",
+                coding_row["replay_command"],
+            )
+
+            testgen_row = sample_rows[("testgen_weak", "normalize_env_name_testgen")]
+            self.assertEqual(testgen_row["failure_signal"], "useful")
+            self.assertIn("--task-id normalize_env_name_testgen", testgen_row["replay_command"])
+
 
 if __name__ == "__main__":
     unittest.main()
