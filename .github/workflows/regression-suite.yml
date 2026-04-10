@@ -270,11 +270,15 @@ PY
           if [ "${{ steps.notification_dispatch_policy.outputs.allow_dispatch }}" = "true" ] && [ "${{ steps.notification_route.outputs.channel }}" = "slack_webhook" ] && [ -f "${{ steps.notification_route.outputs.payload_path }}" ] && [ -n "$SLACK_WEBHOOK_URL" ]; then
             python3 code/stage_harness/notification_dispatch.py \
               --payload "${{ steps.notification_route.outputs.payload_path }}" \
-              --channel slack_webhook
+              --channel slack_webhook \
+              --state-path runs/notification_dispatch_state.json \
+              --output runs/notification_dispatch_result.json
           elif [ "${{ steps.notification_dispatch_policy.outputs.allow_dispatch }}" = "true" ] && [ "${{ steps.notification_route.outputs.channel }}" = "feishu_webhook" ] && [ -f "${{ steps.notification_route.outputs.payload_path }}" ] && [ -n "$FEISHU_WEBHOOK_URL" ]; then
             python3 code/stage_harness/notification_dispatch.py \
               --payload "${{ steps.notification_route.outputs.payload_path }}" \
-              --channel feishu_webhook
+              --channel feishu_webhook \
+              --state-path runs/notification_dispatch_state.json \
+              --output runs/notification_dispatch_result.json
           else
             echo "notification dispatch skipped"
           fi

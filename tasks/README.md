@@ -142,6 +142,7 @@ V2 的任务体系会逐步从旧的 `T00-T32` 编号，迁移到按能力线组
 - [H24_notification_dispatch_policy.md](/Volumes/ExtaData/newcode/llm-engineering-lab/tasks/H24_notification_dispatch_policy.md)
 - [H25_notification_review_summary.md](/Volumes/ExtaData/newcode/llm-engineering-lab/tasks/H25_notification_review_summary.md)
 - [H26_latency_cost_trend_board.md](/Volumes/ExtaData/newcode/llm-engineering-lab/tasks/H26_latency_cost_trend_board.md)
+- [H27_dispatch_retry_and_idempotency.md](/Volumes/ExtaData/newcode/llm-engineering-lab/tasks/H27_dispatch_retry_and_idempotency.md)
 - `H20` 周报与复盘模板
 
 ## 旧任务到新任务的映射

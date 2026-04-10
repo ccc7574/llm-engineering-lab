@@ -6,7 +6,10 @@ import sys
 import tempfile
 import unittest
 from pathlib import Path
+from unittest import mock
+import urllib.error
 
+from code.stage_harness.notification_dispatch import build_idempotency_key, execute_dispatch
 from code.stage_harness.notification_dispatch_policy import evaluate_policy
 from code.stage_harness.notification_review_summary import build_summary, format_markdown
 from code.stage_harness.trend_board import build_trend_board
@@ -231,6 +234,75 @@ class NotificationHarnessTests(unittest.TestCase):
         self.assertTrue(payload["baseline_snapshot_present"])
         self.assertGreater(payload["comparison"]["suite_duration_delta_seconds"], 0)
         self.assertEqual(payload["comparison"]["track_cost_drifts"][0]["metric"], "avg_steps")
+
+    def test_dispatch_retries_then_succeeds(self) -> None:
+        payload = {"text": "hello"}
+        responses = [
+            urllib.error.URLError("temporary network failure"),
+            mock.Mock(__enter__=mock.Mock(return_value=mock.Mock(getcode=mock.Mock(return_value=200), read=mock.Mock(return_value=b"ok"))), __exit__=mock.Mock(return_value=False)),
+        ]
+
+        with tempfile.TemporaryDirectory() as tmp_dir, mock.patch(
+            "code.stage_harness.notification_dispatch.urllib.request.urlopen",
+            side_effect=responses,
+        ), mock.patch("code.stage_harness.notification_dispatch.time.sleep") as sleep_mock:
+            result = execute_dispatch(
+                channel="slack_webhook",
+                payload=payload,
+                webhook_url="https://example.invalid/webhook",
+                dry_run=False,
+                max_attempts=2,
+                retry_delay_seconds=0.1,
+                idempotency_key=build_idempotency_key("slack_webhook", payload, None),
+                state_path=Path(tmp_dir) / "dispatch_state.json",
+            )
+
+        self.assertTrue(result["dispatched"])
+        self.assertEqual(result["attempt_count"], 2)
+        sleep_mock.assert_called_once()
+
+    def test_dispatch_skips_duplicate_after_success(self) -> None:
+        payload = {"text": "duplicate"}
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            state_path = Path(tmp_dir) / "dispatch_state.json"
+            idempotency_key = build_idempotency_key("slack_webhook", payload, None)
+            with mock.patch(
+                "code.stage_harness.notification_dispatch.urllib.request.urlopen",
+                return_value=mock.Mock(
+                    __enter__=mock.Mock(
+                        return_value=mock.Mock(
+                            getcode=mock.Mock(return_value=200),
+                            read=mock.Mock(return_value=b"ok"),
+                        )
+                    ),
+                    __exit__=mock.Mock(return_value=False),
+                ),
+            ):
+                first = execute_dispatch(
+                    channel="slack_webhook",
+                    payload=payload,
+                    webhook_url="https://example.invalid/webhook",
+                    dry_run=False,
+                    max_attempts=1,
+                    retry_delay_seconds=0.0,
+                    idempotency_key=idempotency_key,
+                    state_path=state_path,
+                )
+
+            second = execute_dispatch(
+                channel="slack_webhook",
+                payload=payload,
+                webhook_url="https://example.invalid/webhook",
+                dry_run=False,
+                max_attempts=1,
+                retry_delay_seconds=0.0,
+                idempotency_key=idempotency_key,
+                state_path=state_path,
+            )
+
+        self.assertEqual(first["final_status"], "dispatched")
+        self.assertEqual(second["final_status"], "skipped_duplicate")
+        self.assertTrue(second["skipped_duplicate"])
 
 
 if __name__ == "__main__":

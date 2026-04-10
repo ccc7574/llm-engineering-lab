@@ -64,6 +64,36 @@
 
 ## Session Entry
 
+- Date: 2026-04-10 21:18 CST
+- Goal: 给 live notification dispatch 补 retry / idempotency / 结果报告，并接进 workflow。
+- Status: 已完成 dispatch 重试、幂等键、状态文件、结果 artifact、测试、文档更新和本地验证，正准备提交与 push。
+- Key findings:
+  - dispatch 进入 live webhook 之后，单次调用模型已经不够，至少要有“临时失败可重试”和“成功后不重复发”两层保护。
+  - 对当前仓库来说，最现实的幂等方案是本地状态文件加 `X-Idempotency-Key` 头，先做到 best-effort，再往 provider-specific ack 演进。
+  - workflow 需要保留结构化 `notification_dispatch_result.json`，否则外发阶段仍然是黑盒。
+- Files touched:
+  - `code/stage_harness/notification_dispatch.py`
+  - `tests/test_notification_harness.py`
+  - `.github/workflows/regression-suite.yml`
+  - `tasks/H27_dispatch_retry_and_idempotency.md`
+  - `tasks/README.md`
+  - `tracks/harness/README.md`
+  - `code/README.md`
+  - `README.md`
+  - `docs/runbook.md`
+  - `docs/ci_regression_guide_zh.md`
+  - `docs/session_handoff.md`
+- Validation:
+  - `python3 -m unittest discover -s tests`
+  - `python3 code/stage_harness/notification_dispatch.py --payload runs/notification_slack.json --channel stdout --output runs/notification_dispatch_stdout_result.json`
+  - `python3 code/stage_harness/notification_dispatch.py --payload runs/notification_slack.json --channel slack_webhook --webhook-url https://example.invalid/webhook --dry-run --state-path runs/notification_dispatch_state.json --output runs/notification_dispatch_result.json`
+  - `python3 code/stage_harness/suite_runner.py --manifest manifests/regression_v2_suite.json --output runs/regression_suite_report.json --md-output runs/regression_suite_report.md --strict --require-ship`
+- Next step:
+  - 提交并 push 到远程仓库
+  - 继续把 Harness 往 provider-level backoff / ack、PR comment / release note 自动生成推进
+
+## Session Entry
+
 - Date: 2026-04-10 21:02 CST
 - Goal: 给 Harness 补 latency / cost trend board，并接进 workflow 默认产物。
 - Status: 已完成 trend board 脚本、workflow 接线、测试扩展、文档更新和本地验证，正准备提交与 push。

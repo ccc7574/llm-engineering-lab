@@ -166,6 +166,7 @@ Harness 能力线的最小入口。
 - 判断当前 run 是否允许真实 dispatch
 - 把 release gate、route gate 和 dispatch gate 压缩成 reviewer summary
 - 生成 suite duration / cost drift 的 trend snapshot 与 board
+- 支持 dispatch retry、幂等键和结构化 dispatch result artifact
 
 ### `stage_agentic`
 

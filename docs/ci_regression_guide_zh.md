@@ -35,6 +35,8 @@
   - `runs/notification_feishu.json`
 - dispatch:
   - `code/stage_harness/notification_dispatch.py`
+  - `runs/notification_dispatch_result.json`
+  - `runs/notification_dispatch_state.json`
 - dispatch policy:
   - `code/stage_harness/notification_dispatch_policy.py`
   - `manifests/notification_dispatch_policy.json`
@@ -219,6 +221,20 @@ workflow 会做这些事:
 - `slack_webhook`
 - `feishu_webhook`
 - `dry-run`
+- retry
+- idempotency key
+- dispatch result artifact
+
+现在 workflow 在真实 dispatch 时还会顺带生成:
+
+- `runs/notification_dispatch_result.json`
+- `runs/notification_dispatch_state.json`
+
+这样值班或 release owner 可以直接看出:
+
+- 有没有真的发出去
+- 发了几次才成功
+- 是否被 duplicate guard 抑制
 
 ### `code/stage_harness/notification_route.py`
 
@@ -352,6 +368,7 @@ workflow 会做这些事:
 - 更精细的 changed-scope 依赖图，而不只是 scope tag
 - failure taxonomy 与 route policy 的进一步联动
 - live adapter 的签名校验、重试和幂等保护
+- provider 级 ack / rate-limit / backoff 策略细化
 
 ## 建议的团队使用方式
 

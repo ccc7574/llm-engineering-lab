@@ -288,6 +288,29 @@ python3 code/stage_harness/notification_dispatch.py \
 - `SLACK_WEBHOOK_URL`
 - `FEISHU_WEBHOOK_URL`
 
+当前 dispatch 还支持:
+
+- `--max-attempts`
+- `--retry-delay-seconds`
+- `--idempotency-key`
+- `--state-path`
+- `--output`
+
+例如:
+
+```bash
+python3 code/stage_harness/notification_dispatch.py \
+  --payload runs/notification_slack.json \
+  --channel slack_webhook \
+  --state-path runs/notification_dispatch_state.json \
+  --output runs/notification_dispatch_result.json
+```
+
+这会带来两层保护:
+
+- 遇到临时 webhook 错误时做最小重试
+- 对同一 idempotency key 的成功发送做重复抑制
+
 ## `H17`: Notification Routing Policy
 
 如果要查看当前 digest 在不同事件下会路由到哪个通道:
