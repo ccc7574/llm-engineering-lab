@@ -55,7 +55,39 @@
 - `Harness` 已补到 Slack / 飞书 payload artifact，可作为后续 webhook / bot 外发输入。
 - `Harness` 已补到 notification dispatch，可在配置 webhook 时直接发送。
 - `Harness` 已补到 notification routing policy，可按 event / severity 选择 channel。
-- 当前仍未成体系的主要是: 更复杂的 multimodal OCR / table / grounding 联合管线、更长链路的 agentic memory / reflection，以及更深入的 cost / latency / live routing integration。
+- `Harness` 已补到 route override 与更细 failure taxonomy，可支持临时人工覆盖和更细通知决策。
+- 当前仍未成体系的主要是: 更复杂的 multimodal OCR / table / grounding 联合管线、更长链路的 agentic memory / reflection，以及更深入的 cost / latency / policy integration。
+
+## Session Entry
+
+- Date: 2026-04-10 04:35 CST
+- Goal: 给通知链补 route override 和更细 failure taxonomy，让 routing 既自动又可人工覆盖。
+- Status: 已完成 override channel、workflow 输入、failure taxonomy 细化和中文文档更新。
+- Key findings:
+  - 真正的一线通知链不能只有自动路由，还必须支持临时 override，否则值班场景会很僵硬。
+  - failure taxonomy 细化后，后续完全可以继续往“不同 failure category 走不同 route”推进。
+  - 当前仓库已经具备 `failure taxonomy -> digest -> route policy -> override -> dispatch` 的完整决策链。
+- Files touched:
+  - `code/stage_harness/suite_runner.py`
+  - `code/stage_harness/notification_route.py`
+  - `.github/workflows/regression-suite.yml`
+  - `tasks/H18_route_override_and_taxonomy.md`
+  - `code/README.md`
+  - `tasks/README.md`
+  - `tracks/harness/README.md`
+  - `README.md`
+  - `docs/runbook.md`
+  - `docs/ci_regression_guide_zh.md`
+  - `docs/session_handoff.md`
+- Validation:
+  - `python3 code/stage_harness/notification_route.py --digest runs/notification_digest.json --routes manifests/notification_routes.json --event-name workflow_dispatch --default-channel none --override-channel feishu_webhook --output runs/notification_route.json`
+  - 结果:
+    - override 生效
+    - route artifact 已包含 `override_applied=true`
+    - failure taxonomy 新增 `missing_input`、`permission_error`、`report_parse_error`、`logic_error`
+- Next step:
+  - 把 Harness 往 route-by-failure-category、schedule-only dispatch、policy test matrix 推进
+  - 或把 Multimodal 往 grounding / multi-page doc pipeline 推进
 
 ## Session Entry
 

@@ -31,6 +31,15 @@ on:
           - none
           - slack_webhook
           - feishu_webhook
+      route_override_channel:
+        description: "Optional explicit route override"
+        required: false
+        default: "none"
+        type: choice
+        options:
+          - none
+          - slack_webhook
+          - feishu_webhook
   schedule:
     - cron: "20 18 * * *"
 
@@ -50,6 +59,7 @@ jobs:
       CHANGED_ONLY: ${{ inputs.changed_only == true }}
       REQUIRE_SHIP: ${{ inputs.require_ship != false }}
       NOTIFY_CHANNEL: ${{ inputs.notify_channel || 'none' }}
+      ROUTE_OVERRIDE_CHANNEL: ${{ inputs.route_override_channel || 'none' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -121,11 +131,16 @@ jobs:
         id: notification_route
         run: |
           if [ -f runs/notification_digest.json ]; then
+            override_args=()
+            if [ "$ROUTE_OVERRIDE_CHANNEL" != "none" ]; then
+              override_args+=(--override-channel "$ROUTE_OVERRIDE_CHANNEL")
+            fi
             python3 code/stage_harness/notification_route.py \
               --digest runs/notification_digest.json \
               --routes manifests/notification_routes.json \
               --event-name "${{ github.event_name }}" \
               --default-channel "$NOTIFY_CHANNEL" \
+              "${override_args[@]}" \
               --output runs/notification_route.json
             channel=$(python3 - <<'PY'
 import json

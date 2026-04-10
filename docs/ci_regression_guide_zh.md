@@ -124,7 +124,12 @@ workflow 会做这些事:
 9. 基于 routing policy 选择 channel
 10. 把 digest、suite report 和 summary board 写进 GitHub Job Summary
 
-如果通过 `workflow_dispatch` 显式传入 `notify_channel`，并且仓库 secret 已配置，workflow 还可以继续做可选 dispatch。
+如果通过 `workflow_dispatch` 显式传入:
+
+- `notify_channel`
+- `route_override_channel`
+
+并且仓库 secret 已配置，workflow 还可以继续做可选 dispatch。
 
 对 `pull_request`，workflow 现在会默认尝试按 changed files 跑 scoped suite。
 
@@ -179,6 +184,8 @@ workflow 会做这些事:
 
 从 [notification_routes.json](/Volumes/ExtaData/newcode/llm-engineering-lab/manifests/notification_routes.json) 里选出最合适的 channel。
 
+如果有临时需求，也可以通过 `override-channel` 强行覆盖 policy。
+
 ### `runs/regression_suite_report.md`
 
 看整条 suite 是否跑完，哪些 step 失败，哪些产物缺失。
@@ -231,6 +238,8 @@ workflow 会做这些事:
 - Slack / 飞书 payload artifact
 - dry-run / webhook dispatch
 - route policy artifact
+- route override
+- 更细的 runtime failure taxonomy
 
 ## 当前还没做的部分
 
@@ -241,6 +250,7 @@ workflow 会做这些事:
 - PR comment / release note 自动生成
 - 更细粒度的通知路由策略，比如 schedule 才发、PR 失败才发
 - 更精细的 changed-scope 依赖图，而不只是 scope tag
+- failure taxonomy 与 route policy 的进一步联动
 
 ## 建议的团队使用方式
 

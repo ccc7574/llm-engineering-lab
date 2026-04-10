@@ -307,6 +307,18 @@ python3 code/stage_harness/notification_route.py \
 - `reason`
 - `payload_path`
 
+如果要临时覆盖 route policy:
+
+```bash
+python3 code/stage_harness/notification_route.py \
+  --digest runs/notification_digest.json \
+  --routes manifests/notification_routes.json \
+  --event-name workflow_dispatch \
+  --default-channel none \
+  --override-channel feishu_webhook \
+  --output runs/notification_route.json
+```
+
 ## 2026 V2 说明
 
 从 V2 开始，这个仓库的主入口应以:

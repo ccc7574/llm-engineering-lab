@@ -151,6 +151,7 @@ Harness 能力线的最小入口。
 - 从 digest 生成 Slack / 飞书 payload
 - 用 dry-run 或 webhook 发送通知 payload
 - 基于 event / severity / gate 选择通知 channel
+- 支持 route override 和更细粒度 failure taxonomy
 
 ### `stage_agentic`
 

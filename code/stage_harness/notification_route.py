@@ -11,6 +11,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--routes", default="manifests/notification_routes.json")
     parser.add_argument("--event-name", default="workflow_dispatch")
     parser.add_argument("--default-channel", default="none")
+    parser.add_argument("--override-channel", default=None)
     parser.add_argument("--output", default=None)
     return parser.parse_args()
 
@@ -36,7 +37,21 @@ def matches(rule: dict, digest: dict, event_name: str) -> bool:
     return True
 
 
-def select_route(digest: dict, routes: dict, event_name: str, default_channel: str) -> dict:
+def select_route(
+    digest: dict,
+    routes: dict,
+    event_name: str,
+    default_channel: str,
+    override_channel: str | None,
+) -> dict:
+    if override_channel:
+        return {
+            "event_name": event_name,
+            "channel": override_channel,
+            "reason": "channel selected by explicit override",
+            "payload_path": routes.get("channel_payloads", {}).get(override_channel),
+            "override_applied": True,
+        }
     for rule in routes.get("rules", []):
         if matches(rule, digest, event_name):
             channel = rule["channel"]
@@ -45,12 +60,14 @@ def select_route(digest: dict, routes: dict, event_name: str, default_channel: s
                 "channel": channel,
                 "reason": rule.get("reason", "matched notification routing rule"),
                 "payload_path": routes.get("channel_payloads", {}).get(channel),
+                "override_applied": False,
             }
     return {
         "event_name": event_name,
         "channel": default_channel,
         "reason": "no routing rule matched",
         "payload_path": routes.get("channel_payloads", {}).get(default_channel),
+        "override_applied": False,
     }
 
 
@@ -58,10 +75,11 @@ def main() -> None:
     args = parse_args()
     digest = load_json(args.digest)
     routes = load_json(args.routes)
-    route = select_route(digest, routes, args.event_name, args.default_channel)
+    route = select_route(digest, routes, args.event_name, args.default_channel, args.override_channel)
     route["severity"] = digest.get("severity")
     route["headline"] = digest.get("headline")
     route["ship_ready"] = digest.get("ship_ready")
+    route["failure_counts"] = digest.get("failure_counts", {})
 
     print(f"channel={route['channel']}")
     print(f"reason={route['reason']}")

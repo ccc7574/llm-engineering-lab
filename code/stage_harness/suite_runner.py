@@ -129,8 +129,16 @@ def classify_failure(
         return "syntax_error", "command output contains syntax error"
     if "assertion_failed" in combined or "assert " in combined:
         return "test_failure", "tests failed on candidate output"
+    if "filenotfounderror" in combined or "no such file or directory" in combined:
+        return "missing_input", "step could not find a required file or path"
     if "module not found" in combined or "modulenotfounderror" in combined or "importerror" in combined:
         return "dependency_error", "missing import or dependency during step execution"
+    if "permission denied" in combined or "permissionerror" in combined:
+        return "permission_error", "step failed because of filesystem or execution permissions"
+    if "jsondecodeerror" in combined or "expecting value" in combined:
+        return "report_parse_error", "step failed while parsing a generated json artifact"
+    if "keyerror" in combined or "valueerror" in combined or "typeerror" in combined:
+        return "logic_error", "step failed because of unexpected runtime logic or input shape"
     if return_code != 0:
         return "process_error", f"command exited with non-zero status {return_code}"
     return "unknown_failure", "step failed for an uncategorized reason"
