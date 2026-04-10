@@ -20,11 +20,20 @@ def load_json(path: str | Path) -> dict:
     return json.loads(Path(path).read_text(encoding="utf-8"))
 
 
+def digest_failure_categories(digest: dict) -> list[str]:
+    counts = digest.get("failure_counts", {}) or {}
+    categories = [category for category, count in counts.items() if count]
+    if not categories and digest.get("top_failure_category"):
+        categories.append(digest["top_failure_category"])
+    return sorted(set(categories))
+
+
 def matches(rule: dict, digest: dict, event_name: str) -> bool:
     event_names = rule.get("event_names", [])
     severities = rule.get("severities", [])
     gates = rule.get("gates", [])
     ship_ready = rule.get("ship_ready")
+    failure_categories = rule.get("failure_categories", [])
 
     if event_names and event_name not in event_names:
         return False
@@ -33,6 +42,8 @@ def matches(rule: dict, digest: dict, event_name: str) -> bool:
     if gates and digest.get("overall_gate") not in gates:
         return False
     if ship_ready is not None and bool(digest.get("ship_ready")) != bool(ship_ready):
+        return False
+    if failure_categories and not (set(failure_categories) & set(digest_failure_categories(digest))):
         return False
     return True
 
@@ -51,16 +62,21 @@ def select_route(
             "reason": "channel selected by explicit override",
             "payload_path": routes.get("channel_payloads", {}).get(override_channel),
             "override_applied": True,
+            "matched_failure_categories": [],
         }
     for rule in routes.get("rules", []):
         if matches(rule, digest, event_name):
             channel = rule["channel"]
+            matched_failure_categories = sorted(
+                set(rule.get("failure_categories", [])) & set(digest_failure_categories(digest))
+            )
             return {
                 "event_name": event_name,
                 "channel": channel,
                 "reason": rule.get("reason", "matched notification routing rule"),
                 "payload_path": routes.get("channel_payloads", {}).get(channel),
                 "override_applied": False,
+                "matched_failure_categories": matched_failure_categories,
             }
     return {
         "event_name": event_name,
@@ -68,6 +84,7 @@ def select_route(
         "reason": "no routing rule matched",
         "payload_path": routes.get("channel_payloads", {}).get(default_channel),
         "override_applied": False,
+        "matched_failure_categories": [],
     }
 
 
@@ -80,6 +97,7 @@ def main() -> None:
     route["headline"] = digest.get("headline")
     route["ship_ready"] = digest.get("ship_ready")
     route["failure_counts"] = digest.get("failure_counts", {})
+    route["top_failure_category"] = digest.get("top_failure_category")
 
     print(f"channel={route['channel']}")
     print(f"reason={route['reason']}")

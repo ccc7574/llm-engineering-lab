@@ -20,8 +20,8 @@ def load_rows(path: str | Path) -> list[dict]:
     return list(payload.get("rows", []))
 
 
-def row_key(row: dict) -> tuple[str, str, str]:
-    return row["event_name"], row["severity"], row["gate"]
+def row_key(row: dict) -> tuple[str, str, str, str]:
+    return row["event_name"], row["severity"], row["gate"], row.get("failure_category", "none")
 
 
 def compare_rows(baseline_rows: list[dict], candidate_rows: list[dict]) -> list[dict]:
@@ -41,6 +41,7 @@ def compare_rows(baseline_rows: list[dict], candidate_rows: list[dict]) -> list[
                     "event_name": key[0],
                     "severity": key[1],
                     "gate": key[2],
+                    "failure_category": key[3],
                     "baseline_channel": baseline_channel,
                     "candidate_channel": candidate_channel,
                     "baseline_reason": baseline_reason,
@@ -57,12 +58,12 @@ def format_markdown(diffs: list[dict]) -> str:
         f"- Generated at: {datetime.now().astimezone().isoformat()}",
         f"- Changed rows: {len(diffs)}",
         "",
-        "| Event | Severity | Gate | Baseline | Candidate |",
-        "| --- | --- | --- | --- | --- |",
+        "| Event | Severity | Gate | Failure Category | Baseline | Candidate |",
+        "| --- | --- | --- | --- | --- | --- |",
     ]
     for row in diffs:
         lines.append(
-            f"| {row['event_name']} | {row['severity']} | {row['gate']} | "
+            f"| {row['event_name']} | {row['severity']} | {row['gate']} | {row['failure_category']} | "
             f"{row['baseline_channel']} | {row['candidate_channel']} |"
         )
     return "\n".join(lines) + "\n"

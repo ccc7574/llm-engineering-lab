@@ -342,6 +342,8 @@ python3 code/stage_harness/notification_route.py \
 - `channel`
 - `reason`
 - `payload_path`
+- `matched_failure_categories`
+- `top_failure_category`
 
 如果要临时覆盖 route policy:
 
@@ -355,6 +357,12 @@ python3 code/stage_harness/notification_route.py \
   --output runs/notification_route.json
 ```
 
+如果要让不同 failure category 直接走不同 channel，直接在 route manifest 里给 rule 增加:
+
+- `failure_categories`
+
+当前 `workflow_dispatch + warning/critical + hold/block` 场景下，`permission_error` 和 `report_parse_error` 会优先命中更高优先级的飞书规则。
+
 ## `H19`: Notification Route Matrix
 
 如果要导出当前 policy 的整体行为矩阵:
@@ -365,6 +373,16 @@ python3 code/stage_harness/notification_route_matrix.py \
   --output runs/notification_route_matrix.json \
   --md-output runs/notification_route_matrix.md
 ```
+
+当前矩阵已经包含:
+
+- `event`
+- `severity`
+- `gate`
+- `failure_category`
+- `ship_ready`
+- `channel`
+- `reason`
 
 ## `H21`: Notification Policy Regression
 
@@ -388,6 +406,8 @@ python3 code/stage_harness/notification_route_diff.py \
   --md-output runs/notification_route_diff.md
 ```
 
+如果 candidate policy 只是在特定 failure category 下调整 channel，diff 也会按 `failure_category` 维度精确显示，不会把所有同 severity 的行混在一起。
+
 ## `H22`: Notification Policy Gate
 
 对通知策略做 lint 和 gate:
@@ -402,6 +422,8 @@ python3 code/stage_harness/notification_policy_gate.py \
   --policy manifests/notification_policy_gate.json \
   --output runs/notification_policy_gate.json
 ```
+
+当前 gate allowlist 也已经按 `failure_category` 守门，所以“权限错误改走飞书”这类定向升级可以被显式批准，而不会放宽整段 severity 范围。
 
 上面这条命令默认只生成 gate report，不会因为 `decision != ship` 直接退出失败。
 
@@ -548,6 +570,43 @@ python3 code/stage_harness/pr_comment.py \
 - 用 marker 识别是否已有机器人评论
 - 已有则 update，没有则 create
 - 在缺 token 或权限不足时保留 result artifact，而不是强行拖挂整条 suite
+
+## `H31`: Failure-Category-Aware Routing
+
+如果要验证 failure taxonomy 是否已经真实联动 route policy，可以执行:
+
+```bash
+python3 code/stage_harness/notification_route_lint.py \
+  --routes manifests/notification_routes.json \
+  --output runs/notification_route_lint.json
+
+python3 code/stage_harness/notification_route_matrix.py \
+  --routes manifests/notification_routes_baseline.json \
+  --output runs/notification_route_matrix_baseline.json \
+  --md-output runs/notification_route_matrix_baseline.md
+
+python3 code/stage_harness/notification_route_matrix.py \
+  --routes manifests/notification_routes.json \
+  --output runs/notification_route_matrix_candidate.json \
+  --md-output runs/notification_route_matrix_candidate.md
+
+python3 code/stage_harness/notification_route_diff.py \
+  --baseline runs/notification_route_matrix_baseline.json \
+  --candidate runs/notification_route_matrix_candidate.json \
+  --output runs/notification_route_diff.json \
+  --md-output runs/notification_route_diff.md
+
+python3 code/stage_harness/notification_policy_gate.py \
+  --route-diff runs/notification_route_diff.json \
+  --policy manifests/notification_policy_gate.json \
+  --output runs/notification_policy_gate.json
+```
+
+这条链路主要回答三件事:
+
+- digest 里的 `top_failure_category` 有没有进入 route 决策
+- route diff 是否只改变了目标 failure category 对应的行
+- policy gate 是否只放行团队明确批准的分类级别路由变更
 
 ## 2026 V2 说明
 

@@ -18,13 +18,13 @@ def load_json(path: str | Path) -> dict:
     return json.loads(Path(path).read_text(encoding="utf-8"))
 
 
-def diff_key(row: dict) -> tuple[str, str, str]:
-    return row["event_name"], row["severity"], row["gate"]
+def diff_key(row: dict) -> tuple[str, str, str, str]:
+    return row["event_name"], row["severity"], row["gate"], row.get("failure_category", "none")
 
 
 def evaluate_gate(route_diff: dict, policy: dict, route_diff_path: str, policy_path: str) -> dict:
     allowed = {
-        (row["event_name"], row["severity"], row["gate"])
+        (row["event_name"], row["severity"], row["gate"], row.get("failure_category", "none"))
         for row in policy.get("allowed_changes", [])
     }
     max_changed_rows = int(policy.get("max_changed_rows", 0))
@@ -38,7 +38,7 @@ def evaluate_gate(route_diff: dict, policy: dict, route_diff_path: str, policy_p
         reason = f"changed rows {len(diffs)} exceed max_changed_rows {max_changed_rows}"
     elif unexpected:
         decision = "hold"
-        reason = "route diff contains unexpected event/severity/gate changes"
+        reason = "route diff contains unexpected event/severity/gate/failure_category changes"
 
     return {
         "route_diff": route_diff_path,

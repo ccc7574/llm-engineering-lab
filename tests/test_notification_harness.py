@@ -14,6 +14,8 @@ from code.stage_harness.notification_dispatch import (
     classify_dispatch_response,
     execute_dispatch,
 )
+from code.stage_harness.notification_route import select_route
+from code.stage_harness.notification_route_lint import lint_routes
 from code.stage_harness.pr_comment import build_comment_body, find_existing_comment, publish_pr_comment
 from code.stage_harness.notification_dispatch_policy import evaluate_policy
 from code.stage_harness.release_note import build_release_note, format_markdown as format_release_note_markdown
@@ -152,6 +154,56 @@ class NotificationHarnessTests(unittest.TestCase):
 
         self.assertFalse(payload["allow_dispatch"])
         self.assertEqual(payload["decision"], "skip")
+
+    def test_route_matches_failure_category_specific_rule(self) -> None:
+        digest = {
+            "severity": "warning",
+            "overall_gate": "hold",
+            "ship_ready": False,
+            "failure_counts": {"permission_error": 1},
+            "top_failure_category": "permission_error",
+        }
+        routes = {
+            "channel_payloads": {"none": None, "feishu_webhook": "runs/notification_feishu.json"},
+            "rules": [
+                {
+                    "event_names": ["workflow_dispatch"],
+                    "severities": ["warning", "critical"],
+                    "gates": ["hold", "block"],
+                    "failure_categories": ["permission_error"],
+                    "channel": "feishu_webhook",
+                    "reason": "manual runs with infra failures route to feishu",
+                }
+            ],
+        }
+
+        route = select_route(
+            digest=digest,
+            routes=routes,
+            event_name="workflow_dispatch",
+            default_channel="none",
+            override_channel=None,
+        )
+
+        self.assertEqual(route["channel"], "feishu_webhook")
+        self.assertEqual(route["matched_failure_categories"], ["permission_error"])
+
+    def test_route_lint_warns_on_unknown_failure_category(self) -> None:
+        issues = lint_routes(
+            {
+                "channel_payloads": {"none": None, "slack_webhook": "runs/notification_slack.json"},
+                "rules": [
+                    {
+                        "event_names": ["workflow_dispatch"],
+                        "failure_categories": ["mystery_failure"],
+                        "channel": "slack_webhook",
+                        "reason": "test rule",
+                    }
+                ],
+            }
+        )
+
+        self.assertTrue(any(issue["type"] == "unknown_failure_category" for issue in issues))
 
     def test_review_summary_surfaces_suppressed_dispatch(self) -> None:
         digest = {

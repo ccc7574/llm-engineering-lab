@@ -283,6 +283,7 @@ workflow 会做这些事:
 - GitHub event
 - digest severity
 - gate / ship_ready
+- failure category
 
 从 [notification_routes.json](/Volumes/ExtaData/newcode/llm-engineering-lab/manifests/notification_routes.json) 里选出最合适的 channel。
 
@@ -291,6 +292,10 @@ workflow 会做这些事:
 ### `runs/notification_route_matrix.md`
 
 看当前 routing policy 在不同 event / severity / gate 组合下的整体行为。
+
+现在矩阵还会显式展示:
+
+- `failure_category`
 
 这个文件适合:
 
@@ -301,6 +306,8 @@ workflow 会做这些事:
 ### `runs/notification_route_diff.md`
 
 看 baseline policy 和 candidate policy 的实际路由差异。
+
+现在 diff 行键也包含 `failure_category`，所以可以看出“只有 permission_error 被升级到飞书”这类更细粒度的变更，而不是只看到一整类 severity 被改掉。
 
 这个文件适合:
 
@@ -324,6 +331,8 @@ workflow 会做这些事:
 - enforce mode: 只有 `require_policy_gate=true` 时才要求非 `ship` 直接失败
 
 这样 PR / 手工调试时可以先拿到 artifact，再决定是否把它作为阻断条件。
+
+现在 gate allowlist 也带上了 `failure_category`，因此路由升级可以只批准某几个 failure taxonomy，而不必放宽整个 event / severity 区间。
 
 ### `runs/notification_dispatch_policy.json`
 
@@ -389,6 +398,7 @@ workflow 会做这些事:
 - route policy artifact
 - route override
 - 更细的 runtime failure taxonomy
+- failure-category-aware routing
 - route matrix artifact
 - route diff artifact
 - route lint
@@ -403,11 +413,9 @@ workflow 会做这些事:
 
 这套系统已经够支撑最小交付，但离真实一线团队的完整平台还有几步:
 
-- 更细粒度的通知路由策略，比如 failure category 直接联动 route / dispatch
 - 更精细的 changed-scope 依赖图，而不只是 scope tag
-- failure taxonomy 与 route policy 的进一步联动
 - live adapter 的签名校验、重试和幂等保护
-- 真正的 GitHub PR comment 回写
+- PR comment 的权限诊断与更完整的 GitHub API 观测
 
 ## 建议的团队使用方式
 

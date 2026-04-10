@@ -41,6 +41,7 @@ def build_digest(suite_report: dict, summary_board: dict, gate_report: dict) -> 
         "warning": "Regression suite needs attention",
         "info": "Regression suite passed",
     }[severity]
+    top_failure_category = failure_counts.most_common(1)[0][0] if failure_counts else None
 
     return {
         "generated_at": datetime.now().astimezone().isoformat(),
@@ -62,6 +63,7 @@ def build_digest(suite_report: dict, summary_board: dict, gate_report: dict) -> 
             for row in failed_steps
         ],
         "failure_counts": dict(failure_counts),
+        "top_failure_category": top_failure_category,
         "regressed_tracks": [row.get("label") for row in regressed_tracks],
         "flat_tracks": [row.get("label") for row in flat_tracks],
         "ship_ready": gate_report.get("overall_gate") == "ship" and suite_report.get("overall_status") == "passed",
@@ -97,6 +99,8 @@ def format_markdown(digest: dict) -> str:
 
     if digest["failure_counts"]:
         lines.extend(["", "## Failure Counts", ""])
+        if digest.get("top_failure_category"):
+            lines.append(f"- Top failure category: `{digest['top_failure_category']}`")
         for category, count in sorted(digest["failure_counts"].items()):
             lines.append(f"- `{category}`: {count}")
 

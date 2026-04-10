@@ -172,6 +172,7 @@ Harness 能力线的最小入口。
 - 生成 PR comment / release note 所需的统一 reviewer artifact
 - 支持 provider-aware ack 解析和 channel-specific backoff 分类
 - 支持 marker-based PR comment upsert 和结构化回写结果
+- 支持 failure-category-aware route matching、matrix/diff 维度扩展与 policy gate 守门
 
 ### `stage_agentic`
 

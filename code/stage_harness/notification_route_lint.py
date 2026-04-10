@@ -21,8 +21,24 @@ def selector_signature(rule: dict) -> tuple:
         tuple(rule.get("event_names", [])),
         tuple(rule.get("severities", [])),
         tuple(rule.get("gates", [])),
+        tuple(rule.get("failure_categories", [])),
         rule.get("ship_ready"),
     )
+
+
+KNOWN_FAILURE_CATEGORIES = {
+    "artifact_missing",
+    "dependency_error",
+    "logic_error",
+    "missing_input",
+    "permission_error",
+    "process_error",
+    "report_parse_error",
+    "syntax_error",
+    "test_failure",
+    "timeout",
+    "unknown_failure",
+}
 
 
 def lint_routes(routes: dict) -> list[dict]:
@@ -47,6 +63,20 @@ def lint_routes(routes: dict) -> list[dict]:
                     "severity": "warning",
                     "type": "missing_reason",
                     "message": "rule should include a human-readable reason",
+                }
+            )
+        unknown_failure_categories = sorted(
+            category
+            for category in rule.get("failure_categories", [])
+            if category not in KNOWN_FAILURE_CATEGORIES
+        )
+        if unknown_failure_categories:
+            issues.append(
+                {
+                    "rule_index": idx,
+                    "severity": "warning",
+                    "type": "unknown_failure_category",
+                    "message": f"rule references unknown failure categories: {', '.join(unknown_failure_categories)}",
                 }
             )
         signature = selector_signature(rule)

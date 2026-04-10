@@ -60,7 +60,46 @@
 - `Harness` 已补到 route diff，可比较 baseline 和 candidate policy 的行为变化。
 - `Harness` 已补到 route lint 和 policy gate，可自动守住通知策略边界。
 - `Harness` 已把 notification policy gate 接进 workflow，可在 CI 中强制执行。
+- `Harness` 已补到 failure-category-aware routing，可按 failure taxonomy 直接分流并对 diff/gate 做分类级守门。
 - 当前仍未成体系的主要是: 更复杂的 multimodal OCR / table / grounding 联合管线、更长链路的 agentic memory / reflection，以及更深入的 cost / latency / live routing integration。
+
+## Session Entry
+
+- Date: 2026-04-10 22:24 CST
+- Goal: 给 Harness 补 failure-category-aware routing，让 failure taxonomy 真正进入 route policy、route diff 和 gate 决策。
+- Status: 已完成 route selector、matrix/diff、lint、policy gate、manifest、测试和文档更新，并完成本地验证，正准备提交与 push。
+- Key findings:
+  - 只有 `failure taxonomy -> digest -> route policy -> diff/gate` 这一整链都打通，failure category 才不是“记录下来但没人消费”的死字段。
+  - route diff 如果不把 `failure_category` 放进 row key，分类级路由升级会被错误折叠成普通 severity 变化，review 粒度不够。
+  - policy gate allowlist 也必须带上 `failure_category`，否则一次对 `permission_error` 的定向升级会被误判成整段 warning/critical 扩散。
+- Files touched:
+  - `code/stage_harness/notification_digest.py`
+  - `code/stage_harness/notification_route.py`
+  - `code/stage_harness/notification_route_matrix.py`
+  - `code/stage_harness/notification_route_diff.py`
+  - `code/stage_harness/notification_policy_gate.py`
+  - `code/stage_harness/notification_route_lint.py`
+  - `manifests/notification_routes.json`
+  - `manifests/notification_policy_gate.json`
+  - `tests/test_notification_harness.py`
+  - `tasks/H31_failure_category_aware_routing.md`
+  - `tasks/README.md`
+  - `tracks/harness/README.md`
+  - `code/README.md`
+  - `README.md`
+  - `docs/runbook.md`
+  - `docs/ci_regression_guide_zh.md`
+  - `docs/session_handoff.md`
+- Validation:
+  - `python3 -m unittest discover -s tests`
+  - `python3 code/stage_harness/notification_route_lint.py --routes manifests/notification_routes.json --output runs/notification_route_lint.json`
+  - `python3 code/stage_harness/notification_route_matrix.py --routes manifests/notification_routes_baseline.json --output runs/notification_route_matrix_baseline.json --md-output runs/notification_route_matrix_baseline.md`
+  - `python3 code/stage_harness/notification_route_matrix.py --routes manifests/notification_routes.json --output runs/notification_route_matrix_candidate.json --md-output runs/notification_route_matrix_candidate.md`
+  - `python3 code/stage_harness/notification_route_diff.py --baseline runs/notification_route_matrix_baseline.json --candidate runs/notification_route_matrix_candidate.json --output runs/notification_route_diff.json --md-output runs/notification_route_diff.md`
+  - `python3 code/stage_harness/notification_policy_gate.py --route-diff runs/notification_route_diff.json --policy manifests/notification_policy_gate.json --output runs/notification_policy_gate.json`
+- Next step:
+  - 提交并 push 到远程仓库
+  - 继续把 Harness 往 live adapter 签名校验、PR comment 权限诊断和更强观测推进
 
 ## Session Entry
 

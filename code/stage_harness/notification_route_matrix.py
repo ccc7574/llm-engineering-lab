@@ -14,6 +14,7 @@ from stage_harness.notification_route import load_json, select_route
 DEFAULT_EVENTS = ["pull_request", "push", "workflow_dispatch", "schedule"]
 DEFAULT_SEVERITIES = ["info", "warning", "critical"]
 DEFAULT_GATES = ["ship", "hold", "block"]
+DEFAULT_FAILURE_CATEGORIES = ["none", "process_error", "permission_error", "report_parse_error"]
 
 
 def parse_args() -> argparse.Namespace:
@@ -24,13 +25,19 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
-def build_digest(severity: str, gate: str) -> dict:
+def failure_profiles_for_severity(severity: str) -> list[str]:
+    return ["none"] if severity == "info" else list(DEFAULT_FAILURE_CATEGORIES)
+
+
+def build_digest(severity: str, gate: str, failure_category: str) -> dict:
+    failure_counts = {} if failure_category == "none" else {failure_category: 1}
     return {
         "severity": severity,
         "overall_gate": gate,
         "ship_ready": severity == "info" and gate == "ship",
         "headline": f"sample {severity}",
-        "failure_counts": {} if severity == "info" else {"process_error": 1},
+        "failure_counts": failure_counts,
+        "top_failure_category": None if failure_category == "none" else failure_category,
     }
 
 
@@ -39,24 +46,26 @@ def build_matrix(routes: dict) -> list[dict]:
     for event_name in DEFAULT_EVENTS:
         for severity in DEFAULT_SEVERITIES:
             for gate in DEFAULT_GATES:
-                digest = build_digest(severity, gate)
-                route = select_route(
-                    digest=digest,
-                    routes=routes,
-                    event_name=event_name,
-                    default_channel="none",
-                    override_channel=None,
-                )
-                rows.append(
-                    {
-                        "event_name": event_name,
-                        "severity": severity,
-                        "gate": gate,
-                        "ship_ready": digest["ship_ready"],
-                        "channel": route["channel"],
-                        "reason": route["reason"],
-                    }
-                )
+                for failure_category in failure_profiles_for_severity(severity):
+                    digest = build_digest(severity, gate, failure_category)
+                    route = select_route(
+                        digest=digest,
+                        routes=routes,
+                        event_name=event_name,
+                        default_channel="none",
+                        override_channel=None,
+                    )
+                    rows.append(
+                        {
+                            "event_name": event_name,
+                            "severity": severity,
+                            "gate": gate,
+                            "failure_category": failure_category,
+                            "ship_ready": digest["ship_ready"],
+                            "channel": route["channel"],
+                            "reason": route["reason"],
+                        }
+                    )
     return rows
 
 
@@ -66,13 +75,13 @@ def format_markdown(rows: list[dict]) -> str:
         "",
         f"- Generated at: {datetime.now().astimezone().isoformat()}",
         "",
-        "| Event | Severity | Gate | Ship Ready | Channel | Reason |",
-        "| --- | --- | --- | --- | --- | --- |",
+        "| Event | Severity | Gate | Failure Category | Ship Ready | Channel | Reason |",
+        "| --- | --- | --- | --- | --- | --- | --- |",
     ]
     for row in rows:
         lines.append(
             f"| {row['event_name']} | {row['severity']} | {row['gate']} | "
-            f"{str(row['ship_ready']).lower()} | {row['channel']} | {row['reason']} |"
+            f"{row['failure_category']} | {str(row['ship_ready']).lower()} | {row['channel']} | {row['reason']} |"
         )
     return "\n".join(lines) + "\n"
 

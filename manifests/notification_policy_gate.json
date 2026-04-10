@@ -1,20 +1,71 @@
 {
-  "max_changed_rows": 3,
+  "max_changed_rows": 11,
   "allowed_changes": [
     {
       "event_name": "schedule",
       "severity": "info",
-      "gate": "ship"
+      "gate": "ship",
+      "failure_category": "none"
     },
     {
       "event_name": "schedule",
       "severity": "info",
-      "gate": "hold"
+      "gate": "hold",
+      "failure_category": "none"
     },
     {
       "event_name": "schedule",
       "severity": "info",
-      "gate": "block"
+      "gate": "block",
+      "failure_category": "none"
+    },
+    {
+      "event_name": "workflow_dispatch",
+      "severity": "warning",
+      "gate": "hold",
+      "failure_category": "permission_error"
+    },
+    {
+      "event_name": "workflow_dispatch",
+      "severity": "warning",
+      "gate": "hold",
+      "failure_category": "report_parse_error"
+    },
+    {
+      "event_name": "workflow_dispatch",
+      "severity": "warning",
+      "gate": "block",
+      "failure_category": "permission_error"
+    },
+    {
+      "event_name": "workflow_dispatch",
+      "severity": "warning",
+      "gate": "block",
+      "failure_category": "report_parse_error"
+    },
+    {
+      "event_name": "workflow_dispatch",
+      "severity": "critical",
+      "gate": "hold",
+      "failure_category": "permission_error"
+    },
+    {
+      "event_name": "workflow_dispatch",
+      "severity": "critical",
+      "gate": "hold",
+      "failure_category": "report_parse_error"
+    },
+    {
+      "event_name": "workflow_dispatch",
+      "severity": "critical",
+      "gate": "block",
+      "failure_category": "permission_error"
+    },
+    {
+      "event_name": "workflow_dispatch",
+      "severity": "critical",
+      "gate": "block",
+      "failure_category": "report_parse_error"
     }
   ]
 }
