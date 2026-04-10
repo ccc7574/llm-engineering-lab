@@ -143,6 +143,8 @@ Harness 能力线的最小入口。
 - `notification_route_diff.py`
 - `notification_route_lint.py`
 - `notification_policy_gate.py`
+- `notification_dispatch_policy.py`
+- `notification_review_summary.py`
 
 用途:
 
@@ -160,6 +162,8 @@ Harness 能力线的最小入口。
 - 比较 baseline vs candidate route matrix
 - 对 route manifest 做 lint，对 route diff 做 gate
 - 在 workflow 中执行 notification policy review/gate
+- 判断当前 run 是否允许真实 dispatch
+- 把 release gate、route gate 和 dispatch gate 压缩成 reviewer summary
 
 ### `stage_agentic`
 

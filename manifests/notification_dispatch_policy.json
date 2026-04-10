@@ -1,0 +1,33 @@
+{
+  "policy_name": "default_notification_dispatch_policy_v1",
+  "default_decision": {
+    "allow_dispatch": false,
+    "reason": "default deny for non-scheduled events to avoid noisy live notifications"
+  },
+  "rules": [
+    {
+      "name": "scheduled_dispatch",
+      "event_names": ["schedule"],
+      "channels": ["slack_webhook", "feishu_webhook"],
+      "allow_dispatch": true,
+      "reason": "scheduled regressions may dispatch to the routed digest or oncall channel"
+    },
+    {
+      "name": "manual_override_dispatch",
+      "event_names": ["workflow_dispatch"],
+      "channels": ["slack_webhook", "feishu_webhook"],
+      "override_applied": true,
+      "allow_dispatch": true,
+      "reason": "manual runs may dispatch only when an operator explicitly overrides the route"
+    },
+    {
+      "name": "manual_high_severity_dispatch",
+      "event_names": ["workflow_dispatch"],
+      "severities": ["critical", "warning"],
+      "gates": ["hold", "block"],
+      "channels": ["feishu_webhook"],
+      "allow_dispatch": true,
+      "reason": "manual degraded runs may dispatch to feishu for fast triage"
+    }
+  ]
+}

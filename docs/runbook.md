@@ -371,6 +371,48 @@ python3 code/stage_harness/notification_policy_gate.py \
 
 - `require_policy_gate=true`
 
+## `H24`: Notification Dispatch Policy
+
+如果要区分“route 已经选好”和“这次 run 是否真的允许外发”，可以执行:
+
+```bash
+python3 code/stage_harness/notification_dispatch_policy.py \
+  --digest runs/notification_digest.json \
+  --route runs/notification_route.json \
+  --policy manifests/notification_dispatch_policy.json \
+  --event-name workflow_dispatch \
+  --output runs/notification_dispatch_policy.json
+```
+
+当前默认策略是:
+
+- `schedule` 允许向已路由的 Slack / 飞书通道真实发送
+- `workflow_dispatch` 只有高严重度告警或显式 route override 时才允许真实发送
+- 其他事件默认只生成 artifact，不直接 live dispatch
+
+## `H25`: Notification Review Summary
+
+如果要给 reviewer / release owner 产出压缩版审阅结论，可以执行:
+
+```bash
+python3 code/stage_harness/notification_review_summary.py \
+  --digest runs/notification_digest.json \
+  --route runs/notification_route.json \
+  --policy-gate runs/notification_policy_gate.json \
+  --dispatch-policy runs/notification_dispatch_policy.json \
+  --output runs/notification_review_summary.json \
+  --md-output runs/notification_review_summary.md
+```
+
+这个 artifact 会把:
+
+- release gate
+- route policy gate
+- dispatch allow/deny
+- failed steps / failure counts / active scopes
+
+压成一张适合放在 GitHub Job Summary 顶部的卡片。
+
 ## 2026 V2 说明
 
 从 V2 开始，这个仓库的主入口应以:

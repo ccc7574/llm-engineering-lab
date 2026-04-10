@@ -202,6 +202,27 @@ PY
             --policy manifests/notification_policy_gate.json \
             --output runs/notification_policy_gate.json
 
+      - name: Notification Dispatch Policy
+        if: always()
+        id: notification_dispatch_policy
+        run: |
+          if [ -f runs/notification_digest.json ] && [ -f runs/notification_route.json ]; then
+            python3 code/stage_harness/notification_dispatch_policy.py \
+              --digest runs/notification_digest.json \
+              --route runs/notification_route.json \
+              --policy manifests/notification_dispatch_policy.json \
+              --event-name "${{ github.event_name }}" \
+              --output runs/notification_dispatch_policy.json
+            allow=$(python3 - <<'PY'
+import json
+from pathlib import Path
+obj=json.loads(Path('runs/notification_dispatch_policy.json').read_text())
+print(str(obj['allow_dispatch']).lower())
+PY
+)
+            printf 'allow_dispatch=%s\n' "$allow" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Enforce Notification Policy Gate
         if: always() && env.REQUIRE_POLICY_GATE == 'true'
         run: |
@@ -214,17 +235,30 @@ if payload['decision'] != 'ship':
 print(payload['decision'])
 PY
 
+      - name: Build Notification Review Summary
+        if: always()
+        run: |
+          if [ -f runs/notification_digest.json ] && [ -f runs/notification_route.json ] && [ -f runs/notification_policy_gate.json ] && [ -f runs/notification_dispatch_policy.json ]; then
+            python3 code/stage_harness/notification_review_summary.py \
+              --digest runs/notification_digest.json \
+              --route runs/notification_route.json \
+              --policy-gate runs/notification_policy_gate.json \
+              --dispatch-policy runs/notification_dispatch_policy.json \
+              --output runs/notification_review_summary.json \
+              --md-output runs/notification_review_summary.md
+          fi
+
       - name: Optional Notification Dispatch
         if: always()
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
           FEISHU_WEBHOOK_URL: ${{ secrets.FEISHU_WEBHOOK_URL }}
         run: |
-          if [ "${{ steps.notification_route.outputs.channel }}" = "slack_webhook" ] && [ -f "${{ steps.notification_route.outputs.payload_path }}" ] && [ -n "$SLACK_WEBHOOK_URL" ]; then
+          if [ "${{ steps.notification_dispatch_policy.outputs.allow_dispatch }}" = "true" ] && [ "${{ steps.notification_route.outputs.channel }}" = "slack_webhook" ] && [ -f "${{ steps.notification_route.outputs.payload_path }}" ] && [ -n "$SLACK_WEBHOOK_URL" ]; then
             python3 code/stage_harness/notification_dispatch.py \
               --payload "${{ steps.notification_route.outputs.payload_path }}" \
               --channel slack_webhook
-          elif [ "${{ steps.notification_route.outputs.channel }}" = "feishu_webhook" ] && [ -f "${{ steps.notification_route.outputs.payload_path }}" ] && [ -n "$FEISHU_WEBHOOK_URL" ]; then
+          elif [ "${{ steps.notification_dispatch_policy.outputs.allow_dispatch }}" = "true" ] && [ "${{ steps.notification_route.outputs.channel }}" = "feishu_webhook" ] && [ -f "${{ steps.notification_route.outputs.payload_path }}" ] && [ -n "$FEISHU_WEBHOOK_URL" ]; then
             python3 code/stage_harness/notification_dispatch.py \
               --payload "${{ steps.notification_route.outputs.payload_path }}" \
               --channel feishu_webhook
@@ -235,6 +269,10 @@ PY
       - name: Publish Job Summary
         if: always()
         run: |
+          if [ -f runs/notification_review_summary.md ]; then
+            cat runs/notification_review_summary.md >> "$GITHUB_STEP_SUMMARY"
+            printf '\n' >> "$GITHUB_STEP_SUMMARY"
+          fi
           if [ -f runs/notification_digest.md ]; then
             cat runs/notification_digest.md >> "$GITHUB_STEP_SUMMARY"
             printf '\n' >> "$GITHUB_STEP_SUMMARY"

@@ -31,6 +31,9 @@
   - `runs/notification_feishu.json`
 - dispatch:
   - `code/stage_harness/notification_dispatch.py`
+- dispatch policy:
+  - `code/stage_harness/notification_dispatch_policy.py`
+  - `manifests/notification_dispatch_policy.json`
 - routing:
   - `code/stage_harness/notification_route.py`
   - `manifests/notification_routes.json`
@@ -39,6 +42,9 @@
   - `code/stage_harness/notification_route_lint.py`
   - `code/stage_harness/notification_policy_gate.py`
   - `manifests/notification_policy_gate.json`
+- review summary:
+  - `runs/notification_review_summary.json`
+  - `runs/notification_review_summary.md`
 - summary board:
   - `runs/summary_board.json`
   - `runs/summary_board.md`
@@ -47,7 +53,7 @@
 
 ## 本地怎么跑
 
-最常用的命令有两种。
+最常用的命令有三种。
 
 ### 1. 普通本地回归
 
@@ -128,7 +134,9 @@ workflow 会做这些事:
 8. 生成 Slack / 飞书 payload artifact
 9. 基于 routing policy 选择 channel
 10. 生成 route matrix / diff / lint / policy gate
-11. 把 digest、route diff、suite report 和 summary board 写进 GitHub Job Summary
+11. 基于 dispatch policy 判断是否允许真实发送
+12. 生成 review summary
+13. 把 review summary、digest、route diff、suite report 和 summary board 写进 GitHub Job Summary
 
 如果通过 `workflow_dispatch` 显式传入:
 
@@ -137,6 +145,7 @@ workflow 会做这些事:
 - `require_policy_gate`
 
 并且仓库 secret 已配置，workflow 还可以继续做可选 dispatch。
+但现在只有 dispatch policy 允许时，workflow 才会真的往 webhook 发送消息。
 
 对 `pull_request`，workflow 现在会默认尝试按 changed files 跑 scoped suite。
 
@@ -144,7 +153,19 @@ workflow 会做这些事:
 
 ## 怎么看结果
 
-最重要的三个 artifact 是:
+几个重点 artifact 如下:
+
+### `runs/notification_review_summary.md`
+
+看给 reviewer / release owner 的压缩结论:
+
+- release gate
+- route policy gate
+- dispatch allow / deny
+- active scopes
+- failed steps 和 failure counts
+
+如果团队成员不想逐个翻 route diff、policy gate 和 digest，这个文件应该是第一入口。
 
 ### `runs/notification_digest.md`
 
@@ -225,6 +246,16 @@ workflow 会做这些事:
 
 现在这条 gate 已经可以直接进入 workflow。
 
+### `runs/notification_dispatch_policy.json`
+
+看 route 已经选好之后，这次 run 是否允许真实外发。
+
+这个文件适合:
+
+- 区分 artifact 生成和 live dispatch
+- 限制 schedule / manual / PR 的通知策略
+- 解释为什么 workflow 这次“有 route 但没有真的发”
+
 ### `runs/regression_suite_report.md`
 
 看整条 suite 是否跑完，哪些 step 失败，哪些产物缺失。
@@ -283,19 +314,19 @@ workflow 会做这些事:
 - route diff artifact
 - route lint
 - policy gate
+- dispatch policy
+- review summary
 
 ## 当前还没做的部分
 
 这套系统已经够支撑最小交付，但离真实一线团队的完整平台还有几步:
 
-- 定时回归后的通知与值班机制
 - latency / cost 趋势面板
 - PR comment / release note 自动生成
-- 更细粒度的通知路由策略，比如 schedule 才发、PR 失败才发
+- 更细粒度的通知路由策略，比如 failure category 直接联动 route / dispatch
 - 更精细的 changed-scope 依赖图，而不只是 scope tag
 - failure taxonomy 与 route policy 的进一步联动
-- route diff / gate 接进 CI 的 policy regression 检查
-- route review artifact 写进 GitHub Job Summary
+- live adapter 的签名校验、重试和幂等保护
 
 ## 建议的团队使用方式
 

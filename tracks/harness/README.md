@@ -28,6 +28,8 @@
 - 已支持 route diff，可比较 baseline 和 candidate policy 的行为变化
 - 已支持 route lint 和 policy gate，可自动守住通知策略边界
 - 已把 notification policy gate 接进 workflow，可在 CI 中强制执行
+- 已支持 dispatch policy，可区分“已路由”和“允许真实外发”
+- 已支持 review summary，可把 release / route / dispatch 三层结论压缩给 reviewer
 
 建议首批任务:
 
@@ -47,3 +49,5 @@
 - `H21` notification policy regression
 - `H22` notification policy gate
 - `H23` workflow policy gate
+- `H24` notification dispatch policy
+- `H25` notification review summary

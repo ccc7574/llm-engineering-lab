@@ -64,6 +64,35 @@
 
 ## Session Entry
 
+- Date: 2026-04-10 20:24 CST
+- Goal: 给通知链补 dispatch policy 和 reviewer summary，让 workflow 能区分“生成 artifact”和“允许真实外发”。
+- Status: 已完成 dispatch policy、review summary、workflow 接线和文档更新，正准备做本地验证与提交。
+- Key findings:
+  - route policy 只回答“走哪个 channel”，真实生产里还必须再回答“这次 run 允不允许发”。
+  - 把 release gate、route gate、dispatch gate 压缩到一张 summary 卡片后，reviewer 不需要再手动拼接多个 artifact。
+  - 当前 Harness 的通知链已经形成 `digest -> payload -> route -> policy gate -> dispatch policy -> review summary -> optional dispatch`。
+- Files touched:
+  - `.github/workflows/regression-suite.yml`
+  - `code/stage_harness/notification_dispatch_policy.py`
+  - `code/stage_harness/notification_review_summary.py`
+  - `manifests/notification_dispatch_policy.json`
+  - `tasks/H24_notification_dispatch_policy.md`
+  - `tasks/H25_notification_review_summary.md`
+  - `README.md`
+  - `code/README.md`
+  - `tasks/README.md`
+  - `tracks/harness/README.md`
+  - `docs/runbook.md`
+  - `docs/ci_regression_guide_zh.md`
+  - `docs/session_handoff.md`
+- Validation:
+  - 待执行本地 suite / policy / summary 验证
+- Next step:
+  - 跑本地回归与 dispatch policy / review summary 验证
+  - 提交并 push 到远程仓库
+
+## Session Entry
+
 - Date: 2026-04-10 05:35 CST
 - Goal: 把 notification policy gate 正式接进 workflow，让通知策略守门进入 CI 默认路径。
 - Status: 已完成 workflow 内建 route matrix / diff / lint / gate 步骤，以及对应文档更新。
