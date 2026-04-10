@@ -74,6 +74,28 @@
 
 ## Session Entry
 
+- Date: 2026-04-11 01:02 CST
+- Goal: 补英文交付细节文档，优先覆盖 runbook 和 CI / regression 指南。
+- Status: 已完成 `runbook_en.md`、`ci_regression_guide_en.md`，并接到 `README_EN.md` 与 `roadmap_v2_en.md`；下一步是提交与 push，然后继续扫描剩余交付缺口。
+- Key findings:
+  - 英文入口文档已经够用，但如果没有 runbook / CI guide，英文读者仍然无法把仓库当成真实 release-facing lab 来操作。
+  - 相比全量翻译中文长文，英文交付文档更适合做成高密度 operator guide，直接保留命令、artifact 和判断顺序。
+  - 现在英文主线已经从“介绍项目”延伸到了“如何运行和如何解释结果”，交付闭环完整得多。
+- Files touched:
+  - `docs/runbook_en.md`
+  - `docs/ci_regression_guide_en.md`
+  - `README_EN.md`
+  - `docs/roadmap_v2_en.md`
+  - `docs/delivery_backlog.md`
+  - `docs/session_handoff.md`
+- Validation:
+  - English docs created and linked from `README_EN.md`
+- Next step:
+  - 提交并 push
+  - 继续检查剩余交付级缺口
+
+## Session Entry
+
 - Date: 2026-04-11 00:46 CST
 - Goal: 继续补交付级可视化资产，优先覆盖预训练、多模态 grounding 和 agent reflection。
 - Status: 已完成 3 张新 SVG，并接回 `P10`、`M04`、`A11` 与 figures index，XML 校验已通过；下一步是提交与 push，然后继续补英文交付细节。

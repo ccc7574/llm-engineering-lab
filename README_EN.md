@@ -54,8 +54,10 @@ It is closer to:
 2. [roadmap_v2_en.md](/Volumes/ExtaData/newcode/llm-engineering-lab/docs/roadmap_v2_en.md)
 3. [learning_paths_en.md](/Volumes/ExtaData/newcode/llm-engineering-lab/docs/learning_paths_en.md)
 4. [role_learning_paths_en.md](/Volumes/ExtaData/newcode/llm-engineering-lab/docs/role_learning_paths_en.md)
-5. [tasks/README.md](/Volumes/ExtaData/newcode/llm-engineering-lab/tasks/README.md)
-6. [code/README.md](/Volumes/ExtaData/newcode/llm-engineering-lab/code/README.md)
+5. [runbook_en.md](/Volumes/ExtaData/newcode/llm-engineering-lab/docs/runbook_en.md)
+6. [ci_regression_guide_en.md](/Volumes/ExtaData/newcode/llm-engineering-lab/docs/ci_regression_guide_en.md)
+7. [tasks/README.md](/Volumes/ExtaData/newcode/llm-engineering-lab/tasks/README.md)
+8. [code/README.md](/Volumes/ExtaData/newcode/llm-engineering-lab/code/README.md)
 
 ## Current State
 
@@ -66,6 +68,7 @@ The repo already has runnable starter paths across all six tracks. It now also i
 - multimodal grounding and multi-page document routing
 - agentic reflection eval
 - a manifest-driven regression suite, summary board, release gate, notification routing, and CI launcher
+- English runbook and CI/regression operator docs
 
 This means the repo is already useful as a production-minded teaching base, even though some deeper layers are still being expanded.
 
@@ -78,6 +81,8 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-For runnable commands, see [runbook.md](/Volumes/ExtaData/newcode/llm-engineering-lab/docs/runbook.md).
+For runnable commands, see [runbook_en.md](/Volumes/ExtaData/newcode/llm-engineering-lab/docs/runbook_en.md).
+
+For the release gate, regression suite, and artifact interpretation flow, see [ci_regression_guide_en.md](/Volumes/ExtaData/newcode/llm-engineering-lab/docs/ci_regression_guide_en.md).
 
 For role-oriented 2/4/6-week plans, see [role_learning_paths_en.md](/Volumes/ExtaData/newcode/llm-engineering-lab/docs/role_learning_paths_en.md).

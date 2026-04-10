@@ -86,6 +86,9 @@ llm-engineering-lab/
     role_learning_paths.md
     role_learning_paths_en.md
     runbook.md
+    runbook_en.md
+    ci_regression_guide_zh.md
+    ci_regression_guide_en.md
   tracks/
   cases/
   tasks/
