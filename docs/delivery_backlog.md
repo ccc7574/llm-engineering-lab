@@ -4,24 +4,24 @@
 
 ## P0: 必须优先完成
 
-1. 补齐 `Pretraining` 与 `Post-Training` 的新任务体系
+1. [done] 补齐 `Pretraining` 与 `Post-Training` 的新任务体系
    - 当前 `P*`、`S*` 新编号几乎没有实体任务文档，学习路径在这里断层。
    - 目标是把 `roadmap -> learning path -> task -> code` 串成闭环。
 
-2. 落地 `stage5_toy_alignment`
+2. [done] 落地 `stage5_toy_alignment`
    - 当前 `S20-S21` 在路线图里存在，但 `code/stage5_toy_alignment/` 还是空目录。
    - 需要最小可运行的 DPO / GRPO 或 reward-guided update 脚本、数据格式和评测入口。
 
-3. 做厚三类公司案例层
+3. [done] 做厚三类公司案例层
    - `cases/bigtech`、`cases/mid_company`、`cases/small_team` 目前只有 README 骨架。
    - 需要把六条能力线分别映射成真实团队约束、路线差异和取舍模板。
 
-4. 补 `Harness` 的 live adapter 安全层
+4. [done] 补 `Harness` 的 live adapter 安全层
    - 当前 notification / dispatch 已很完整，但还缺 webhook 签名校验、secret 使用边界、provider 身份隔离。
 
 ## P1: 高价值深水区
 
-5. 补 `Multimodal` 的 grounding / multi-page doc pipeline
+5. [done] 补 `Multimodal` 的 grounding / multi-page doc pipeline
    - 当前已到 OCR 与 structured pipeline，但还缺 page routing、region grounding、表格链路。
 
 6. 补 `Agentic` 的 reflection / agent eval
@@ -48,10 +48,7 @@
 
 按以下顺序推进:
 
-1. `P* / S*` 新任务体系
-2. `stage5_toy_alignment`
-3. 公司案例层
-4. Harness live adapter 安全层
-5. Multimodal grounding / multi-page
-6. Agentic reflection / eval
-7. Coding SWE-bench 风格任务
+1. `Agentic` reflection / eval
+2. `Coding` SWE-bench 风格任务
+3. 中英双语主线与角色导向路径
+4. 更完整的 artifact / baseline 治理

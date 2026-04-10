@@ -201,6 +201,20 @@ python3 eval/multimodal_eval.py --data-path datasets/tiny_multimodal_noisy/eval.
 python3 code/stage_harness/regression_compare.py --baseline-report runs/multimodal_noisy_ocr_only.json --candidate-report runs/multimodal_noisy_structured_pipeline.json --output runs/multimodal_noisy_regression_diff.json
 ```
 
+## `M04`: Grounding / Multi-Page Pipeline
+
+```bash
+python3 eval/multimodal_eval.py --data-path datasets/tiny_multimodal_grounding/eval.jsonl --strategy ocr_only --report-path runs/multimodal_grounding_ocr_only.json
+python3 eval/multimodal_eval.py --data-path datasets/tiny_multimodal_grounding/eval.jsonl --strategy grounded_pipeline --report-path runs/multimodal_grounding_grounded_pipeline.json
+python3 code/stage_harness/regression_compare.py --baseline-report runs/multimodal_grounding_ocr_only.json --candidate-report runs/multimodal_grounding_grounded_pipeline.json --output runs/multimodal_grounding_regression_diff.json
+```
+
+这条路径主要回答:
+
+- 文档应该先看哪一页
+- 当前问题应该落到哪个 region
+- 为什么 `ocr_only` 常常会“看到了字，但看错了位置”
+
 ## Cross-Track Summary
 
 ```bash

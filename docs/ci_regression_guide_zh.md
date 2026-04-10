@@ -391,6 +391,7 @@ workflow 会做这些事:
 - Agentic Memory
 - Multimodal
 - Multimodal Noisy OCR
+- Multimodal Grounding
 - Run Registry
 - Summary Board
 - Gate Check

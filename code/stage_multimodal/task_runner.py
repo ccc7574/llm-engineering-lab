@@ -31,7 +31,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--task-id", default=None)
     parser.add_argument(
         "--strategy",
-        choices=["text_only", "vision_augmented", "ocr_only", "structured_pipeline", "reference"],
+        choices=["text_only", "vision_augmented", "ocr_only", "structured_pipeline", "grounded_pipeline", "reference"],
         default="vision_augmented",
     )
     parser.add_argument("--output", default=None)
@@ -46,6 +46,8 @@ def text_only_answer(task: MultimodalTask) -> str:
         "invoice_total_due_noisy": "2100",
         "routing_owner_lookup": "payments-platform",
         "latency_sla_breach_region": "none",
+        "incident_packet_escalation_owner": "release-manager",
+        "policy_exception_owner": "analytics-oncall",
     }
     return guesses.get(task.task_id, "")
 
@@ -67,6 +69,33 @@ def extract_digits_only(text: str) -> int | None:
     if not match:
         return None
     return int(match.group(0).replace("$", ""))
+
+
+def route_page(pages: list[dict], target_tokens: list[str], target_role: str | None) -> dict:
+    best_page = pages[0]
+    best_score = -1
+    for page in pages:
+        score = 0
+        haystack = " ".join(page.get("ocr_lines", [])).lower()
+        for token in target_tokens:
+            if token and token.lower() in haystack:
+                score += 1
+        if target_role and page.get("doc_role") == target_role:
+            score += 3
+        if score > best_score:
+            best_score = score
+            best_page = page
+    return best_page
+
+
+def select_region(regions: list[dict], target_region: str | None) -> dict | None:
+    if not regions:
+        return None
+    if target_region:
+        for region in regions:
+            if region.get("region_id") == target_region or region.get("label") == target_region:
+                return region
+    return regions[0]
 
 
 def vision_augmented_answer(task: MultimodalTask) -> MultimodalRun:
@@ -152,6 +181,22 @@ def ocr_only_answer(task: MultimodalTask) -> MultimodalRun:
         extracted_fields["breach_region"] = answer
         trace.append(f"pick_max_parseable_wait -> {answer}")
         visual_tokens_used = len(cells)
+    elif task.task_id == "incident_packet_escalation_owner":
+        first_page = context["pages"][0]
+        trace.append(f"read_first_page_only -> {first_page['page_id']}")
+        answer = "release-manager"
+        extracted_fields["target_page"] = first_page["page_id"]
+        extracted_fields["owner"] = answer
+        trace.append(f"pick_summary_owner -> {answer}")
+        visual_tokens_used = len(first_page.get("ocr_lines", []))
+    elif task.task_id == "policy_exception_owner":
+        regions = context["ocr_regions"]
+        trace.append(f"read_region_text_in_order -> {len(regions)} regions")
+        answer = "analytics-oncall"
+        extracted_fields["target_region"] = "summary_card"
+        extracted_fields["owner"] = answer
+        trace.append(f"pick_first_owner_like_text -> {answer}")
+        visual_tokens_used = len(regions)
     else:
         answer = text_only_answer(task)
         visual_tokens_used = 0
@@ -217,6 +262,49 @@ def structured_pipeline_answer(task: MultimodalTask) -> MultimodalRun:
         trace.append(f"normalize_wait_values -> {extracted_fields}")
         trace.append(f"return_first_breach_region -> {answer}")
         visual_tokens_used = len(context["ocr_cells"])
+    elif task.task_id == "incident_packet_escalation_owner":
+        pages = context["pages"]
+        hints = context.get("grounding_hints", {})
+        routed_page = route_page(
+            pages,
+            [context["target_service"], context["target_severity"]],
+            hints.get("target_page_role"),
+        )
+        routed_region = select_region(routed_page.get("regions", []), hints.get("target_region"))
+        matched_row = next(
+            row
+            for row in routed_page["table_rows"]
+            if row["service"] == context["target_service"] and row["severity"] == context["target_severity"]
+        )
+        answer = matched_row["owner"]
+        extracted_fields["target_page"] = routed_page["page_id"]
+        extracted_fields["target_region"] = routed_region["region_id"] if routed_region else "none"
+        extracted_fields["service"] = matched_row["service"]
+        extracted_fields["severity"] = matched_row["severity"]
+        extracted_fields["owner"] = matched_row["owner"]
+        trace.append(f"route_page -> {routed_page['page_id']}")
+        trace.append(f"ground_region -> {extracted_fields['target_region']}")
+        trace.append(f"extract_routing_row -> {matched_row}")
+        trace.append(f"return_owner -> {answer}")
+        visual_tokens_used = sum(len(page.get("ocr_lines", [])) for page in pages)
+    elif task.task_id == "policy_exception_owner":
+        regions = context["regions"]
+        hints = context.get("grounding_hints", {})
+        target_region = select_region(regions, hints.get("target_region"))
+        matched_row = next(
+            row
+            for row in target_region["rows"]
+            if row["service"] == context["target_service"] and row["policy"] == context["target_policy"]
+        )
+        answer = matched_row["owner"]
+        extracted_fields["target_region"] = target_region["region_id"]
+        extracted_fields["service"] = matched_row["service"]
+        extracted_fields["policy"] = matched_row["policy"]
+        extracted_fields["owner"] = matched_row["owner"]
+        trace.append(f"ground_region -> {target_region['region_id']}")
+        trace.append(f"extract_policy_row -> {matched_row}")
+        trace.append(f"return_owner -> {answer}")
+        visual_tokens_used = len(context["ocr_regions"])
     else:
         return vision_augmented_answer(task)
 
@@ -232,6 +320,10 @@ def structured_pipeline_answer(task: MultimodalTask) -> MultimodalRun:
     )
 
 
+def grounded_pipeline_answer(task: MultimodalTask) -> MultimodalRun:
+    return structured_pipeline_answer(task)
+
+
 def build_run(task: MultimodalTask, strategy: str) -> MultimodalRun:
     if strategy == "reference":
         return MultimodalRun(
@@ -244,6 +336,8 @@ def build_run(task: MultimodalTask, strategy: str) -> MultimodalRun:
         )
     if strategy == "structured_pipeline":
         return structured_pipeline_answer(task)
+    if strategy == "grounded_pipeline":
+        return grounded_pipeline_answer(task)
     if strategy == "ocr_only":
         return ocr_only_answer(task)
     if strategy == "vision_augmented":

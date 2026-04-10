@@ -66,7 +66,45 @@
 - `Pretraining` 与 `Post-Training` 的 V2 任务体系已补齐，不再只有旧 `T*` 过渡编号。
 - `Post-Training` 已补到 runnable `stage5_toy_alignment`，可跑 toy DPO / GRPO-like。
 - 三类公司案例层已补到 playbook 级文档，可按团队规模代入真实路线。
+- `Multimodal` 已补到 grounding / multi-page document pipeline，并接入 regression suite。
 - 当前仍未成体系的主要是: 更复杂的 multimodal OCR / table / grounding 联合管线、更长链路的 agentic memory / reflection，以及更深入的 cost / latency / live routing integration。
+
+## Session Entry
+
+- Date: 2026-04-10 23:51 CST
+- Goal: 落地 backlog 第 5 项，把 Multimodal 从 noisy OCR 扩到 grounding / multi-page doc pipeline，并正式接进 regression suite。
+- Status: 已完成 grounding 数据集、multi-page/region pipeline、suite 接线、测试和文档更新，正准备提交与 push。
+- Key findings:
+  - 多模态链路真正常见的失败不是“模型没看到字”，而是“看错了页”和“看错了区域”。
+  - 如果 grounding 能力不进入 regression suite，它就只是一次性 demo，不会形成可维护能力。
+  - `ocr_only` 与 `grounded_pipeline` 的对照必须同时保留，否则读者很难感受到 page routing / region selection 的真实价值。
+- Files touched:
+  - `datasets/tiny_multimodal_grounding/eval.jsonl`
+  - `assets/figures/multimodal_incident_packet.svg`
+  - `assets/figures/multimodal_policy_board.svg`
+  - `tasks/M04_grounding_and_multipage_pipeline.md`
+  - `code/stage_multimodal/task_runner.py`
+  - `eval/multimodal_eval.py`
+  - `code/stage_harness/summary_board.py`
+  - `manifests/regression_v2_suite.json`
+  - `tests/test_multimodal_grounding.py`
+  - `tasks/README.md`
+  - `tracks/multimodal/README.md`
+  - `docs/runbook.md`
+  - `docs/ci_regression_guide_zh.md`
+  - `code/README.md`
+  - `README.md`
+  - `docs/delivery_backlog.md`
+  - `docs/session_handoff.md`
+- Validation:
+  - `python3 eval/multimodal_eval.py --data-path datasets/tiny_multimodal_grounding/eval.jsonl --strategy ocr_only --report-path runs/multimodal_grounding_ocr_only.json`
+  - `python3 eval/multimodal_eval.py --data-path datasets/tiny_multimodal_grounding/eval.jsonl --strategy grounded_pipeline --report-path runs/multimodal_grounding_grounded_pipeline.json`
+  - `python3 code/stage_harness/regression_compare.py --baseline-report runs/multimodal_grounding_ocr_only.json --candidate-report runs/multimodal_grounding_grounded_pipeline.json --output runs/multimodal_grounding_regression_diff.json`
+  - `python3 -m unittest discover -s tests`
+  - `python3 code/stage_harness/suite_runner.py --manifest manifests/regression_v2_suite.json --output runs/regression_suite_report.json --md-output runs/regression_suite_report.md --strict --require-ship`
+- Next step:
+  - 提交并 push 到远程仓库
+  - 继续做 backlog 第 6 项的 agentic reflection / eval
 
 ## Session Entry
 

@@ -13,6 +13,7 @@
 - 已有 `tiny_multimodal` 数据、SVG 视觉样本、task runner 和 `eval/multimodal_eval.py`
 - 已形成 text-only vs vision-augmented 的最小对照实验
 - 已形成 `ocr_only` vs `structured_pipeline` 的 noisy OCR / document pipeline 对照实验
+- 已形成 `ocr_only` vs `grounded_pipeline` 的 multi-page / region grounding 对照实验
 
 建议首批任务:
 
@@ -20,5 +21,6 @@
 - `M01` 文档理解
 - `M02` 图表与表格推理
 - `M03` noisy OCR pipeline
+- `M04` grounding and multi-page pipeline
 
 当前可直接运行的最小命令见 [runbook.md](/Volumes/ExtaData/newcode/llm-engineering-lab/docs/runbook.md)。

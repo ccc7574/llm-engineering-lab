@@ -68,6 +68,12 @@ TRACK_CONFIG = {
         "quality_gate": 0.05,
         "cost_metrics": ["avg_visual_tokens_used", "avg_observation_steps", "avg_reasoning_steps"],
     },
+    "multimodal_grounding": {
+        "label": "Multimodal Grounding",
+        "primary_metric": "task_success_rate",
+        "quality_gate": 0.05,
+        "cost_metrics": ["avg_visual_tokens_used", "avg_observation_steps", "avg_reasoning_steps"],
+    },
     "repo_context": {
         "label": "Coding Repo Context",
         "primary_metric": "pass_at_1",
