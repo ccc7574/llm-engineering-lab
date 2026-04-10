@@ -54,6 +54,8 @@
 - release note:
   - `runs/release_note.json`
   - `runs/release_note.md`
+- pr comment:
+  - `runs/pr_comment_result.json`
 - summary board:
   - `runs/summary_board.json`
   - `runs/summary_board.md`
@@ -147,7 +149,8 @@ workflow 会做这些事:
 12. 基于 dispatch policy 判断是否允许真实发送
 13. 生成 review summary
 14. 生成 release note
-15. 把 release note、trend board、review summary、digest、route diff、suite report 和 summary board 写进 GitHub Job Summary
+15. 在 `pull_request` 下尝试回写 PR comment
+16. 把 release note、trend board、review summary、digest、route diff、suite report 和 summary board 写进 GitHub Job Summary
 
 如果通过 `workflow_dispatch` 显式传入:
 
@@ -190,6 +193,15 @@ workflow 会做这些事:
 - dispatch status
 
 如果团队后续要接 PR comment bot 或 release note 自动发布，这个文件就是最直接的上游输入。
+
+### `runs/pr_comment_result.json`
+
+看 PR comment 回写阶段发生了什么:
+
+- create 还是 update
+- 是否缺 token
+- 是否因为权限问题而降级
+- 最终评论 ID / URL
 
 ### `runs/harness_trend_board.md`
 
@@ -385,6 +397,7 @@ workflow 会做这些事:
 - review summary
 - trend board
 - release note
+- PR comment writeback
 
 ## 当前还没做的部分
 

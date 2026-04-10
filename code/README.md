@@ -147,6 +147,7 @@ Harness 能力线的最小入口。
 - `notification_review_summary.py`
 - `trend_board.py`
 - `release_note.py`
+- `pr_comment.py`
 
 用途:
 
@@ -170,6 +171,7 @@ Harness 能力线的最小入口。
 - 支持 dispatch retry、幂等键和结构化 dispatch result artifact
 - 生成 PR comment / release note 所需的统一 reviewer artifact
 - 支持 provider-aware ack 解析和 channel-specific backoff 分类
+- 支持 marker-based PR comment upsert 和结构化回写结果
 
 ### `stage_agentic`
 

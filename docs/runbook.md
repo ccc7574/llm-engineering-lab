@@ -526,6 +526,29 @@ python3 code/stage_harness/release_note.py \
 - 后续 PR comment bot
 - release owner 的统一放行说明
 
+## `H30`: PR Comment Writeback
+
+如果要把 `release_note.md` 真正写回 GitHub PR comment，可以执行:
+
+```bash
+python3 code/stage_harness/pr_comment.py \
+  --repo owner/repo \
+  --pr-number 123 \
+  --body-path runs/release_note.md \
+  --dry-run \
+  --output runs/pr_comment_result.json
+```
+
+真实写回时去掉 `--dry-run`，并提供:
+
+- `GITHUB_TOKEN` 或 `GH_TOKEN`
+
+这个脚本会:
+
+- 用 marker 识别是否已有机器人评论
+- 已有则 update，没有则 create
+- 在缺 token 或权限不足时保留 result artifact，而不是强行拖挂整条 suite
+
 ## 2026 V2 说明
 
 从 V2 开始，这个仓库的主入口应以:

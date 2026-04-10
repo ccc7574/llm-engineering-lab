@@ -14,6 +14,7 @@ from code.stage_harness.notification_dispatch import (
     classify_dispatch_response,
     execute_dispatch,
 )
+from code.stage_harness.pr_comment import build_comment_body, find_existing_comment, publish_pr_comment
 from code.stage_harness.notification_dispatch_policy import evaluate_policy
 from code.stage_harness.release_note import build_release_note, format_markdown as format_release_note_markdown
 from code.stage_harness.notification_review_summary import build_summary, format_markdown
@@ -411,6 +412,49 @@ class NotificationHarnessTests(unittest.TestCase):
         self.assertEqual(payload["dispatch_status"], "dry_run")
         self.assertIn("Reviewer Checklist", markdown)
         self.assertIn("Cost Drift", markdown)
+
+    def test_pr_comment_body_is_marker_prefixed(self) -> None:
+        body = build_comment_body("<!-- marker -->", "# Title")
+        self.assertTrue(body.startswith("<!-- marker -->"))
+
+    def test_pr_comment_finds_existing_marker_comment(self) -> None:
+        comment = find_existing_comment(
+            [
+                {"id": 1, "body": "hello"},
+                {"id": 2, "body": "<!-- llm-engineering-lab:release-note -->\n\ncontent"},
+            ],
+            "<!-- llm-engineering-lab:release-note -->",
+        )
+        self.assertEqual(comment["id"], 2)
+
+    def test_pr_comment_missing_token_can_skip(self) -> None:
+        result = publish_pr_comment(
+            repo="octo/repo",
+            pr_number=12,
+            body="# Release Candidate Ready",
+            token=None,
+            api_base="https://api.github.com",
+            marker="<!-- marker -->",
+            dry_run=False,
+            allow_failure=False,
+            skip_if_missing_token=True,
+        )
+        self.assertEqual(result["final_status"], "missing_token")
+
+    def test_pr_comment_dry_run_returns_body(self) -> None:
+        result = publish_pr_comment(
+            repo="octo/repo",
+            pr_number=12,
+            body="# Release Candidate Ready",
+            token="token",
+            api_base="https://api.github.com",
+            marker="<!-- marker -->",
+            dry_run=True,
+            allow_failure=False,
+            skip_if_missing_token=False,
+        )
+        self.assertEqual(result["final_status"], "dry_run")
+        self.assertIn("Release Candidate Ready", result["response_text"])
 
 
 if __name__ == "__main__":

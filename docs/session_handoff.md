@@ -64,6 +64,36 @@
 
 ## Session Entry
 
+- Date: 2026-04-10 22:05 CST
+- Goal: 给 Harness 补真正的 PR comment 回写，把 release note upsert 到 PR 页面。
+- Status: 已完成 PR comment upsert 脚本、workflow 接线、测试、文档更新和本地验证，正准备提交与 push。
+- Key findings:
+  - PR comment 这层不能每次都新发一条，否则 reviewer 很快会被 CI 评论刷屏；必须走 marker-based upsert。
+  - 对 fork / 缺 token / 权限不足场景，正确做法是保留 result artifact 并优雅降级，而不是把主回归链拖挂。
+  - 现在 release note、Job Summary 和 PR comment 已经能复用同一份上游内容，避免三套文本分叉。
+- Files touched:
+  - `code/stage_harness/pr_comment.py`
+  - `tests/test_notification_harness.py`
+  - `.github/workflows/regression-suite.yml`
+  - `tasks/H30_pr_comment_writeback.md`
+  - `tasks/README.md`
+  - `tracks/harness/README.md`
+  - `code/README.md`
+  - `README.md`
+  - `docs/runbook.md`
+  - `docs/ci_regression_guide_zh.md`
+  - `docs/session_handoff.md`
+- Validation:
+  - `python3 -m unittest discover -s tests`
+  - `python3 code/stage_harness/pr_comment.py --repo ccc7574/llm-engineering-lab --pr-number 1 --body-path runs/release_note.md --dry-run --output runs/pr_comment_result.json`
+  - `python3 -m py_compile code/stage_harness/pr_comment.py`
+  - `python3 code/stage_harness/suite_runner.py --manifest manifests/regression_v2_suite.json --output runs/regression_suite_report.json --md-output runs/regression_suite_report.md --strict --require-ship`
+- Next step:
+  - 提交并 push 到远程仓库
+  - 继续把 Harness 往真实 GitHub API 回写权限诊断和 failure-category-aware routing 推进
+
+## Session Entry
+
 - Date: 2026-04-10 21:45 CST
 - Goal: 把 dispatch 从通用重试推进到 provider-aware ack / backoff。
 - Status: 已完成 Slack / 飞书 ack 分类、rate-limit / provider_error / permanent_rejection 区分、测试、文档更新和本地验证，正准备提交与 push。

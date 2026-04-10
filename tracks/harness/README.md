@@ -34,6 +34,7 @@
 - 已支持 dispatch retry / idempotency，可减少 webhook 抖动和重复发送风险
 - 已支持 release note 生成，可把 reviewer / release owner 需要的结论压成统一 artifact
 - 已支持 provider-aware dispatch ack / backoff，可区分 rate limit、永久拒绝和临时失败
+- 已支持 PR comment writeback，可把 release note upsert 到同一条 PR 评论
 
 建议首批任务:
 
@@ -59,3 +60,4 @@
 - `H27` dispatch retry and idempotency
 - `H28` PR comment and release note
 - `H29` provider-aware backoff and ack
+- `H30` PR comment writeback

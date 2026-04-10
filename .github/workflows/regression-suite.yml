@@ -50,6 +50,8 @@ on:
 
 permissions:
   contents: read
+  issues: write
+  pull-requests: write
 
 concurrency:
   group: regression-suite-${{ github.ref }}
@@ -300,6 +302,21 @@ PY
               "${dispatch_args[@]}" \
               --output runs/release_note.json \
               --md-output runs/release_note.md
+          fi
+
+      - name: Publish PR Comment
+        if: always() && github.event_name == 'pull_request'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if [ -f runs/release_note.md ]; then
+            python3 code/stage_harness/pr_comment.py \
+              --repo "${{ github.repository }}" \
+              --pr-number "${{ github.event.pull_request.number }}" \
+              --body-path runs/release_note.md \
+              --skip-if-missing-token \
+              --allow-failure \
+              --output runs/pr_comment_result.json
           fi
 
       - name: Publish Job Summary
