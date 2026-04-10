@@ -1,0 +1,21 @@
+{
+  "channel_payloads": {
+    "none": null,
+    "slack_webhook": "runs/notification_slack.json",
+    "feishu_webhook": "runs/notification_feishu.json"
+  },
+  "rules": [
+    {
+      "event_names": ["schedule"],
+      "severities": ["critical", "warning"],
+      "channel": "feishu_webhook",
+      "reason": "scheduled regression with warning/critical severity routes to feishu oncall"
+    },
+    {
+      "event_names": ["workflow_dispatch"],
+      "severities": ["critical", "warning"],
+      "channel": "feishu_webhook",
+      "reason": "manual runs with non-green status route to feishu for fast triage"
+    }
+  ]
+}

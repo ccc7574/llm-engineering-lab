@@ -57,7 +57,39 @@
 - `Harness` 已补到 notification routing policy，可按 event / severity 选择 channel。
 - `Harness` 已补到 route override 与更细 failure taxonomy，可支持临时人工覆盖和更细通知决策。
 - `Harness` 已补到 route matrix，可把 routing policy 导出成可审阅 artifact。
-- 当前仍未成体系的主要是: 更复杂的 multimodal OCR / table / grounding 联合管线、更长链路的 agentic memory / reflection，以及更深入的 cost / latency / live policy integration。
+- `Harness` 已补到 route diff，可比较 baseline 和 candidate policy 的行为变化。
+- 当前仍未成体系的主要是: 更复杂的 multimodal OCR / table / grounding 联合管线、更长链路的 agentic memory / reflection，以及更深入的 cost / latency / CI policy integration。
+
+## Session Entry
+
+- Date: 2026-04-10 05:05 CST
+- Goal: 给通知策略补 policy regression diff，让 route policy 也能做 baseline vs candidate 对照。
+- Status: 已完成 route diff 脚本、baseline policy manifest、运行说明与中文文档更新。
+- Key findings:
+  - route matrix 解决了“现在会怎么路由”，route diff 解决了“这次改动到底改了哪些路由”。
+  - 对通知系统来说，baseline policy 非常有价值，因为它能把“意图上的升级”和“行为上的扩散”区分开来。
+  - 当前仓库的 Harness 已经具备从 policy 定义到 policy diff 的完整最小回归链。
+- Files touched:
+  - `code/stage_harness/notification_route_diff.py`
+  - `manifests/notification_routes_baseline.json`
+  - `tasks/H21_notification_policy_regression.md`
+  - `code/README.md`
+  - `tasks/README.md`
+  - `tracks/harness/README.md`
+  - `README.md`
+  - `docs/runbook.md`
+  - `docs/ci_regression_guide_zh.md`
+  - `docs/session_handoff.md`
+- Validation:
+  - `python3 code/stage_harness/notification_route_matrix.py --routes manifests/notification_routes_baseline.json --output runs/notification_route_matrix_baseline.json --md-output runs/notification_route_matrix_baseline.md`
+  - `python3 code/stage_harness/notification_route_matrix.py --routes manifests/notification_routes.json --output runs/notification_route_matrix_candidate.json --md-output runs/notification_route_matrix_candidate.md`
+  - `python3 code/stage_harness/notification_route_diff.py --baseline runs/notification_route_matrix_baseline.json --candidate runs/notification_route_matrix_candidate.json --output runs/notification_route_diff.json --md-output runs/notification_route_diff.md`
+  - 结果:
+    - route diff 已生成
+    - 能明确看出 `schedule + info` 由 `none` 升级到 `slack_webhook`
+- Next step:
+  - 把 Harness 往 policy regression gate、route lint、schedule-only live notification 推进
+  - 或把 Multimodal 往 grounding / multi-page doc pipeline 推进
 
 ## Session Entry
 

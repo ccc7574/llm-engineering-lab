@@ -330,6 +330,28 @@ python3 code/stage_harness/notification_route_matrix.py \
   --md-output runs/notification_route_matrix.md
 ```
 
+## `H21`: Notification Policy Regression
+
+如果要比较 baseline 与 candidate policy 的实际路由变化:
+
+```bash
+python3 code/stage_harness/notification_route_matrix.py \
+  --routes manifests/notification_routes_baseline.json \
+  --output runs/notification_route_matrix_baseline.json \
+  --md-output runs/notification_route_matrix_baseline.md
+
+python3 code/stage_harness/notification_route_matrix.py \
+  --routes manifests/notification_routes.json \
+  --output runs/notification_route_matrix_candidate.json \
+  --md-output runs/notification_route_matrix_candidate.md
+
+python3 code/stage_harness/notification_route_diff.py \
+  --baseline runs/notification_route_matrix_baseline.json \
+  --candidate runs/notification_route_matrix_candidate.json \
+  --output runs/notification_route_diff.json \
+  --md-output runs/notification_route_diff.md
+```
+
 ## 2026 V2 说明
 
 从 V2 开始，这个仓库的主入口应以:

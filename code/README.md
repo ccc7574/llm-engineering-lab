@@ -140,6 +140,7 @@ Harness 能力线的最小入口。
 - `notification_dispatch.py`
 - `notification_route.py`
 - `notification_route_matrix.py`
+- `notification_route_diff.py`
 
 用途:
 
@@ -154,6 +155,7 @@ Harness 能力线的最小入口。
 - 基于 event / severity / gate 选择通知 channel
 - 支持 route override 和更细粒度 failure taxonomy
 - 生成 route matrix 作为 policy review artifact
+- 比较 baseline vs candidate route matrix
 
 ### `stage_agentic`
 

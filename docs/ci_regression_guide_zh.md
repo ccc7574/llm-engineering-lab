@@ -35,6 +35,7 @@
   - `code/stage_harness/notification_route.py`
   - `manifests/notification_routes.json`
   - `code/stage_harness/notification_route_matrix.py`
+  - `code/stage_harness/notification_route_diff.py`
 - summary board:
   - `runs/summary_board.json`
   - `runs/summary_board.md`
@@ -197,6 +198,16 @@ workflow 会做这些事:
 - 调整通知规则后的回归检查
 - 团队沟通“这套路由到底会怎么走”
 
+### `runs/notification_route_diff.md`
+
+看 baseline policy 和 candidate policy 的实际路由差异。
+
+这个文件适合:
+
+- policy 变更 review
+- 判断通知范围是否发生意外扩大
+- 记录“这次通知策略升级到底改变了哪几行行为”
+
 ### `runs/regression_suite_report.md`
 
 看整条 suite 是否跑完，哪些 step 失败，哪些产物缺失。
@@ -252,6 +263,7 @@ workflow 会做这些事:
 - route override
 - 更细的 runtime failure taxonomy
 - route matrix artifact
+- route diff artifact
 
 ## 当前还没做的部分
 
@@ -263,6 +275,7 @@ workflow 会做这些事:
 - 更细粒度的通知路由策略，比如 schedule 才发、PR 失败才发
 - 更精细的 changed-scope 依赖图，而不只是 scope tag
 - failure taxonomy 与 route policy 的进一步联动
+- route diff 接进 CI 的 policy regression 检查
 
 ## 建议的团队使用方式
 
