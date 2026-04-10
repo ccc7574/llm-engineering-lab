@@ -226,14 +226,10 @@ PY
       - name: Enforce Notification Policy Gate
         if: always() && env.REQUIRE_POLICY_GATE == 'true'
         run: |
-          python3 - <<'PY'
-import json
-from pathlib import Path
-payload=json.loads(Path('runs/notification_policy_gate.json').read_text())
-if payload['decision'] != 'ship':
-    raise SystemExit(f"notification policy gate failed: {payload['reason']}")
-print(payload['decision'])
-PY
+          python3 code/stage_harness/notification_policy_gate.py \
+            --route-diff runs/notification_route_diff.json \
+            --policy manifests/notification_policy_gate.json \
+            --fail-on-non-ship
 
       - name: Build Notification Review Summary
         if: always()

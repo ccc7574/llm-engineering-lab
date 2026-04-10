@@ -244,7 +244,12 @@ workflow 会做这些事:
 - policy review 最终结论
 - 说明“这次通知规则变化是否超出团队约定边界”
 
-现在这条 gate 已经可以直接进入 workflow。
+现在这条 gate 在 workflow 里分成两层:
+
+- report mode: 始终生成 `notification_policy_gate.json`
+- enforce mode: 只有 `require_policy_gate=true` 时才要求非 `ship` 直接失败
+
+这样 PR / 手工调试时可以先拿到 artifact，再决定是否把它作为阻断条件。
 
 ### `runs/notification_dispatch_policy.json`
 

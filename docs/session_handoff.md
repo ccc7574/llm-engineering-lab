@@ -64,9 +64,33 @@
 
 ## Session Entry
 
+- Date: 2026-04-10 20:42 CST
+- Goal: 修复 notification policy gate 的可选开关语义，并给通知链补自动化测试。
+- Status: 已完成 policy gate report/enforce 语义拆分、通知链测试补齐和 handoff 状态修正。
+- Key findings:
+  - `require_policy_gate` 如果只在 workflow 层做开关，但底层脚本默认非 ship 直接退出，开关就会失效。
+  - 对通知链这类已经进入 CI 主路径的逻辑，必须有最小自动化测试，不能再只靠手工 dry-run。
+  - 当前测试已经覆盖 `policy gate report vs enforce`、`schedule dispatch allow`、`manual default suppress` 和 `review summary` 关键行为。
+- Files touched:
+  - `.github/workflows/regression-suite.yml`
+  - `code/stage_harness/notification_policy_gate.py`
+  - `tests/test_notification_harness.py`
+  - `docs/runbook.md`
+  - `docs/ci_regression_guide_zh.md`
+  - `docs/session_handoff.md`
+- Validation:
+  - `python3 -m unittest discover -s tests`
+  - `python3 code/stage_harness/suite_runner.py --manifest manifests/regression_v2_suite.json --output runs/regression_suite_report.json --md-output runs/regression_suite_report.md --strict --require-ship`
+  - `python3 code/stage_harness/notification_policy_gate.py --route-diff runs/notification_route_diff.json --policy manifests/notification_policy_gate.json --output runs/notification_policy_gate.json`
+  - `python3 code/stage_harness/notification_policy_gate.py --route-diff runs/notification_route_diff.json --policy manifests/notification_policy_gate.json --fail-on-non-ship`
+- Next step:
+  - 把 Harness 往 latency / cost trend board、dispatch retry / idempotency、PR comment / release note 自动生成推进
+
+## Session Entry
+
 - Date: 2026-04-10 20:24 CST
 - Goal: 给通知链补 dispatch policy 和 reviewer summary，让 workflow 能区分“生成 artifact”和“允许真实外发”。
-- Status: 已完成 dispatch policy、review summary、workflow 接线和文档更新，正准备做本地验证与提交。
+- Status: 已完成 dispatch policy、review summary、workflow 接线、文档更新、本地验证、提交与 push。
 - Key findings:
   - route policy 只回答“走哪个 channel”，真实生产里还必须再回答“这次 run 允不允许发”。
   - 把 release gate、route gate、dispatch gate 压缩到一张 summary 卡片后，reviewer 不需要再手动拼接多个 artifact。
@@ -86,10 +110,16 @@
   - `docs/ci_regression_guide_zh.md`
   - `docs/session_handoff.md`
 - Validation:
-  - 待执行本地 suite / policy / summary 验证
+  - `python3 code/stage_harness/suite_runner.py --manifest manifests/regression_v2_suite.json --output runs/regression_suite_report.json --md-output runs/regression_suite_report.md --strict --require-ship`
+  - `python3 code/stage_harness/notification_digest.py --suite-report runs/regression_suite_report.json --summary-board runs/summary_board.json --gate-report runs/gate_report.json --output runs/notification_digest.json --md-output runs/notification_digest.md`
+  - `python3 code/stage_harness/notification_route.py --digest runs/notification_digest.json --routes manifests/notification_routes.json --event-name schedule --default-channel none --output runs/notification_route.json`
+  - `python3 code/stage_harness/notification_dispatch_policy.py --digest runs/notification_digest.json --route runs/notification_route.json --policy manifests/notification_dispatch_policy.json --event-name schedule --output runs/notification_dispatch_policy.json`
+  - `python3 code/stage_harness/notification_review_summary.py --digest runs/notification_digest.json --route runs/notification_route.json --policy-gate runs/notification_policy_gate.json --dispatch-policy runs/notification_dispatch_policy.json --output runs/notification_review_summary.json --md-output runs/notification_review_summary.md`
+  - 已 commit `8abbaf8`
+  - 已 push 到 `origin/main`
 - Next step:
-  - 跑本地回归与 dispatch policy / review summary 验证
-  - 提交并 push 到远程仓库
+  - 修复 policy gate 的可选开关语义
+  - 给通知链补自动化测试
 
 ## Session Entry
 

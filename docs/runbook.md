@@ -367,9 +367,20 @@ python3 code/stage_harness/notification_policy_gate.py \
   --output runs/notification_policy_gate.json
 ```
 
+上面这条命令默认只生成 gate report，不会因为 `decision != ship` 直接退出失败。
+
 如果要在 CI 里也强制执行这条 gate，workflow_dispatch 现在支持:
 
 - `require_policy_gate=true`
+
+如果要在本地显式模拟“非 ship 直接失败”的 enforcement 模式，可以加上:
+
+```bash
+python3 code/stage_harness/notification_policy_gate.py \
+  --route-diff runs/notification_route_diff.json \
+  --policy manifests/notification_policy_gate.json \
+  --fail-on-non-ship
+```
 
 ## `H24`: Notification Dispatch Policy
 
