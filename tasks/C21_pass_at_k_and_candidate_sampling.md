@@ -12,6 +12,10 @@
 
 这就是 `pass@k` 的工程意义。
 
+参考图:
+
+- [coding_eval_ladder.svg](/Volumes/ExtaData/newcode/llm-engineering-lab/assets/figures/coding_eval_ladder.svg)
+
 ## 任务目标
 
 - 建立最小 `single_sample -> sample_k` 对照

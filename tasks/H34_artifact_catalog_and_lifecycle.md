@@ -10,6 +10,10 @@
 
 如果没有 artifact catalog，产物再多也只是“目录越来越乱”。
 
+参考图:
+
+- [harness_artifact_governance.svg](/Volumes/ExtaData/newcode/llm-engineering-lab/assets/figures/harness_artifact_governance.svg)
+
 ## 任务目标
 
 - 建立最小 artifact catalog

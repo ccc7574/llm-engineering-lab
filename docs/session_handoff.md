@@ -74,6 +74,30 @@
 
 ## Session Entry
 
+- Date: 2026-04-10 23:55 CST
+- Goal: 开始补关键任务的交付级 SVG 资产，优先覆盖 Harness artifact governance 和 Coding eval ladder。
+- Status: 已完成两张 SVG，并把它们接到 `H34`、`C20`、`C21` 和 figures README；下一步是提交与 push，并继续补更多训练/评测/案例图。
+- Key findings:
+  - 图示最有价值的地方不是“更好看”，而是把任务之间的依赖层级和评测梯度一次性讲清楚。
+  - 对当前仓库来说，最该优先可视化的不是已经很直观的多模态样本，而是更抽象的 Harness 治理链和 Coding 评测梯度。
+  - 交付级 SVG 和 Mermaid 草图应该并存: 前者用于 README / 任务卡，后者用于快速草拟结构。
+- Files touched:
+  - `assets/figures/harness_artifact_governance.svg`
+  - `assets/figures/coding_eval_ladder.svg`
+  - `assets/figures/README.md`
+  - `tasks/C20_swebench_style_task_decomposition.md`
+  - `tasks/C21_pass_at_k_and_candidate_sampling.md`
+  - `tasks/H34_artifact_catalog_and_lifecycle.md`
+  - `docs/delivery_backlog.md`
+  - `docs/session_handoff.md`
+- Validation:
+  - `python3` XML parse 校验两张 SVG 通过
+- Next step:
+  - 提交并 push 到远程仓库
+  - 继续补训练/评测/案例可视化资产
+
+## Session Entry
+
 - Date: 2026-04-10 23:40 CST
 - Goal: 推进 backlog 第 8 项，把 Harness 从 regression 扩到 artifact / baseline 治理。
 - Status: 已完成 artifact catalog、baseline snapshot、failure replay plan、suite 接线、测试和文档更新；下一步是提交与 push，并决定是否继续做更细粒度 failure sample replay。

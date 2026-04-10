@@ -10,6 +10,10 @@
 
 这正是 SWE-bench 风格任务的核心。
 
+参考图:
+
+- [coding_eval_ladder.svg](/Volumes/ExtaData/newcode/llm-engineering-lab/assets/figures/coding_eval_ladder.svg)
+
 ## 任务目标
 
 - 建立 `issue_localized -> triage_loop` 对照
