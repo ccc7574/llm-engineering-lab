@@ -25,12 +25,13 @@ class AgentEvalResult:
     state_reads: int
     state_writes: int
     recovery_attempts: int
+    reflection_steps: int
 
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
     parser.add_argument("--data-path", default="datasets/tiny_agentic/eval.jsonl")
-    parser.add_argument("--strategy", choices=["direct", "tool_use", "stateful", "reference"], default="tool_use")
+    parser.add_argument("--strategy", choices=["direct", "tool_use", "stateful", "reflective", "reference"], default="tool_use")
     parser.add_argument("--task-id", default=None)
     parser.add_argument("--report-path", default=None)
     return parser.parse_args()
@@ -61,6 +62,7 @@ def main() -> None:
             state_reads=run.state_reads,
             state_writes=run.state_writes,
             recovery_attempts=run.recovery_attempts,
+            reflection_steps=run.reflection_steps,
         )
         results.append(result)
         status = "pass" if success else "fail"
@@ -70,7 +72,7 @@ def main() -> None:
         print(
             f"  tool_calls={run.tool_calls} steps={run.steps} "
             f"state_reads={run.state_reads} state_writes={run.state_writes} "
-            f"recovery_attempts={run.recovery_attempts}"
+            f"recovery_attempts={run.recovery_attempts} reflection_steps={run.reflection_steps}"
         )
 
     successes = sum(1 for result in results if result.success)
@@ -85,6 +87,7 @@ def main() -> None:
         "avg_state_reads": sum(result.state_reads for result in results) / total,
         "avg_state_writes": sum(result.state_writes for result in results) / total,
         "avg_recovery_attempts": sum(result.recovery_attempts for result in results) / total,
+        "avg_reflection_steps": sum(result.reflection_steps for result in results) / total,
         "results": [asdict(result) for result in results],
     }
     print(f"task_success_rate={summary['task_success_rate']:.3f} ({successes}/{len(results)})")
@@ -93,6 +96,7 @@ def main() -> None:
     print(f"avg_state_reads={summary['avg_state_reads']:.2f}")
     print(f"avg_state_writes={summary['avg_state_writes']:.2f}")
     print(f"avg_recovery_attempts={summary['avg_recovery_attempts']:.2f}")
+    print(f"avg_reflection_steps={summary['avg_reflection_steps']:.2f}")
 
     if args.report_path:
         report_path = Path(args.report_path)

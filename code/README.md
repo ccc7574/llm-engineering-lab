@@ -195,6 +195,7 @@ Agentic 能力线的最小入口。
 - 演示 direct answer 与 tool use 的差异
 - 演示多步工具链与最小过程指标
 - 演示 state / memory 与 failure recovery 的最小可执行闭环
+- 演示 draft / critique / revise 的最小 reflection 对照实验
 
 ### `stage_multimodal`
 

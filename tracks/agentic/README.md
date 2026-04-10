@@ -14,6 +14,7 @@
 - 已有 `tiny_agentic`、`tiny_agentic_memory` 数据、工具定义、state 对象、task runner 和 `eval/agentic_eval.py`
 - 已形成 direct vs tool_use 的最小 agentic 对照实验
 - 已形成 tool_use vs stateful 的 state / recovery 对照实验
+- 已形成 tool_use vs reflective 的 reflection / self-check 对照实验
 
 建议首批任务:
 
@@ -21,5 +22,6 @@
 - `A01` 多步工具链
 - `A02` memory 与状态管理
 - `A10` 失败恢复
+- `A11` reflection and agent eval
 
 当前可直接运行的最小命令见 [runbook.md](/Volumes/ExtaData/newcode/llm-engineering-lab/docs/runbook.md)。

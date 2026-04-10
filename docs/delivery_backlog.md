@@ -24,7 +24,7 @@
 5. [done] 补 `Multimodal` 的 grounding / multi-page doc pipeline
    - 当前已到 OCR 与 structured pipeline，但还缺 page routing、region grounding、表格链路。
 
-6. 补 `Agentic` 的 reflection / agent eval
+6. [done] 补 `Agentic` 的 reflection / agent eval
    - 当前到 state / recovery 为止，离真实团队常见的 planner-reflection-observer 仍差一层。
 
 7. 补 `Coding` 的 SWE-bench 风格任务和 `pass@k`
@@ -48,7 +48,6 @@
 
 按以下顺序推进:
 
-1. `Agentic` reflection / eval
-2. `Coding` SWE-bench 风格任务
-3. 中英双语主线与角色导向路径
-4. 更完整的 artifact / baseline 治理
+1. `Coding` SWE-bench 风格任务
+2. 中英双语主线与角色导向路径
+3. 更完整的 artifact / baseline 治理

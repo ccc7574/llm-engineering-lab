@@ -32,6 +32,7 @@ class AgentRun:
     state_reads: int = 0
     state_writes: int = 0
     recovery_attempts: int = 0
+    reflection_steps: int = 0
     final_state: dict[str, str] | None = None
 
 
@@ -39,7 +40,7 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
     parser.add_argument("--data-path", default="datasets/tiny_agentic/eval.jsonl")
     parser.add_argument("--task-id", default=None)
-    parser.add_argument("--strategy", choices=["direct", "tool_use", "stateful", "reference"], default="tool_use")
+    parser.add_argument("--strategy", choices=["direct", "tool_use", "stateful", "reflective", "reference"], default="tool_use")
     parser.add_argument("--output", default=None)
     return parser.parse_args()
 
@@ -51,6 +52,8 @@ def direct_answer(task: AgentTask) -> str:
         "owner_message": "Notify ops in sev ops",
         "owner_channel_memory": "Page payments via payments",
         "fallback_recovery_message": "Notify search-oncall in search-hotline",
+        "reflection_retry_plan": "15",
+        "reflection_channel_repair": "Notify search-oncall in search-hotline",
     }
     return guesses.get(task.task_id, "")
 
@@ -103,6 +106,19 @@ def tool_use_answer(task: AgentTask) -> AgentRun:
         tool_calls += 1
         verdict = is_escalation_channel(channel, task.tool_context)
         trace.append(f"is_escalation_channel({channel}) -> {verdict}")
+        tool_calls += 1
+        answer = f"Notify {owner} in {channel}"
+    elif task.task_id == "reflection_retry_plan":
+        total = multiply(5, 3)
+        trace.append(f"multiply(5, 3) -> {total}")
+        tool_calls += 1
+        answer = str(total)
+    elif task.task_id == "reflection_channel_repair":
+        owner = lookup_service_owner("search", task.tool_context)
+        trace.append(f"lookup_service_owner(search) -> {owner}")
+        tool_calls += 1
+        channel = normalize_channel(" Search Hotline ")
+        trace.append(f"normalize_channel(' Search Hotline ') -> {channel}")
         tool_calls += 1
         answer = f"Notify {owner} in {channel}"
     else:
@@ -202,6 +218,68 @@ def stateful_answer(task: AgentTask) -> AgentRun:
     )
 
 
+def reflective_answer(task: AgentTask) -> AgentRun:
+    state = AgentState()
+    trace: list[str] = []
+    tool_calls = 0
+    reflection_steps = 0
+
+    if task.task_id == "reflection_retry_plan":
+        draft_total = multiply(5, 3)
+        trace.append(f"draft.multiply(5, 3) -> {draft_total}")
+        tool_calls += 1
+        state.store("draft_total", str(draft_total))
+        tier = lookup_service_tier("auth", task.tool_context)
+        trace.append(f"lookup_service_tier(auth) -> {tier}")
+        tool_calls += 1
+        multiplier = lookup_retry_multiplier(tier, task.tool_context)
+        trace.append(f"lookup_retry_multiplier({tier}) -> {multiplier}")
+        tool_calls += 1
+        reflection_steps += 1
+        trace.append("reflection.check_multiplier -> draft missing retry multiplier")
+        repaired_total = multiply(int(state.recall("draft_total")), multiplier)
+        trace.append(f"revise.multiply({state.recall('draft_total')}, {multiplier}) -> {repaired_total}")
+        tool_calls += 1
+        answer = str(repaired_total)
+    elif task.task_id == "reflection_channel_repair":
+        owner = lookup_service_owner("search", task.tool_context)
+        trace.append(f"lookup_service_owner(search) -> {owner}")
+        tool_calls += 1
+        state.store("owner", owner)
+        channel = normalize_channel(" Search Hotline ")
+        trace.append(f"normalize_channel(' Search Hotline ') -> {channel}")
+        tool_calls += 1
+        state.store("channel", channel)
+        verdict = is_escalation_channel(state.recall("channel"), task.tool_context)
+        trace.append(f"is_escalation_channel({channel}) -> {verdict}")
+        tool_calls += 1
+        if not verdict:
+            reflection_steps += 1
+            trace.append("reflection.check_channel -> draft channel is not escalation-safe")
+            repaired_channel = normalize_channel("Sev Ops")
+            trace.append(f"normalize_channel('Sev Ops') -> {repaired_channel}")
+            tool_calls += 1
+            state.store("channel", repaired_channel)
+        answer = f"Notify {state.recall('owner')} in {state.recall('channel')}"
+    else:
+        return stateful_answer(task)
+
+    trace.extend(state.observations)
+    return AgentRun(
+        task_id=task.task_id,
+        strategy="reflective",
+        answer=answer,
+        tool_calls=tool_calls,
+        steps=len(trace),
+        trace=trace,
+        state_reads=state.state_reads,
+        state_writes=state.state_writes,
+        recovery_attempts=state.recovery_attempts,
+        reflection_steps=reflection_steps,
+        final_state=dict(state.memory),
+    )
+
+
 def build_run(task: AgentTask, strategy: str) -> AgentRun:
     if strategy == "reference":
         return AgentRun(
@@ -214,6 +292,8 @@ def build_run(task: AgentTask, strategy: str) -> AgentRun:
         )
     if strategy == "stateful":
         return stateful_answer(task)
+    if strategy == "reflective":
+        return reflective_answer(task)
     if strategy == "tool_use":
         return tool_use_answer(task)
     answer = direct_answer(task)

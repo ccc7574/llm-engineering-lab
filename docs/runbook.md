@@ -185,6 +185,20 @@ python3 eval/agentic_eval.py --data-path datasets/tiny_agentic_memory/eval.jsonl
 python3 code/stage_harness/regression_compare.py --baseline-report runs/agentic_memory_tool_use.json --candidate-report runs/agentic_memory_stateful.json --output runs/agentic_memory_regression_diff.json
 ```
 
+## `A11`: Reflection / Agent Eval Path
+
+```bash
+python3 eval/agentic_eval.py --data-path datasets/tiny_agentic_reflection/eval.jsonl --strategy tool_use --report-path runs/agentic_reflection_tool_use.json
+python3 eval/agentic_eval.py --data-path datasets/tiny_agentic_reflection/eval.jsonl --strategy reflective --report-path runs/agentic_reflection_reflective.json
+python3 code/stage_harness/regression_compare.py --baseline-report runs/agentic_reflection_tool_use.json --candidate-report runs/agentic_reflection_reflective.json --output runs/agentic_reflection_regression_diff.json
+```
+
+这条路径主要看:
+
+- 第一版草稿为什么会错
+- critique / revise 是否真的改善成功率
+- `avg_reflection_steps` 带来了多少额外步骤成本
+
 ## `M00-M02`: Multimodal Starter Path
 
 ```bash

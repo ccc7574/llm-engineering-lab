@@ -67,7 +67,41 @@
 - `Post-Training` 已补到 runnable `stage5_toy_alignment`，可跑 toy DPO / GRPO-like。
 - 三类公司案例层已补到 playbook 级文档，可按团队规模代入真实路线。
 - `Multimodal` 已补到 grounding / multi-page document pipeline，并接入 regression suite。
+- `Agentic` 已补到 reflection / self-check 对照实验，并接入 regression suite。
 - 当前仍未成体系的主要是: 更复杂的 multimodal OCR / table / grounding 联合管线、更长链路的 agentic memory / reflection，以及更深入的 cost / latency / live routing integration。
+
+## Session Entry
+
+- Date: 2026-04-11 00:07 CST
+- Goal: 落地 backlog 第 6 项，把 Agentic 从 memory / recovery 再推进到 reflection / agent eval。
+- Status: 已完成 reflection 数据集、`reflective` 策略、评测指标、suite 接线、测试和文档更新，正准备提交与 push。
+- Key findings:
+  - reflection 最关键的不是“多想一步”，而是显式暴露 `draft -> critique -> revise`，让额外步骤成本和收益都可观察。
+  - 如果 reflection 不进入 regression suite，它很容易退化成只在 demo 里存在的 prompt 技巧。
+  - `avg_reflection_steps` 这类过程指标必须和 `task_success_rate` 一起看，否则团队只会看到“变准了”，看不到“代价是什么”。
+- Files touched:
+  - `datasets/tiny_agentic_reflection/eval.jsonl`
+  - `tasks/A11_reflection_and_agent_eval.md`
+  - `code/stage_agentic/task_runner.py`
+  - `eval/agentic_eval.py`
+  - `code/stage_harness/summary_board.py`
+  - `manifests/regression_v2_suite.json`
+  - `tests/test_agentic_reflection.py`
+  - `tasks/README.md`
+  - `tracks/agentic/README.md`
+  - `docs/runbook.md`
+  - `docs/ci_regression_guide_zh.md`
+  - `code/README.md`
+  - `docs/delivery_backlog.md`
+  - `docs/session_handoff.md`
+- Validation:
+  - `python3 eval/agentic_eval.py --data-path datasets/tiny_agentic_reflection/eval.jsonl --strategy tool_use --report-path runs/agentic_reflection_tool_use.json`
+  - `python3 eval/agentic_eval.py --data-path datasets/tiny_agentic_reflection/eval.jsonl --strategy reflective --report-path runs/agentic_reflection_reflective.json`
+  - `python3 -m unittest discover -s tests`
+  - `python3 code/stage_harness/suite_runner.py --manifest manifests/regression_v2_suite.json --output runs/regression_suite_report.json --md-output runs/regression_suite_report.md --strict --require-ship`
+- Next step:
+  - 提交并 push 到远程仓库
+  - 继续做 backlog 第 7 项的 Coding SWE-bench 风格任务
 
 ## Session Entry
 

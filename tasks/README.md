@@ -111,7 +111,7 @@ V2 的任务体系会逐步从旧的 `T00-T32` 编号，迁移到按能力线组
 - [A01_multi_step_tools.md](/Volumes/ExtaData/newcode/llm-engineering-lab/tasks/A01_multi_step_tools.md)
 - [A02_state_memory.md](/Volumes/ExtaData/newcode/llm-engineering-lab/tasks/A02_state_memory.md)
 - [A10_failure_recovery.md](/Volumes/ExtaData/newcode/llm-engineering-lab/tasks/A10_failure_recovery.md)
-- `A11` reflection
+- [A11_reflection_and_agent_eval.md](/Volumes/ExtaData/newcode/llm-engineering-lab/tasks/A11_reflection_and_agent_eval.md)
 - `A12` agent eval
 - `A20` browser / office workflow
 
