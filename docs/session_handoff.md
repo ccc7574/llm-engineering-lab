@@ -56,7 +56,36 @@
 - `Harness` 已补到 notification dispatch，可在配置 webhook 时直接发送。
 - `Harness` 已补到 notification routing policy，可按 event / severity 选择 channel。
 - `Harness` 已补到 route override 与更细 failure taxonomy，可支持临时人工覆盖和更细通知决策。
-- 当前仍未成体系的主要是: 更复杂的 multimodal OCR / table / grounding 联合管线、更长链路的 agentic memory / reflection，以及更深入的 cost / latency / policy integration。
+- `Harness` 已补到 route matrix，可把 routing policy 导出成可审阅 artifact。
+- 当前仍未成体系的主要是: 更复杂的 multimodal OCR / table / grounding 联合管线、更长链路的 agentic memory / reflection，以及更深入的 cost / latency / live policy integration。
+
+## Session Entry
+
+- Date: 2026-04-10 04:50 CST
+- Goal: 给通知策略补 route matrix，让 policy 的整体行为可以一次性审阅。
+- Status: 已完成 route matrix 生成器、任务文档和中文文档更新。
+- Key findings:
+  - route policy 一旦跨越多个 event 和 severity 维度，只靠单 case 验证很容易漏掉行为变化。
+  - route matrix 很适合作为 policy review artifact，因为它能把“规则写成了什么”和“实际会怎么路由”对应起来。
+  - 当前仓库的 Harness 已经具备从单次 route 选择到全局 route matrix 的两层可视化能力。
+- Files touched:
+  - `code/stage_harness/notification_route_matrix.py`
+  - `tasks/H19_notification_route_matrix.md`
+  - `code/README.md`
+  - `tasks/README.md`
+  - `tracks/harness/README.md`
+  - `README.md`
+  - `docs/runbook.md`
+  - `docs/ci_regression_guide_zh.md`
+  - `docs/session_handoff.md`
+- Validation:
+  - `python3 code/stage_harness/notification_route_matrix.py --routes manifests/notification_routes.json --output runs/notification_route_matrix.json --md-output runs/notification_route_matrix.md`
+  - 结果:
+    - route matrix 已生成
+    - 覆盖 `event x severity x gate` 共 `36` 行
+- Next step:
+  - 把 Harness 往 route matrix diff、policy regression check、scheduled dispatch routing 推进
+  - 或把 Multimodal 往 grounding / multi-page doc pipeline 推进
 
 ## Session Entry
 

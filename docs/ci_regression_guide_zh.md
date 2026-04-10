@@ -34,6 +34,7 @@
 - routing:
   - `code/stage_harness/notification_route.py`
   - `manifests/notification_routes.json`
+  - `code/stage_harness/notification_route_matrix.py`
 - summary board:
   - `runs/summary_board.json`
   - `runs/summary_board.md`
@@ -186,6 +187,16 @@ workflow 会做这些事:
 
 如果有临时需求，也可以通过 `override-channel` 强行覆盖 policy。
 
+### `runs/notification_route_matrix.md`
+
+看当前 routing policy 在不同 event / severity / gate 组合下的整体行为。
+
+这个文件适合:
+
+- policy review
+- 调整通知规则后的回归检查
+- 团队沟通“这套路由到底会怎么走”
+
 ### `runs/regression_suite_report.md`
 
 看整条 suite 是否跑完，哪些 step 失败，哪些产物缺失。
@@ -240,6 +251,7 @@ workflow 会做这些事:
 - route policy artifact
 - route override
 - 更细的 runtime failure taxonomy
+- route matrix artifact
 
 ## 当前还没做的部分
 

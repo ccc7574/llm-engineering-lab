@@ -319,6 +319,17 @@ python3 code/stage_harness/notification_route.py \
   --output runs/notification_route.json
 ```
 
+## `H19`: Notification Route Matrix
+
+如果要导出当前 policy 的整体行为矩阵:
+
+```bash
+python3 code/stage_harness/notification_route_matrix.py \
+  --routes manifests/notification_routes.json \
+  --output runs/notification_route_matrix.json \
+  --md-output runs/notification_route_matrix.md
+```
+
 ## 2026 V2 说明
 
 从 V2 开始，这个仓库的主入口应以:

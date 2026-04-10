@@ -24,6 +24,7 @@
 - 已支持 dispatch 脚本，可用 webhook 或 dry-run 发送 payload
 - 已支持 routing policy，可按 event / severity 自动选择通知通道
 - 已支持 route override 与更细的 failure taxonomy，可进一步细化通知决策
+- 已支持 route matrix，可把 policy 行为导出成可审阅 artifact
 
 建议首批任务:
 
@@ -39,3 +40,4 @@
 - `H16` notification dispatch
 - `H17` notification routing policy
 - `H18` route override and taxonomy
+- `H19` notification route matrix
