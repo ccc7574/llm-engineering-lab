@@ -16,7 +16,13 @@ from code.stage_harness.notification_dispatch import (
 )
 from code.stage_harness.notification_route import select_route
 from code.stage_harness.notification_route_lint import lint_routes
-from code.stage_harness.pr_comment import build_comment_body, find_existing_comment, publish_pr_comment
+from code.stage_harness.pr_comment import (
+    build_comment_body,
+    diagnose_api_failure,
+    find_existing_comment,
+    format_pr_comment_result_markdown,
+    publish_pr_comment,
+)
 from code.stage_harness.notification_dispatch_policy import evaluate_policy
 from code.stage_harness.release_note import build_release_note, format_markdown as format_release_note_markdown
 from code.stage_harness.notification_review_summary import build_summary, format_markdown
@@ -492,6 +498,7 @@ class NotificationHarnessTests(unittest.TestCase):
             skip_if_missing_token=True,
         )
         self.assertEqual(result["final_status"], "missing_token")
+        self.assertEqual(result["diagnosis"]["category"], "missing_token")
 
     def test_pr_comment_dry_run_returns_body(self) -> None:
         result = publish_pr_comment(
@@ -507,6 +514,35 @@ class NotificationHarnessTests(unittest.TestCase):
         )
         self.assertEqual(result["final_status"], "dry_run")
         self.assertIn("Release Candidate Ready", result["response_text"])
+
+    def test_pr_comment_diagnoses_permission_failure(self) -> None:
+        diagnosis = diagnose_api_failure(
+            403,
+            json.dumps({"message": "Resource not accessible by integration"}),
+            "publish_comment",
+        )
+        self.assertEqual(diagnosis["category"], "insufficient_permission")
+        self.assertIn("pull-requests: write", diagnosis["actionable_hint"])
+
+    def test_pr_comment_markdown_includes_diagnosis(self) -> None:
+        markdown = format_pr_comment_result_markdown(
+            {
+                "generated_at": "2026-04-10T22:30:00+08:00",
+                "final_status": "publish_failed",
+                "comment_action": "created",
+                "token_source": "GITHUB_TOKEN",
+                "token_present": True,
+                "diagnosis": {
+                    "phase": "publish_comment",
+                    "category": "insufficient_permission",
+                    "message": "Resource not accessible by integration",
+                    "actionable_hint": "Grant permissions.",
+                },
+            }
+        )
+        self.assertIn("PR Comment Result", markdown)
+        self.assertIn("insufficient_permission", markdown)
+        self.assertIn("Grant permissions.", markdown)
 
 
 if __name__ == "__main__":

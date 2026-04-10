@@ -36,6 +36,7 @@
 - 已支持 provider-aware dispatch ack / backoff，可区分 rate limit、永久拒绝和临时失败
 - 已支持 PR comment writeback，可把 release note upsert 到同一条 PR 评论
 - 已支持 failure-category-aware routing，可按权限失败和 report 解析失败直接分流到不同 channel
+- 已支持 PR comment diagnostics，可在 403/404/422 时给出结构化权限诊断和处理建议
 
 建议首批任务:
 
@@ -63,3 +64,4 @@
 - `H29` provider-aware backoff and ack
 - `H30` PR comment writeback
 - `H31` failure-category-aware routing
+- `H32` PR comment diagnostics

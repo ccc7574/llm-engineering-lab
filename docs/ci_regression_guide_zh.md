@@ -56,6 +56,7 @@
   - `runs/release_note.md`
 - pr comment:
   - `runs/pr_comment_result.json`
+  - `runs/pr_comment_result.md`
 - summary board:
   - `runs/summary_board.json`
   - `runs/summary_board.md`
@@ -194,7 +195,7 @@ workflow 会做这些事:
 
 如果团队后续要接 PR comment bot 或 release note 自动发布，这个文件就是最直接的上游输入。
 
-### `runs/pr_comment_result.json`
+### `runs/pr_comment_result.json` / `runs/pr_comment_result.md`
 
 看 PR comment 回写阶段发生了什么:
 
@@ -202,6 +203,7 @@ workflow 会做这些事:
 - 是否缺 token
 - 是否因为权限问题而降级
 - 最终评论 ID / URL
+- GitHub API failure diagnosis 和 actionable hint
 
 ### `runs/harness_trend_board.md`
 

@@ -147,6 +147,7 @@ V2 的任务体系会逐步从旧的 `T00-T32` 编号，迁移到按能力线组
 - [H29_provider_backoff_and_ack.md](/Volumes/ExtaData/newcode/llm-engineering-lab/tasks/H29_provider_backoff_and_ack.md)
 - [H30_pr_comment_writeback.md](/Volumes/ExtaData/newcode/llm-engineering-lab/tasks/H30_pr_comment_writeback.md)
 - [H31_failure_category_aware_routing.md](/Volumes/ExtaData/newcode/llm-engineering-lab/tasks/H31_failure_category_aware_routing.md)
+- [H32_pr_comment_diagnostics.md](/Volumes/ExtaData/newcode/llm-engineering-lab/tasks/H32_pr_comment_diagnostics.md)
 - `H20` 周报与复盘模板
 
 ## 旧任务到新任务的映射

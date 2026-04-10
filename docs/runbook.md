@@ -558,7 +558,8 @@ python3 code/stage_harness/pr_comment.py \
   --pr-number 123 \
   --body-path runs/release_note.md \
   --dry-run \
-  --output runs/pr_comment_result.json
+  --output runs/pr_comment_result.json \
+  --md-output runs/pr_comment_result.md
 ```
 
 真实写回时去掉 `--dry-run`，并提供:
@@ -570,6 +571,7 @@ python3 code/stage_harness/pr_comment.py \
 - 用 marker 识别是否已有机器人评论
 - 已有则 update，没有则 create
 - 在缺 token 或权限不足时保留 result artifact，而不是强行拖挂整条 suite
+- 给 `403 / 404 / 422` 等 GitHub API 失败返回结构化 diagnosis 和 actionable hint
 
 ## `H31`: Failure-Category-Aware Routing
 

@@ -316,7 +316,8 @@ PY
               --body-path runs/release_note.md \
               --skip-if-missing-token \
               --allow-failure \
-              --output runs/pr_comment_result.json
+              --output runs/pr_comment_result.json \
+              --md-output runs/pr_comment_result.md
           fi
 
       - name: Publish Job Summary
@@ -341,6 +342,10 @@ PY
           if [ -f runs/notification_route_diff.md ]; then
             printf '\n## Notification Route Diff\n\n' >> "$GITHUB_STEP_SUMMARY"
             cat runs/notification_route_diff.md >> "$GITHUB_STEP_SUMMARY"
+          fi
+          if [ -f runs/pr_comment_result.md ]; then
+            printf '\n## PR Comment Writeback\n\n' >> "$GITHUB_STEP_SUMMARY"
+            cat runs/pr_comment_result.md >> "$GITHUB_STEP_SUMMARY"
           fi
           if [ -f runs/regression_suite_report.md ]; then
             printf '\n## Regression Suite\n\n' >> "$GITHUB_STEP_SUMMARY"

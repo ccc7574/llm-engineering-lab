@@ -61,7 +61,37 @@
 - `Harness` 已补到 route lint 和 policy gate，可自动守住通知策略边界。
 - `Harness` 已把 notification policy gate 接进 workflow，可在 CI 中强制执行。
 - `Harness` 已补到 failure-category-aware routing，可按 failure taxonomy 直接分流并对 diff/gate 做分类级守门。
+- `Harness` 已补到 PR comment diagnostics，可对 GitHub API 权限/上下文失败给出结构化诊断和处理建议。
 - 当前仍未成体系的主要是: 更复杂的 multimodal OCR / table / grounding 联合管线、更长链路的 agentic memory / reflection，以及更深入的 cost / latency / live routing integration。
+
+## Session Entry
+
+- Date: 2026-04-10 22:42 CST
+- Goal: 给 PR comment writeback 补权限诊断和 markdown 结果，让 CI 失败时能直接定位 token / permission / repo context 问题。
+- Status: 已完成 GitHub API failure diagnosis、Markdown result artifact、workflow summary 接线、测试和文档更新，正准备提交与 push。
+- Key findings:
+  - PR comment 写回一旦进入真实 CI，最常见的问题不是“脚本崩了”，而是 token 权限、fork 上下文和 repo/PR 可见性不满足。
+  - 只保留原始 `403/404` 响应对 reviewer 没帮助，必须给出结构化 diagnosis 和 actionable hint。
+  - 把 `pr_comment_result.md` 直接并入 Job Summary 后，值班同学不需要再下载 artifact 才能知道为什么没写回成功。
+- Files touched:
+  - `code/stage_harness/pr_comment.py`
+  - `.github/workflows/regression-suite.yml`
+  - `tests/test_notification_harness.py`
+  - `tasks/H32_pr_comment_diagnostics.md`
+  - `tasks/README.md`
+  - `tracks/harness/README.md`
+  - `code/README.md`
+  - `README.md`
+  - `docs/runbook.md`
+  - `docs/ci_regression_guide_zh.md`
+  - `docs/session_handoff.md`
+- Validation:
+  - `python3 -m unittest discover -s tests`
+  - `python3 -m py_compile code/stage_harness/pr_comment.py`
+  - `python3 code/stage_harness/pr_comment.py --repo ccc7574/llm-engineering-lab --pr-number 1 --body-path runs/release_note.md --dry-run --output runs/pr_comment_result.json --md-output runs/pr_comment_result.md`
+- Next step:
+  - 提交并 push 到远程仓库
+  - 继续把 Harness 往 live adapter 签名校验、dispatch 身份隔离和更细粒度 workflow 诊断推进
 
 ## Session Entry
 

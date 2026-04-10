@@ -25,6 +25,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--allow-failure", action="store_true")
     parser.add_argument("--skip-if-missing-token", action="store_true")
     parser.add_argument("--output", default=None)
+    parser.add_argument("--md-output", default=None)
     return parser.parse_args()
 
 
@@ -38,11 +39,86 @@ def resolve_token(explicit: str | None) -> str | None:
     return os.environ.get("GH_TOKEN") or os.environ.get("GITHUB_TOKEN")
 
 
+def detect_token_source(explicit: str | None) -> str:
+    if explicit:
+        return "argument"
+    if os.environ.get("GH_TOKEN"):
+        return "GH_TOKEN"
+    if os.environ.get("GITHUB_TOKEN"):
+        return "GITHUB_TOKEN"
+    return "missing"
+
+
 def build_comment_body(marker: str, body: str) -> str:
     stripped = body.lstrip()
     if stripped.startswith(marker):
         return body
     return f"{marker}\n\n{body}"
+
+
+def extract_api_message(response_text: str) -> str:
+    try:
+        payload = json.loads(response_text)
+    except json.JSONDecodeError:
+        return response_text.strip()
+    if isinstance(payload, dict):
+        return str(payload.get("message") or payload.get("error") or response_text).strip()
+    return response_text.strip()
+
+
+def diagnose_api_failure(status_code: int | None, response_text: str, phase: str) -> dict:
+    message = extract_api_message(response_text)
+    lowered = message.lower()
+    if status_code == 401:
+        category = "invalid_token"
+        hint = "Check whether GITHUB_TOKEN or GH_TOKEN is present, valid, and not expired."
+    elif status_code == 403 and "resource not accessible by integration" in lowered:
+        category = "insufficient_permission"
+        hint = "Grant `issues: write` and `pull-requests: write`, or run the workflow in a context where the token can write PR comments."
+    elif status_code == 403:
+        category = "forbidden"
+        hint = "Check repo policy, token scope, and whether this run comes from a fork or restricted automation context."
+    elif status_code == 404:
+        category = "repo_or_pr_not_found"
+        hint = "Check repo name, PR number, and whether the token can access the target repository and pull request."
+    elif status_code == 422:
+        category = "validation_failed"
+        hint = "Check whether the PR is open and whether the comment payload is valid for the GitHub Issues Comments API."
+    else:
+        category = "api_error"
+        hint = "Inspect the raw GitHub API response and confirm network reachability, token scope, and request payload."
+    return {
+        "phase": phase,
+        "category": category,
+        "message": message,
+        "actionable_hint": hint,
+    }
+
+
+def format_pr_comment_result_markdown(result: dict) -> str:
+    lines = [
+        "# PR Comment Result",
+        "",
+        f"- Generated at: {result.get('generated_at', 'unknown')}",
+        f"- Final Status: {result.get('final_status', 'unknown')}",
+        f"- Comment Action: {result.get('comment_action', 'unknown')}",
+        f"- Token Source: {result.get('token_source', 'missing')}",
+        f"- Token Present: {str(bool(result.get('token_present'))).lower()}",
+    ]
+    if result.get("comment_id") is not None:
+        lines.append(f"- Comment ID: {result['comment_id']}")
+    if result.get("comment_url"):
+        lines.append(f"- Comment URL: {result['comment_url']}")
+    diagnosis = result.get("diagnosis")
+    if diagnosis:
+        lines.extend(
+            [
+                f"- Diagnosis: {diagnosis.get('category', 'unknown')} ({diagnosis.get('phase', 'unknown')})",
+                f"- API Message: {diagnosis.get('message', '')}",
+                f"- Actionable Hint: {diagnosis.get('actionable_hint', '')}",
+            ]
+        )
+    return "\n".join(lines) + "\n"
 
 
 def api_request(
@@ -85,6 +161,7 @@ def publish_pr_comment(
     pr_number: int,
     body: str,
     token: str | None,
+    token_source: str = "missing",
     api_base: str,
     marker: str,
     dry_run: bool,
@@ -92,12 +169,17 @@ def publish_pr_comment(
     skip_if_missing_token: bool,
 ) -> dict:
     comment_body = build_comment_body(marker, body)
+    effective_token_source = token_source
+    if token and token_source == "missing":
+        effective_token_source = "provided"
     base_payload = {
         "generated_at": datetime.now().astimezone().isoformat(),
         "repo": repo,
         "pr_number": pr_number,
         "marker": marker,
         "dry_run": dry_run,
+        "token_source": effective_token_source,
+        "token_present": bool(token),
     }
 
     if dry_run:
@@ -108,6 +190,7 @@ def publish_pr_comment(
             "comment_id": None,
             "response_code": None,
             "response_text": comment_body,
+            "diagnosis": None,
         }
 
     if not token:
@@ -118,6 +201,12 @@ def publish_pr_comment(
             "comment_id": None,
             "response_code": None,
             "response_text": "missing GitHub token",
+            "diagnosis": {
+                "phase": "preflight",
+                "category": "missing_token",
+                "message": "missing GitHub token",
+                "actionable_hint": "Provide `GITHUB_TOKEN`, `GH_TOKEN`, or pass `--token` when PR comment writeback is expected.",
+            },
         }
         if skip_if_missing_token or allow_failure:
             return result
@@ -133,6 +222,7 @@ def publish_pr_comment(
             "comment_id": None,
             "response_code": status_code,
             "response_text": response_text,
+            "diagnosis": diagnose_api_failure(status_code, response_text, "list_comments"),
         }
         if allow_failure:
             return result
@@ -161,6 +251,7 @@ def publish_pr_comment(
             "comment_id": comment_id,
             "response_code": status_code,
             "response_text": response_text,
+            "diagnosis": diagnose_api_failure(status_code, response_text, "publish_comment"),
         }
         if allow_failure:
             return result
@@ -175,6 +266,7 @@ def publish_pr_comment(
         "comment_url": payload.get("html_url"),
         "response_code": status_code,
         "response_text": "published",
+        "diagnosis": None,
     }
 
 
@@ -182,11 +274,13 @@ def main() -> None:
     args = parse_args()
     body = load_body(args.body_path)
     token = resolve_token(args.token)
+    token_source = detect_token_source(args.token)
     result = publish_pr_comment(
         repo=args.repo,
         pr_number=args.pr_number,
         body=body,
         token=token,
+        token_source=token_source,
         api_base=args.api_base,
         marker=args.marker,
         dry_run=args.dry_run,
@@ -206,6 +300,11 @@ def main() -> None:
         output_path.parent.mkdir(parents=True, exist_ok=True)
         output_path.write_text(json.dumps(result, indent=2, ensure_ascii=False), encoding="utf-8")
         print(f"saved PR comment result to {output_path}")
+    if args.md_output:
+        md_output_path = Path(args.md_output)
+        md_output_path.parent.mkdir(parents=True, exist_ok=True)
+        md_output_path.write_text(format_pr_comment_result_markdown(result), encoding="utf-8")
+        print(f"saved PR comment markdown result to {md_output_path}")
 
     if result["final_status"] in {"list_failed", "publish_failed"} and not args.allow_failure:
         sys.exit(1)
