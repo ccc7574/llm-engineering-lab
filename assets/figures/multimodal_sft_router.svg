@@ -1,0 +1,98 @@
+<svg width="960" height="560" viewBox="0 0 960 560" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="960" y2="560" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0f0f1a"/>
+      <stop offset="1" stop-color="#1a1a2e"/>
+    </linearGradient>
+    <linearGradient id="panel-glow" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#7c3aed" stop-opacity="0.22"/>
+      <stop offset="1" stop-color="#1d4ed8" stop-opacity="0.10"/>
+    </linearGradient>
+    <marker id="arrow-purple" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0 0L10 5L0 10Z" fill="#a855f7"/>
+    </marker>
+    <marker id="arrow-orange" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0 0L10 5L0 10Z" fill="#f97316"/>
+    </marker>
+    <marker id="arrow-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0 0L10 5L0 10Z" fill="#3b82f6"/>
+    </marker>
+    <style>
+      text { font-family: 'SF Mono', 'Fira Code', monospace; }
+      .title { font-size: 26px; font-weight: 700; fill: #e2e8f0; }
+      .subtitle { font-size: 13px; fill: #94a3b8; }
+      .panel { fill: #0f172a; stroke: #334155; stroke-width: 2; rx: 18; }
+      .panel-glow { fill: url(#panel-glow); stroke: none; rx: 18; }
+      .panel-title { font-size: 16px; font-weight: 700; fill: #e2e8f0; }
+      .body { font-size: 12px; fill: #cbd5e1; }
+      .muted { font-size: 11px; fill: #94a3b8; }
+      .tag-purple { fill: #7c3aed; }
+      .tag-orange { fill: #ea580c; }
+      .tag-blue { fill: #1d4ed8; }
+      .tag-green { fill: #059669; }
+      .tag-text { font-size: 11px; font-weight: 700; fill: #e2e8f0; }
+    </style>
+  </defs>
+
+  <rect width="960" height="560" fill="url(#bg)"/>
+  <text x="48" y="58" class="title">Multimodal SFT Route Policy</text>
+  <text x="48" y="84" class="subtitle">supervised router -> expert strategy -> downstream task success -> regression gate</text>
+
+  <g transform="translate(48 128)">
+    <rect width="208" height="308" class="panel"/>
+    <rect x="8" y="8" width="192" height="292" class="panel-glow"/>
+    <text x="22" y="34" class="panel-title">1. Labeled Route Pack</text>
+    <text x="22" y="62" class="body">Train examples carry:</text>
+    <text x="22" y="86" class="body">- task instruction</text>
+    <text x="22" y="108" class="body">- visual context shape</text>
+    <text x="22" y="130" class="body">- grounding hints</text>
+    <text x="22" y="152" class="body">- target_strategy label</text>
+    <rect x="22" y="184" width="144" height="24" rx="12" class="tag-purple"/>
+    <text x="34" y="200" class="tag-text">vision_augmented</text>
+    <rect x="22" y="218" width="150" height="24" rx="12" class="tag-orange"/>
+    <text x="34" y="234" class="tag-text">structured_pipeline</text>
+    <rect x="22" y="252" width="142" height="24" rx="12" class="tag-blue"/>
+    <text x="34" y="268" class="tag-text">grounded_pipeline</text>
+    <rect x="22" y="286" width="140" height="24" rx="12" class="tag-green"/>
+    <text x="34" y="302" class="tag-text">document_pipeline</text>
+    <text x="22" y="338" class="muted">Goal: learn routing, not fake a full vision finetune.</text>
+  </g>
+
+  <g transform="translate(300 128)">
+    <rect width="256" height="308" class="panel"/>
+    <text x="22" y="34" class="panel-title">2. Feature Builder + Linear Policy</text>
+    <text x="22" y="64" class="body">Sparse features from:</text>
+    <text x="22" y="88" class="body">- doc_type / chart_type</text>
+    <text x="22" y="110" class="body">- context keys and counts</text>
+    <text x="22" y="132" class="body">- page roles / region labels</text>
+    <text x="22" y="154" class="body">- cross-page field + table signal</text>
+    <text x="22" y="188" class="body">train -> cross entropy -> route logits</text>
+    <rect x="22" y="214" width="212" height="70" rx="14" fill="#111827" stroke="#7c3aed" stroke-width="2"/>
+    <text x="38" y="242" class="body">[invoice_summary]</text>
+    <text x="38" y="262" class="body">[approval_matrix]</text>
+    <text x="38" y="282" class="body">[cross_page_field_plus_table]</text>
+    <text x="22" y="330" class="muted">Interpretability matters: engineers can inspect why the router moved.</text>
+  </g>
+
+  <g transform="translate(600 128)">
+    <rect width="312" height="308" class="panel"/>
+    <text x="22" y="34" class="panel-title">3. Expert Execution + Regression</text>
+    <text x="22" y="66" class="body">Predicted route dispatches into expert runner:</text>
+    <text x="22" y="92" class="body">vision -> structured -> grounded -> document</text>
+    <text x="22" y="124" class="body">Compare:</text>
+    <text x="22" y="146" class="body">- heuristic_router</text>
+    <text x="22" y="168" class="body">- learned_router</text>
+    <rect x="22" y="196" width="268" height="88" rx="14" fill="#111827" stroke="#10b981" stroke-width="2"/>
+    <text x="38" y="224" class="body">Primary metrics</text>
+    <text x="38" y="246" class="body">- task_success_rate</text>
+    <text x="38" y="268" class="body">- route_accuracy</text>
+    <text x="156" y="246" class="body">Cost metrics</text>
+    <text x="156" y="268" class="body">- visual tokens / steps</text>
+    <text x="22" y="328" class="muted">Ship the router only if quality beats the heuristic baseline.</text>
+  </g>
+
+  <path d="M256 282H286" stroke="#a855f7" stroke-width="3" marker-end="url(#arrow-purple)"/>
+  <path d="M556 282H586" stroke="#3b82f6" stroke-width="3" marker-end="url(#arrow-blue)"/>
+  <path d="M748 446V500H428V446" stroke="#f97316" stroke-width="3" marker-end="url(#arrow-orange)"/>
+  <text x="452" y="494" class="subtitle">misroutes become auditable failure cases for the next labeling round</text>
+</svg>

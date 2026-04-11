@@ -77,8 +77,10 @@
 ### Multimodal
 
 - task success rate
+- route accuracy
 - average visual tokens used
 - average field match rate
 - average observation / reasoning steps
 - text-only vs vision-augmented 对照
 - 字段抽取错误如何影响最终答案
+- heuristic router vs learned router 的 expert dispatch 对照

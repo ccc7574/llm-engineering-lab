@@ -46,6 +46,14 @@
   - 多模态图文问答与图表/文档理解评测样本
 - `tiny_multimodal_noisy/eval.jsonl`
   - 带 OCR 噪声的发票、路由表和延迟表评测样本
+- `tiny_multimodal_grounding/eval.jsonl`
+  - 多页 routing / region grounding 评测样本
+- `tiny_multimodal_workflow/eval.jsonl`
+  - document workflow 级跨页 join 与 owner lookup 评测样本
+- `tiny_multimodal_sft/train.jsonl`
+  - 多模态 route-policy SFT 训练样本
+- `tiny_multimodal_sft/eval.jsonl`
+  - 带 `target_strategy` 标签的多模态 route-policy SFT 评测样本
 
 ## 格式约定
 

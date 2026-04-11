@@ -340,6 +340,39 @@ python3 code/stage_harness/regression_compare.py --baseline-report runs/multimod
 - 跨页表格和规则字段要怎样 join 成最终业务决策
 - 为什么 owner / approver / escalation 这类答案天然要求 document workflow，而不是单页 OCR
 
+## `M10`: Multimodal SFT Route Policy
+
+```bash
+python3 code/stage_multimodal/train_multimodal_sft.py \
+  --data-path datasets/tiny_multimodal_sft/train.jsonl \
+  --out-dir runs/multimodal_sft_router \
+  --max-iters 200 \
+  --eval-interval 50 \
+  --learning-rate 0.2
+
+python3 eval/multimodal_sft_eval.py \
+  --data-path datasets/tiny_multimodal_sft/eval.jsonl \
+  --strategy heuristic_router \
+  --report-path runs/multimodal_sft_heuristic_router.json
+
+python3 eval/multimodal_sft_eval.py \
+  --data-path datasets/tiny_multimodal_sft/eval.jsonl \
+  --strategy learned_router \
+  --checkpoint runs/multimodal_sft_router/router.pt \
+  --report-path runs/multimodal_sft_learned_router.json
+
+python3 code/stage_harness/regression_compare.py \
+  --baseline-report runs/multimodal_sft_heuristic_router.json \
+  --candidate-report runs/multimodal_sft_learned_router.json \
+  --output runs/multimodal_sft_regression_diff.json
+```
+
+这条路径主要看:
+
+- 多模态 SFT 可以先学 “该走哪条专家链路”，而不是一开始就假装做大模型视觉微调
+- `route_accuracy` 和 `task_success_rate` 是否同步改善
+- workflow 类任务为什么最容易暴露 heuristic router 的误判
+
 ## Cross-Track Summary
 
 ```bash

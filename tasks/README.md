@@ -99,7 +99,7 @@ V2 的任务体系会逐步从旧的 `T00-T32` 编号，迁移到按能力线组
 - [M03_noisy_ocr_pipeline.md](/Volumes/ExtaData/newcode/llm-engineering-lab/tasks/M03_noisy_ocr_pipeline.md)
 - [M04_grounding_and_multipage_pipeline.md](/Volumes/ExtaData/newcode/llm-engineering-lab/tasks/M04_grounding_and_multipage_pipeline.md)
 - [M05_document_workflow_pipeline.md](/Volumes/ExtaData/newcode/llm-engineering-lab/tasks/M05_document_workflow_pipeline.md)
-- `M10` multimodal SFT
+- [M10_multimodal_sft.md](/Volumes/ExtaData/newcode/llm-engineering-lab/tasks/M10_multimodal_sft.md)
 - `M11` 多模态失败模式与评测
 
 ### `Track A: Agentic`

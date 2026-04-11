@@ -226,6 +226,8 @@ Multimodal 能力线的最小入口。
 
 - `dataset.py`
 - `task_runner.py`
+- `router_sft.py`
+- `train_multimodal_sft.py`
 
 用途:
 
@@ -234,6 +236,7 @@ Multimodal 能力线的最小入口。
 - 演示 noisy OCR、字段抽取和 structured pipeline 的差异
 - 演示 multi-page routing、region grounding 和 grounded pipeline 的差异
 - 演示 document workflow 如何把跨页字段、表格和 owner lookup 串成最终业务答案
+- 演示 multimodal route-policy SFT 如何把 heuristic routing 升级成可训练、可回归的 expert dispatch
 
 ## 编码原则
 

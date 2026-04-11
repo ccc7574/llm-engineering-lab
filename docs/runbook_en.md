@@ -191,6 +191,35 @@ python3 code/stage_harness/regression_compare.py --baseline-report runs/multimod
 
 This path teaches the next production step after grounding: page routing and region selection are still not enough if the answer requires cross-page joins, table normalization, and final owner lookup.
 
+## `M10`: Multimodal SFT Route Policy
+
+```bash
+python3 code/stage_multimodal/train_multimodal_sft.py \
+  --data-path datasets/tiny_multimodal_sft/train.jsonl \
+  --out-dir runs/multimodal_sft_router \
+  --max-iters 200 \
+  --eval-interval 50 \
+  --learning-rate 0.2
+
+python3 eval/multimodal_sft_eval.py \
+  --data-path datasets/tiny_multimodal_sft/eval.jsonl \
+  --strategy heuristic_router \
+  --report-path runs/multimodal_sft_heuristic_router.json
+
+python3 eval/multimodal_sft_eval.py \
+  --data-path datasets/tiny_multimodal_sft/eval.jsonl \
+  --strategy learned_router \
+  --checkpoint runs/multimodal_sft_router/router.pt \
+  --report-path runs/multimodal_sft_learned_router.json
+
+python3 code/stage_harness/regression_compare.py \
+  --baseline-report runs/multimodal_sft_heuristic_router.json \
+  --candidate-report runs/multimodal_sft_learned_router.json \
+  --output runs/multimodal_sft_regression_diff.json
+```
+
+This path teaches a realistic first step for multimodal SFT: train the router that chooses the right expert path, then verify that route accuracy and downstream task success both beat the heuristic baseline.
+
 ## `H11-H36`: Regression, Release, and Artifact Governance
 
 Run the full suite:

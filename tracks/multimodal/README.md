@@ -15,6 +15,7 @@
 - 已形成 `ocr_only` vs `structured_pipeline` 的 noisy OCR / document pipeline 对照实验
 - 已形成 `ocr_only` vs `grounded_pipeline` 的 multi-page / region grounding 对照实验
 - 已形成 `grounded_pipeline` vs `document_pipeline` 的 multi-page workflow document 对照实验
+- 已形成 `heuristic_router` vs `learned_router` 的 multimodal route-policy SFT 对照实验
 
 建议首批任务:
 
@@ -24,5 +25,6 @@
 - `M03` noisy OCR pipeline
 - `M04` grounding and multi-page pipeline
 - `M05` document workflow pipeline
+- `M10` multimodal SFT
 
 当前可直接运行的最小命令见 [runbook.md](/Volumes/ExtaData/newcode/llm-engineering-lab/docs/runbook.md)。

@@ -66,6 +66,7 @@ The repo already has runnable starter paths across all six tracks. It now also i
 - rejection sampling, toy DPO / GRPO-like post-training scripts, and alignment eval
 - coding judge / verifier, multi-file patching, agentic coding, SWE-bench-style triage, and `pass@k` sampling eval
 - multimodal grounding, multi-page document routing, and document workflow joins
+- multimodal route-policy SFT with `heuristic_router` vs `learned_router` regression
 - agentic reflection and planner-observer eval
 - a manifest-driven regression suite, summary board, release gate, notification routing, and CI launcher
 - unified notification delivery orchestration across route, dispatch policy, and live dispatch

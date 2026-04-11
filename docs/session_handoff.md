@@ -1,5 +1,42 @@
 # Session Handoff
 
+## Session Entry
+
+- Date: 2026-04-11 10:18 CST
+- Goal: 把 `M10` multimodal SFT 从 roadmap 里的占位项补成真正 runnable 的 route-policy 训练 / eval / regression 闭环。
+- Status: 已完成 `router_sft.py`、`train_multimodal_sft.py`、`multimodal_sft_eval.py`、训练/评测数据、专项测试、suite 接线、summary board 行、任务卡和中英文 runbook/README 更新。
+- Key findings:
+  - 对当前仓库来说，最合理的 multimodal SFT 不是伪装成视觉 backbone 微调，而是把 supervision 放在 “该走哪条专家链路” 这个可解释目标上。
+  - `heuristic_router` 最容易在 workflow 类任务上误判，因为它只看到了 multi-page / region 结构，却没识别跨页字段和最终 owner lookup 的 join 需求。
+  - 用 route accuracy 和 downstream task success rate 双指标一起看，能避免“路由标签变好了但业务答案没变好”的假提升。
+- Files touched:
+  - `code/stage_multimodal/dataset.py`
+  - `code/stage_multimodal/router_sft.py`
+  - `code/stage_multimodal/train_multimodal_sft.py`
+  - `eval/multimodal_sft_eval.py`
+  - `datasets/tiny_multimodal_sft/train.jsonl`
+  - `datasets/tiny_multimodal_sft/eval.jsonl`
+  - `tests/test_multimodal_sft.py`
+  - `tasks/M10_multimodal_sft.md`
+  - `assets/figures/multimodal_sft_router.svg`
+  - `tracks/multimodal/README.md`
+  - `tasks/README.md`
+  - `code/README.md`
+  - `README.md`
+  - `README_EN.md`
+  - `docs/runbook.md`
+  - `docs/runbook_en.md`
+  - `manifests/regression_v2_suite.json`
+  - `code/stage_harness/summary_board.py`
+  - `docs/session_handoff.md`
+- Validation:
+  - `python3 -m unittest tests/test_multimodal_sft.py`
+  - `python3 -m unittest discover -s tests`
+  - `python3 code/stage_harness/suite_runner.py --manifest manifests/regression_v2_suite.json --output runs/regression_suite_report.json --md-output runs/regression_suite_report.md --strict --require-ship`
+- Next step:
+  - 提交并 push
+  - 继续审视剩余 delivery-grade 缺口，优先看文档/可视化/案例层是否还需要补强
+
 这个文档用于跨 session 持续接力当前项目工作。目标不是写长篇总结，而是让下一次进入仓库的人能在 2 分钟内知道:
 
 - 当前在做什么

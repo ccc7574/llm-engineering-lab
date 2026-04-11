@@ -105,6 +105,12 @@ TRACK_CONFIG = {
         "quality_gate": 0.05,
         "cost_metrics": ["avg_visual_tokens_used", "avg_observation_steps", "avg_reasoning_steps"],
     },
+    "multimodal_sft": {
+        "label": "Multimodal SFT Router",
+        "primary_metric": "task_success_rate",
+        "quality_gate": 0.05,
+        "cost_metrics": ["avg_visual_tokens_used", "avg_observation_steps", "avg_reasoning_steps"],
+    },
     "post_training_dpo": {
         "label": "Post-Training DPO",
         "primary_metric": "mean_preference_margin",
