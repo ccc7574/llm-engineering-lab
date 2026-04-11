@@ -32,7 +32,15 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--data-path", default="datasets/tiny_multimodal/eval.jsonl")
     parser.add_argument(
         "--strategy",
-        choices=["text_only", "vision_augmented", "ocr_only", "structured_pipeline", "grounded_pipeline", "reference"],
+        choices=[
+            "text_only",
+            "vision_augmented",
+            "ocr_only",
+            "structured_pipeline",
+            "grounded_pipeline",
+            "document_pipeline",
+            "reference",
+        ],
         default="vision_augmented",
     )
     parser.add_argument("--task-id", default=None)

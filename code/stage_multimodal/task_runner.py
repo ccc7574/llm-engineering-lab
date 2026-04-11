@@ -31,7 +31,15 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--task-id", default=None)
     parser.add_argument(
         "--strategy",
-        choices=["text_only", "vision_augmented", "ocr_only", "structured_pipeline", "grounded_pipeline", "reference"],
+        choices=[
+            "text_only",
+            "vision_augmented",
+            "ocr_only",
+            "structured_pipeline",
+            "grounded_pipeline",
+            "document_pipeline",
+            "reference",
+        ],
         default="vision_augmented",
     )
     parser.add_argument("--output", default=None)
@@ -321,7 +329,176 @@ def structured_pipeline_answer(task: MultimodalTask) -> MultimodalRun:
 
 
 def grounded_pipeline_answer(task: MultimodalTask) -> MultimodalRun:
+    if task.task_id == "invoice_exception_owner_packet":
+        pages = task.visual_context["pages"]
+        hints = task.visual_context.get("grounding_hints", {})
+        summary_page = route_page(
+            pages,
+            [task.visual_context["target_service"], task.visual_context["approval_policy"]],
+            hints.get("summary_page_role"),
+        )
+        answer = summary_page.get("default_owner", "release-manager")
+        extracted_fields = {
+            "target_page": summary_page["page_id"],
+            "service": task.visual_context["target_service"],
+            "policy": task.visual_context["approval_policy"],
+            "owner": answer,
+        }
+        trace = [
+            f"route_summary_page -> {summary_page['page_id']}",
+            f"pick_summary_owner -> {answer}",
+        ]
+        return MultimodalRun(
+            task_id=task.task_id,
+            strategy="grounded_pipeline",
+            answer=answer,
+            visual_tokens_used=sum(len(page.get("ocr_lines", [])) for page in pages),
+            trace=trace,
+            extracted_fields=extracted_fields,
+            observation_steps=1,
+            reasoning_steps=1,
+        )
+    if task.task_id == "latency_breach_owner_packet":
+        pages = task.visual_context["pages"]
+        hints = task.visual_context.get("grounding_hints", {})
+        latency_page = route_page(
+            pages,
+            [task.visual_context["metric_name"], str(task.visual_context["sla_threshold"])],
+            hints.get("latency_page_role"),
+        )
+        first_breach_region = "none"
+        for row in latency_page.get("table_rows", []):
+            wait_value = parse_noisy_int(row["queue_wait"])
+            if wait_value is not None and wait_value >= int(task.visual_context["sla_threshold"]):
+                first_breach_region = row["region"]
+                break
+        trace = [
+            f"route_latency_page -> {latency_page['page_id']}",
+            f"extract_first_breach_region -> {first_breach_region}",
+        ]
+        return MultimodalRun(
+            task_id=task.task_id,
+            strategy="grounded_pipeline",
+            answer=first_breach_region,
+            visual_tokens_used=sum(len(page.get("ocr_lines", [])) for page in pages),
+            trace=trace,
+            extracted_fields={
+                "target_page": latency_page["page_id"],
+                "breach_region": first_breach_region,
+            },
+            observation_steps=1,
+            reasoning_steps=1,
+        )
     return structured_pipeline_answer(task)
+
+
+def document_pipeline_answer(task: MultimodalTask) -> MultimodalRun:
+    trace: list[str] = []
+    extracted_fields: dict[str, str] = {}
+    pages = task.visual_context["pages"]
+    hints = task.visual_context.get("grounding_hints", {})
+
+    if task.task_id == "invoice_exception_owner_packet":
+        summary_page = route_page(
+            pages,
+            [task.visual_context["target_service"], task.visual_context["approval_policy"]],
+            hints.get("summary_page_role"),
+        )
+        approval_page = route_page(
+            pages,
+            [task.visual_context["target_service"], task.visual_context["approval_policy"], "owner"],
+            hints.get("approval_page_role"),
+        )
+        approval_region = select_region(approval_page.get("regions", []), hints.get("approval_region"))
+        candidates = summary_page["field_candidates"]
+        normalized_fields: dict[str, str] = {}
+        for key, value in candidates.items():
+            if key in {"subtotal", "expedite_fee", "credits", "total_due"}:
+                parsed = parse_noisy_int(value)
+                if parsed is not None:
+                    normalized_fields[key] = str(parsed)
+            else:
+                normalized_fields[key] = str(value)
+        matched_row = next(
+            row
+            for row in approval_page["table_rows"]
+            if row["service"] == task.visual_context["target_service"]
+            and row["policy"] == task.visual_context["approval_policy"]
+        )
+        answer = matched_row["owner"]
+        extracted_fields.update(normalized_fields)
+        extracted_fields["target_summary_page"] = summary_page["page_id"]
+        extracted_fields["target_approval_page"] = approval_page["page_id"]
+        extracted_fields["target_region"] = approval_region["region_id"] if approval_region else "none"
+        extracted_fields["service"] = matched_row["service"]
+        extracted_fields["policy"] = matched_row["policy"]
+        extracted_fields["owner"] = matched_row["owner"]
+        trace.extend(
+            [
+                f"route_summary_page -> {summary_page['page_id']}",
+                f"normalize_invoice_fields -> {normalized_fields}",
+                f"route_approval_page -> {approval_page['page_id']}",
+                f"ground_approval_region -> {extracted_fields['target_region']}",
+                f"lookup_exception_owner -> {matched_row}",
+                f"return_owner -> {answer}",
+            ]
+        )
+    elif task.task_id == "latency_breach_owner_packet":
+        latency_page = route_page(
+            pages,
+            [task.visual_context["metric_name"], str(task.visual_context["sla_threshold"])],
+            hints.get("latency_page_role"),
+        )
+        escalation_page = route_page(
+            pages,
+            ["escalation", "owner", "region"],
+            hints.get("escalation_page_role"),
+        )
+        escalation_region = select_region(escalation_page.get("regions", []), hints.get("escalation_region"))
+        threshold = int(task.visual_context["sla_threshold"])
+        normalized_rows = []
+        first_breach_region = "none"
+        for row in latency_page["table_rows"]:
+            wait_value = parse_noisy_int(row["queue_wait"])
+            if wait_value is None:
+                continue
+            normalized_rows.append({"region": row["region"], "queue_wait": wait_value})
+            extracted_fields[row["region"].lower()] = str(wait_value)
+            if wait_value >= threshold and first_breach_region == "none":
+                first_breach_region = row["region"]
+        matched_row = next(
+            row for row in escalation_page["table_rows"] if row["region"] == first_breach_region
+        )
+        answer = matched_row["owner"]
+        extracted_fields["target_latency_page"] = latency_page["page_id"]
+        extracted_fields["target_escalation_page"] = escalation_page["page_id"]
+        extracted_fields["target_region"] = escalation_region["region_id"] if escalation_region else "none"
+        extracted_fields["breach_region"] = first_breach_region
+        extracted_fields["owner"] = answer
+        trace.extend(
+            [
+                f"route_latency_page -> {latency_page['page_id']}",
+                f"normalize_latency_rows -> {normalized_rows}",
+                f"detect_first_breach_region -> {first_breach_region}",
+                f"route_escalation_page -> {escalation_page['page_id']}",
+                f"ground_escalation_region -> {extracted_fields['target_region']}",
+                f"lookup_region_owner -> {matched_row}",
+                f"return_owner -> {answer}",
+            ]
+        )
+    else:
+        return grounded_pipeline_answer(task)
+
+    return MultimodalRun(
+        task_id=task.task_id,
+        strategy="document_pipeline",
+        answer=answer,
+        visual_tokens_used=sum(len(page.get("ocr_lines", [])) for page in pages),
+        trace=trace,
+        extracted_fields=extracted_fields,
+        observation_steps=2,
+        reasoning_steps=max(len(trace) - 2, 0),
+    )
 
 
 def build_run(task: MultimodalTask, strategy: str) -> MultimodalRun:
@@ -338,6 +515,8 @@ def build_run(task: MultimodalTask, strategy: str) -> MultimodalRun:
         return structured_pipeline_answer(task)
     if strategy == "grounded_pipeline":
         return grounded_pipeline_answer(task)
+    if strategy == "document_pipeline":
+        return document_pipeline_answer(task)
     if strategy == "ocr_only":
         return ocr_only_answer(task)
     if strategy == "vision_augmented":

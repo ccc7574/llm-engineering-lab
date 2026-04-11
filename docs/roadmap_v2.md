@@ -232,6 +232,7 @@ llm-engineering-lab/
 - `M00` 图像描述与图文问答最小闭环
 - `M01` 文档 OCR 与结构理解
 - `M02` 图表/表格推理
+- `M05` document workflow pipeline
 - `M10` multimodal SFT
 - `M11` 视觉失败模式与评测
 

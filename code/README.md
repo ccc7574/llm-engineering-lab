@@ -224,6 +224,7 @@ Multimodal 能力线的最小入口。
 - 演示文档理解、图表推理、状态卡读取的最小评测
 - 演示 noisy OCR、字段抽取和 structured pipeline 的差异
 - 演示 multi-page routing、region grounding 和 grounded pipeline 的差异
+- 演示 document workflow 如何把跨页字段、表格和 owner lookup 串成最终业务答案
 
 ## 编码原则
 

@@ -130,6 +130,16 @@ This path is meant to teach the difference between:
 - region grounding
 - structured answer generation
 
+## `M05`: Document Workflow Pipeline
+
+```bash
+python3 eval/multimodal_eval.py --data-path datasets/tiny_multimodal_workflow/eval.jsonl --strategy grounded_pipeline --report-path runs/multimodal_workflow_grounded_pipeline.json
+python3 eval/multimodal_eval.py --data-path datasets/tiny_multimodal_workflow/eval.jsonl --strategy document_pipeline --report-path runs/multimodal_workflow_document_pipeline.json
+python3 code/stage_harness/regression_compare.py --baseline-report runs/multimodal_workflow_grounded_pipeline.json --candidate-report runs/multimodal_workflow_document_pipeline.json --output runs/multimodal_workflow_regression_diff.json
+```
+
+This path teaches the next production step after grounding: page routing and region selection are still not enough if the answer requires cross-page joins, table normalization, and final owner lookup.
+
 ## `H11-H36`: Regression, Release, and Artifact Governance
 
 Run the full suite:

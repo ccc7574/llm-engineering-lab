@@ -16,6 +16,9 @@
 - [pretraining_data_mixture_map.svg](/Volumes/ExtaData/newcode/llm-engineering-lab/assets/figures/pretraining_data_mixture_map.svg)
 - [multimodal_grounding_pipeline.svg](/Volumes/ExtaData/newcode/llm-engineering-lab/assets/figures/multimodal_grounding_pipeline.svg)
 - [agentic_reflection_loop.svg](/Volumes/ExtaData/newcode/llm-engineering-lab/assets/figures/agentic_reflection_loop.svg)
+- [multimodal_document_workflow.svg](/Volumes/ExtaData/newcode/llm-engineering-lab/assets/figures/multimodal_document_workflow.svg)
+- [multimodal_invoice_ops_packet.svg](/Volumes/ExtaData/newcode/llm-engineering-lab/assets/figures/multimodal_invoice_ops_packet.svg)
+- [multimodal_latency_escalation_packet.svg](/Volumes/ExtaData/newcode/llm-engineering-lab/assets/figures/multimodal_latency_escalation_packet.svg)
 
 ## 预训练闭环
 

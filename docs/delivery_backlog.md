@@ -22,7 +22,7 @@
 ## P1: 高价值深水区
 
 5. [done] 补 `Multimodal` 的 grounding / multi-page doc pipeline
-   - 当前已到 OCR 与 structured pipeline，但还缺 page routing、region grounding、表格链路。
+   - 当前已从 OCR / structured pipeline 扩到 page routing、region grounding 和 document workflow 级跨页 join。
 
 6. [done] 补 `Agentic` 的 reflection / agent eval
    - 当前到 state / recovery 为止，离真实团队常见的 planner-reflection-observer 仍差一层。

@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 560" width="960" height="560">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f0f1a"/>
+      <stop offset="100%" stop-color="#1a1a2e"/>
+    </linearGradient>
+    <linearGradient id="purple" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#7c3aed"/>
+      <stop offset="100%" stop-color="#a855f7"/>
+    </linearGradient>
+    <linearGradient id="orange" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#ea580c"/>
+      <stop offset="100%" stop-color="#f97316"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="960" height="560" rx="14" fill="url(#bg)"/>
+  <text x="480" y="36" fill="#e2e8f0" font-family="'SF Mono', 'Fira Code', monospace" font-size="16" text-anchor="middle" font-weight="bold">Invoice Operations Packet</text>
+  <text x="480" y="56" fill="#94a3b8" font-family="'SF Mono', 'Fira Code', monospace" font-size="11" text-anchor="middle">summary page + approval matrix page</text>
+
+  <rect x="70" y="90" width="360" height="410" rx="12" fill="#111827" stroke="#7c3aed" stroke-width="1.4"/>
+  <rect x="70" y="90" width="360" height="22" rx="12" fill="url(#purple)"/>
+  <text x="250" y="105" fill="#f5f3ff" font-family="'SF Mono', 'Fira Code', monospace" font-size="9.2" text-anchor="middle" font-weight="bold">PAGE 1 · INVOICE SUMMARY</text>
+  <text x="96" y="150" fill="#e2e8f0" font-family="'SF Mono', 'Fira Code', monospace" font-size="12">Service: payments-risk</text>
+  <text x="96" y="184" fill="#e2e8f0" font-family="'SF Mono', 'Fira Code', monospace" font-size="12">Subtotal: $2100</text>
+  <text x="96" y="218" fill="#e2e8f0" font-family="'SF Mono', 'Fira Code', monospace" font-size="12">Expedite Fee: $400</text>
+  <text x="96" y="252" fill="#e2e8f0" font-family="'SF Mono', 'Fira Code', monospace" font-size="12">Credits Applied: -$100</text>
+  <text x="96" y="286" fill="#fde68a" font-family="'SF Mono', 'Fira Code', monospace" font-size="12">Total Dve: $2400</text>
+  <text x="96" y="320" fill="#fca5a5" font-family="'SF Mono', 'Fira Code', monospace" font-size="12">Exception Code: queue_wait_override</text>
+  <text x="96" y="354" fill="#94a3b8" font-family="'SF Mono', 'Fira Code', monospace" font-size="11">Default owner shown here: release-manager</text>
+
+  <rect x="530" y="90" width="360" height="410" rx="12" fill="#111827" stroke="#ea580c" stroke-width="1.4"/>
+  <rect x="530" y="90" width="360" height="22" rx="12" fill="url(#orange)"/>
+  <text x="710" y="105" fill="#fff7ed" font-family="'SF Mono', 'Fira Code', monospace" font-size="9.2" text-anchor="middle" font-weight="bold">PAGE 2 · APPROVAL MATRIX</text>
+  <text x="556" y="150" fill="#fdba74" font-family="'SF Mono', 'Fira Code', monospace" font-size="12">Service            Policy                  Owner</text>
+  <line x1="556" y1="162" x2="854" y2="162" stroke="#475569" stroke-width="1"/>
+  <text x="556" y="202" fill="#e2e8f0" font-family="'SF Mono', 'Fira Code', monospace" font-size="11">payments-risk      queue_wait_override     risk-governance</text>
+  <text x="556" y="238" fill="#e2e8f0" font-family="'SF Mono', 'Fira Code', monospace" font-size="11">payments-risk      emergency_credit        finance-ops</text>
+  <text x="556" y="274" fill="#e2e8f0" font-family="'SF Mono', 'Fira Code', monospace" font-size="11">search-api         queue_wait_override     search-governance</text>
+
+  <rect x="268" y="516" width="424" height="20" rx="8" fill="#0f172a" stroke="#334155" stroke-width="1"/>
+  <text x="480" y="530" fill="#94a3b8" font-family="'SF Mono', 'Fira Code', monospace" font-size="8.8" text-anchor="middle">Correct answer requires joining page 1 exception fields with page 2 approval rows.</text>
+</svg>

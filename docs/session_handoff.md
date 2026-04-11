@@ -74,6 +74,48 @@
 
 ## Session Entry
 
+- Date: 2026-04-11 09:09 CST
+- Goal: 把多模态链路从 grounding 扩到 document workflow 级跨页 join，并把代码、回归清单、图解和操作文档一起交付。
+- Status: 已完成 `document_pipeline` 策略、workflow 数据集、测试、回归 suite 接线、中英文 runbook/CI 文档补充和三张相关 SVG；下一步是跑全量验证、提交与 push，然后继续扫描下一个交付缺口。
+- Key findings:
+  - `grounded_pipeline` 解决的是 page routing 和 region grounding，但对“跨页表格 + noisy 字段 + 最终 owner lookup”仍然天然不够。
+  - 真正贴近一线工作流的多模态任务，答案通常不是某页上的显式文本，而是需要先选页、再归一字段、再做 join 后才能得出业务 owner。
+  - 把 workflow 级任务接进 regression suite 后，multimodal 这条线已经形成四层对照梯度，而不是单点 demo。
+- Files touched:
+  - `code/stage_multimodal/task_runner.py`
+  - `eval/multimodal_eval.py`
+  - `datasets/tiny_multimodal_workflow/eval.jsonl`
+  - `tests/test_multimodal_document_pipeline.py`
+  - `manifests/regression_v2_suite.json`
+  - `tasks/M05_document_workflow_pipeline.md`
+  - `tasks/README.md`
+  - `tracks/multimodal/README.md`
+  - `README.md`
+  - `README_EN.md`
+  - `code/README.md`
+  - `docs/runbook.md`
+  - `docs/runbook_en.md`
+  - `docs/ci_regression_guide_zh.md`
+  - `docs/ci_regression_guide_en.md`
+  - `docs/roadmap_v2.md`
+  - `docs/roadmap_v2_en.md`
+  - `docs/delivery_backlog.md`
+  - `assets/figures/README.md`
+  - `assets/figures/multimodal_document_workflow.svg`
+  - `assets/figures/multimodal_invoice_ops_packet.svg`
+  - `assets/figures/multimodal_latency_escalation_packet.svg`
+- Validation:
+  - `python3 -m py_compile code/stage_multimodal/task_runner.py eval/multimodal_eval.py`
+  - `python3 -m unittest tests/test_multimodal_document_pipeline.py`
+  - `python3 eval/multimodal_eval.py --data-path datasets/tiny_multimodal_workflow/eval.jsonl --strategy grounded_pipeline --report-path runs/multimodal_workflow_grounded_pipeline.json`
+  - `python3 eval/multimodal_eval.py --data-path datasets/tiny_multimodal_workflow/eval.jsonl --strategy document_pipeline --report-path runs/multimodal_workflow_document_pipeline.json`
+- Next step:
+  - 跑 `unittest discover`、suite runner 和 SVG XML 校验
+  - 提交并 push
+  - 继续补剩余 production-grade 缺口
+
+## Session Entry
+
 - Date: 2026-04-11 01:18 CST
 - Goal: 把通知链里的 route、dispatch policy 和 live dispatch 收敛成统一 delivery 入口。
 - Status: 已完成 `notification_delivery.py`、workflow 接线、测试扩展和中英文文档更新；下一步是跑通知链测试与全量单测、提交与 push。

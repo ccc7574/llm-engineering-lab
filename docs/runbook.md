@@ -257,6 +257,20 @@ python3 code/stage_harness/regression_compare.py --baseline-report runs/multimod
 - 当前问题应该落到哪个 region
 - 为什么 `ocr_only` 常常会“看到了字，但看错了位置”
 
+## `M05`: Document Workflow Pipeline
+
+```bash
+python3 eval/multimodal_eval.py --data-path datasets/tiny_multimodal_workflow/eval.jsonl --strategy grounded_pipeline --report-path runs/multimodal_workflow_grounded_pipeline.json
+python3 eval/multimodal_eval.py --data-path datasets/tiny_multimodal_workflow/eval.jsonl --strategy document_pipeline --report-path runs/multimodal_workflow_document_pipeline.json
+python3 code/stage_harness/regression_compare.py --baseline-report runs/multimodal_workflow_grounded_pipeline.json --candidate-report runs/multimodal_workflow_document_pipeline.json --output runs/multimodal_workflow_regression_diff.json
+```
+
+这条路径主要回答:
+
+- 只做 page / region grounding 为什么还不够
+- 跨页表格和规则字段要怎样 join 成最终业务决策
+- 为什么 owner / approver / escalation 这类答案天然要求 document workflow，而不是单页 OCR
+
 ## Cross-Track Summary
 
 ```bash

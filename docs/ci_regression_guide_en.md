@@ -15,6 +15,13 @@ The repo already has a full minimum release chain:
 
 This means the project is no longer just a bag of runnable demos. It has a real regression and release discipline.
 
+The multimodal ladder now spans four layers:
+
+- text-only vs vision-augmented
+- noisy OCR vs structured extraction
+- grounding vs page/region-aware parsing
+- grounded parsing vs document workflow joins
+
 ## Core Files
 
 - suite runner: `code/stage_harness/suite_runner.py`

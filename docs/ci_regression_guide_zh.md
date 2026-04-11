@@ -462,6 +462,7 @@ workflow 会做这些事:
 - Multimodal
 - Multimodal Noisy OCR
 - Multimodal Grounding
+- Multimodal Workflow Documents
 - Run Registry
 - Summary Board
 - Gate Check
