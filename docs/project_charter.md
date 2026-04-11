@@ -79,6 +79,7 @@ V2 以 6 条能力线组织内容:
 当前仓库已经具备六条能力线的最小底座，但还没有完成整个 V2:
 
 - 已有最小实现: `stage0_bigram`、`stage1_nanogpt_core`、`stage2_sft`、`stage3_reasoning`、`stage4_verifier`、`stage_coding`、`stage_multimodal`、`stage_agentic`、`stage_harness`
-- 仍待补强: `stage5_toy_alignment`，以及 `coding` / `multimodal` / `agentic` / `harness` 更接近真实生产的深水区能力
+- 已补齐 `stage5_toy_alignment`，并补出 `P10/P11`、`M10` 等 runnable 路线
+- 仍待补强: `Pretraining` 更强的 context extension 专项、`M11` failure pack、`A20` browser/office workflow 的 runnable 深化，以及更完整的 production-minded 案例层
 
 因此，当前最重要的工作不是继续扩散主题，而是把现有 starter path 推到更稳定的 golden path、回归面板和真实工作流形态。

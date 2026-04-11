@@ -37,6 +37,29 @@ Read these tasks together with the core pretraining loop:
 
 The key engineering lesson is that data mixture, domain weighting, and context policy are usually more actionable than architecture changes in small and mid-scale teams.
 
+```bash
+python3 code/stage1_nanogpt_core/train_mixture.py \
+  --manifest-path datasets/tiny_pretraining_mixture/uniform.json \
+  --out-dir runs/stage1_mixture_uniform \
+  --max-iters 80 \
+  --eval-interval 40
+
+python3 code/stage1_nanogpt_core/train_mixture.py \
+  --manifest-path datasets/tiny_pretraining_mixture/domain_heavy.json \
+  --out-dir runs/stage1_mixture_domain_heavy \
+  --max-iters 80 \
+  --eval-interval 40
+
+python3 code/stage1_nanogpt_core/continue_pretraining.py \
+  --checkpoint runs/stage1_gpt/ckpt.pt \
+  --data-path datasets/tiny_pretraining_payments/input.txt \
+  --eval-set general=datasets/tiny_pretraining_general/input.txt \
+  --eval-set domain=datasets/tiny_pretraining_payments/input.txt \
+  --out-dir runs/stage1_payments_adapted \
+  --max-iters 80 \
+  --eval-interval 40
+```
+
 ## `S00-S02`: Instruction Tuning
 
 ```bash

@@ -9,8 +9,7 @@
    - 目标是把 `roadmap -> learning path -> task -> code` 串成闭环。
 
 2. [done] 落地 `stage5_toy_alignment`
-   - 当前 `S20-S21` 在路线图里存在，但 `code/stage5_toy_alignment/` 还是空目录。
-   - 需要最小可运行的 DPO / GRPO 或 reward-guided update 脚本、数据格式和评测入口。
+   - 已补齐最小可运行的 DPO / GRPO-like 训练脚本、数据格式和评测入口。
 
 3. [done] 做厚三类公司案例层
    - `cases/bigtech`、`cases/mid_company`、`cases/small_team` 目前只有 README 骨架。
@@ -42,7 +41,7 @@
    - 已为后端、平台、应用、MLE 四类工程师补出中英文 2 / 4 / 6 周建议路线。
 
 11. [partial] 为关键任务补更多可视化资产
-   - 当前已补 Harness artifact governance、Coding eval ladder、Post-Training alignment、Company route map、Pretraining data mixture、Multimodal grounding 和 Agentic reflection 图；后续继续补更多训练/评测架构图和案例决策图。
+   - 当前已补 Harness artifact governance、Coding eval ladder、Post-Training alignment、Company route map、Pretraining data mixture、Multimodal grounding、Multimodal route-policy SFT 和 Agentic reflection 图；后续继续补更多训练/评测架构图和案例决策图。
 
 12. [done] 把 `stage5_toy_alignment` 接进 eval / regression / summary board
    - 当前已形成 base vs DPO、base vs GRPO-like 的对照，并输出 chosen win rate、preference margin、KL drift 相关指标。

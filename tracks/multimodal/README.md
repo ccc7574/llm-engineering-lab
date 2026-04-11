@@ -26,5 +26,6 @@
 - `M04` grounding and multi-page pipeline
 - `M05` document workflow pipeline
 - `M10` multimodal SFT
+- `M11` multimodal failure modes and eval
 
 当前可直接运行的最小命令见 [runbook.md](/Volumes/ExtaData/newcode/llm-engineering-lab/docs/runbook.md)。

@@ -100,7 +100,7 @@ V2 的任务体系会逐步从旧的 `T00-T32` 编号，迁移到按能力线组
 - [M04_grounding_and_multipage_pipeline.md](/Volumes/ExtaData/newcode/llm-engineering-lab/tasks/M04_grounding_and_multipage_pipeline.md)
 - [M05_document_workflow_pipeline.md](/Volumes/ExtaData/newcode/llm-engineering-lab/tasks/M05_document_workflow_pipeline.md)
 - [M10_multimodal_sft.md](/Volumes/ExtaData/newcode/llm-engineering-lab/tasks/M10_multimodal_sft.md)
-- `M11` 多模态失败模式与评测
+- [M11_multimodal_failure_modes_and_eval.md](/Volumes/ExtaData/newcode/llm-engineering-lab/tasks/M11_multimodal_failure_modes_and_eval.md)
 
 ### `Track A: Agentic`
 
@@ -116,7 +116,7 @@ V2 的任务体系会逐步从旧的 `T00-T32` 编号，迁移到按能力线组
 - [A10_failure_recovery.md](/Volumes/ExtaData/newcode/llm-engineering-lab/tasks/A10_failure_recovery.md)
 - [A11_reflection_and_agent_eval.md](/Volumes/ExtaData/newcode/llm-engineering-lab/tasks/A11_reflection_and_agent_eval.md)
 - [A12_planner_observer_workflow.md](/Volumes/ExtaData/newcode/llm-engineering-lab/tasks/A12_planner_observer_workflow.md)
-- `A20` browser / office workflow
+- [A20_browser_office_workflow.md](/Volumes/ExtaData/newcode/llm-engineering-lab/tasks/A20_browser_office_workflow.md)
 
 ### `Track H: Harness`
 
@@ -157,7 +157,7 @@ V2 的任务体系会逐步从旧的 `T00-T32` 编号，迁移到按能力线组
 - [H35_baseline_snapshot_governance.md](/Volumes/ExtaData/newcode/llm-engineering-lab/tasks/H35_baseline_snapshot_governance.md)
 - [H36_failure_replay_plan.md](/Volumes/ExtaData/newcode/llm-engineering-lab/tasks/H36_failure_replay_plan.md)
 - [H37_notification_delivery_orchestration.md](/Volumes/ExtaData/newcode/llm-engineering-lab/tasks/H37_notification_delivery_orchestration.md)
-- `H20` 周报与复盘模板
+- [H20_model_engineering_weekly_review.md](/Volumes/ExtaData/newcode/llm-engineering-lab/tasks/H20_model_engineering_weekly_review.md)
 
 ## 旧任务到新任务的映射
 

@@ -44,20 +44,20 @@ V2 的改动方向是:
 
 - `stage0_bigram`、`stage1_nanogpt_core` -> `Pretraining`
 - `stage2_sft`、`stage3_reasoning`、`stage4_verifier` -> `Post-Training`
-
-尚未完成但将在 V2 中补齐:
-
-- `Coding`
-- `Multimodal`
-- `Agentic`
-- `Harness`
 - `stage5_toy_alignment`
+
+同时，`Coding`、`Multimodal`、`Agentic`、`Harness` 都已经有 runnable starter path。
+
+当前主要剩余工作不再是“从零补齐这些能力线”，而是:
+
+- 把 pretraining 的深水区脚本继续做厚
+- 给 multimodal / agentic 补更多 failure pack 和 workflow 级案例
+- 把更多 production-minded 模板和案例沉淀成标准入口
 
 ## 近期执行顺序
 
-1. 重写入口文档和任务总览
-2. 稳定 `Pretraining` 与 `Post-Training` 的 golden path
-3. 补 `Coding` 与 `Harness` 任务骨架
-4. 再扩 `Multimodal` 与 `Agentic`
+1. 继续补强 `Pretraining` 的 practitioner 路线
+2. 补 `M11` / `A20` 一类 production-minded 深水区任务
+3. 继续完善模板、案例层和 reviewer artifact
 
 如果你是仓库的新读者，不建议再沿着旧版 sprint 文本理解整个项目，而应直接以 V2 文档为准。

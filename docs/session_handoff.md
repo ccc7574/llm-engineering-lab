@@ -2,6 +2,52 @@
 
 ## Session Entry
 
+- Date: 2026-04-11 10:52 CST
+- Goal: 根据最新 review 把剩余交付级缺口补齐，包括缺失工单、过期文档和 `Pretraining` 的 runnable `P10/P11` 路线。
+- Status: 已补齐 `M11`、`A20`、`H20` 工单；新增 `train_mixture.py` 和 `continue_pretraining.py` 两条 pretraining practitioner 脚本；补充 tiny pretraining 数据与测试；清理了 `project_charter`、`learning_paths`、`delivery_backlog`、`scenarios/roadmap` 等过期描述，并同步更新中英文 runbook / CI 指南。
+- Key findings:
+  - 当前最大问题已经不是“核心能力没代码”，而是少量路线图承诺还没落成实体任务，以及个别入口文档还停留在旧状态。
+  - 对 `Pretraining` 来说，最值得优先补的不是更复杂模型，而是让 data mixture / continued pretraining 真正可跑，这样工程师才能把 `P10/P11` 学成实践而不是概念。
+  - `M11`、`A20`、`H20` 这类 production-minded 任务即使暂时不是最重代码，也必须先把任务卡和模板补齐，否则 6 周路径会在深水区断掉。
+- Files touched:
+  - `code/stage1_nanogpt_core/train_mixture.py`
+  - `code/stage1_nanogpt_core/continue_pretraining.py`
+  - `datasets/tiny_pretraining_general/input.txt`
+  - `datasets/tiny_pretraining_payments/input.txt`
+  - `datasets/tiny_pretraining_mixture/uniform.json`
+  - `datasets/tiny_pretraining_mixture/domain_heavy.json`
+  - `tests/test_pretraining_routes.py`
+  - `tasks/M11_multimodal_failure_modes_and_eval.md`
+  - `tasks/A20_browser_office_workflow.md`
+  - `tasks/H20_model_engineering_weekly_review.md`
+  - `docs/model_engineering_weekly_review_template.md`
+  - `docs/model_engineering_weekly_review_template_en.md`
+  - `docs/project_charter.md`
+  - `docs/learning_paths.md`
+  - `docs/delivery_backlog.md`
+  - `docs/runbook.md`
+  - `docs/runbook_en.md`
+  - `docs/ci_regression_guide_zh.md`
+  - `docs/ci_regression_guide_en.md`
+  - `scenarios/roadmap.md`
+  - `tracks/pretraining/README.md`
+  - `tracks/multimodal/README.md`
+  - `tracks/agentic/README.md`
+  - `tracks/harness/README.md`
+  - `tasks/README.md`
+  - `README.md`
+  - `README_EN.md`
+- Validation:
+  - `python3 -m py_compile code/stage1_nanogpt_core/train_mixture.py code/stage1_nanogpt_core/continue_pretraining.py`
+  - `python3 -m unittest tests/test_pretraining_routes.py`
+  - `python3 -m unittest discover -s tests`
+  - `python3 code/stage_harness/suite_runner.py --manifest manifests/regression_v2_suite.json --output runs/regression_suite_report.json --md-output runs/regression_suite_report.md --strict --require-ship`
+- Next step:
+  - 提交并 push
+  - 基于当前真实仓库状态生成 6 周学习计划
+
+## Session Entry
+
 - Date: 2026-04-11 10:18 CST
 - Goal: 把 `M10` multimodal SFT 从 roadmap 里的占位项补成真正 runnable 的 route-policy 训练 / eval / regression 闭环。
 - Status: 已完成 `router_sft.py`、`train_multimodal_sft.py`、`multimodal_sft_eval.py`、训练/评测数据、专项测试、suite 接线、summary board 行、任务卡和中英文 runbook/README 更新。

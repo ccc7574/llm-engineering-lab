@@ -29,6 +29,46 @@ python3 code/stage1_nanogpt_core/debug_batch.py --data-path datasets/tiny_shakes
 python3 code/stage1_nanogpt_core/visualize_attention.py --checkpoint runs/stage1_gpt/ckpt.pt --prompt "Question: Why did the deploy fail?" --svg-output runs/stage1_gpt/attention_heatmap.svg
 ```
 
+## `P10`: Data Mixture and Sampling
+
+```bash
+python3 code/stage1_nanogpt_core/train_mixture.py \
+  --manifest-path datasets/tiny_pretraining_mixture/uniform.json \
+  --out-dir runs/stage1_mixture_uniform \
+  --max-iters 80 \
+  --eval-interval 40
+
+python3 code/stage1_nanogpt_core/train_mixture.py \
+  --manifest-path datasets/tiny_pretraining_mixture/domain_heavy.json \
+  --out-dir runs/stage1_mixture_domain_heavy \
+  --max-iters 80 \
+  --eval-interval 40
+```
+
+这条路径主要看:
+
+- uniform 和 domain-heavy mixture 会不会把 loss 偏到不同语料上
+- 小团队最现实的预训练优化，为什么往往先是数据配比而不是结构升级
+
+## `P11`: Continued Pretraining / Domain Adaptation
+
+```bash
+python3 code/stage1_nanogpt_core/continue_pretraining.py \
+  --checkpoint runs/stage1_gpt/ckpt.pt \
+  --data-path datasets/tiny_pretraining_payments/input.txt \
+  --eval-set general=datasets/tiny_pretraining_general/input.txt \
+  --eval-set domain=datasets/tiny_pretraining_payments/input.txt \
+  --out-dir runs/stage1_payments_adapted \
+  --max-iters 80 \
+  --eval-interval 40
+```
+
+这条路径主要看:
+
+- continued pretraining 是否真的拉低了领域 loss
+- 领域收益是否伴随着通用 loss 回退
+- 什么时候应该继续做 domain adaptation，什么时候该转去 SFT
+
 ## `S00-S02`: 指令微调
 
 ```bash

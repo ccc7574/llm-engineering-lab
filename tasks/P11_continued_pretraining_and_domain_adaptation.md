@@ -17,7 +17,7 @@
 
 ## 代码改造点
 
-- `code/stage1_nanogpt_core/train.py`
+- `code/stage1_nanogpt_core/continue_pretraining.py`
 - `runs/stage1_gpt/ckpt.pt`
 - 新增或扩展领域数据集
 
@@ -33,9 +33,9 @@ continued pretraining 改的是底层分布适应，SFT 改的是交互协议和
 
 ## 实验步骤
 
-1. 准备领域数据
+1. 准备领域数据和通用 eval set
 2. 从已有 checkpoint 继续训练
-3. 做 adaptation 前后对照采样
+3. 比较 adaptation 前后的 domain/general loss
 
 ## 结果解读
 
@@ -50,4 +50,3 @@ continued pretraining 改的是底层分布适应，SFT 改的是交互协议和
 
 - 对应 roadmap: `P11`
 - 下一步进入 `P12` 和 `P20`
-

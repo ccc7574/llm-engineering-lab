@@ -21,6 +21,7 @@ The multimodal ladder now spans four layers:
 - noisy OCR vs structured extraction
 - grounding vs page/region-aware parsing
 - grounded parsing vs document workflow joins
+- heuristic router vs learned router route-policy SFT
 
 The agentic ladder now spans four layers as well:
 

@@ -54,6 +54,14 @@
   - 多模态 route-policy SFT 训练样本
 - `tiny_multimodal_sft/eval.jsonl`
   - 带 `target_strategy` 标签的多模态 route-policy SFT 评测样本
+- `tiny_pretraining_general/input.txt`
+  - 通用预训练小语料
+- `tiny_pretraining_payments/input.txt`
+  - payments 领域 continued pretraining 小语料
+- `tiny_pretraining_mixture/uniform.json`
+  - 通用/领域均匀混合 manifest
+- `tiny_pretraining_mixture/domain_heavy.json`
+  - 领域偏置混合 manifest
 
 ## 格式约定
 

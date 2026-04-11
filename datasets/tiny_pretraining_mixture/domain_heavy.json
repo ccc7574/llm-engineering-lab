@@ -1,0 +1,16 @@
+{
+  "name": "payments_heavy_mixture",
+  "rounds": 12,
+  "sources": [
+    {
+      "name": "general",
+      "path": "datasets/tiny_pretraining_general/input.txt",
+      "weight": 1
+    },
+    {
+      "name": "payments",
+      "path": "datasets/tiny_pretraining_payments/input.txt",
+      "weight": 3
+    }
+  ]
+}

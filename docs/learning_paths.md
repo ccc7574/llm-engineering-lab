@@ -76,7 +76,7 @@
 - [S10_reasoning_trace_sft.md](/Volumes/ExtaData/newcode/llm-engineering-lab/tasks/S10_reasoning_trace_sft.md)
 - [S11_self_consistency_and_verifier.md](/Volumes/ExtaData/newcode/llm-engineering-lab/tasks/S11_self_consistency_and_verifier.md)
 - [S12_rejection_sampling_route.md](/Volumes/ExtaData/newcode/llm-engineering-lab/tasks/S12_rejection_sampling_route.md)
-- 其中 `S20-S21` 路线的代码实现仍待补齐
+- `P10-P11` 已有 runnable 脚本，`S20-S23` 也已形成 runnable post-training 路线
 
 ## 路径 3: Production-Minded Engineering
 

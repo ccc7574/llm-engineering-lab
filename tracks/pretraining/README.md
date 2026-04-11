@@ -24,8 +24,10 @@
 
 - [stage0_bigram](/Volumes/ExtaData/newcode/llm-engineering-lab/code/stage0_bigram)
 - [stage1_nanogpt_core](/Volumes/ExtaData/newcode/llm-engineering-lab/code/stage1_nanogpt_core)
+- `train_mixture.py` 已可比较 uniform vs domain-heavy 数据混合
+- `continue_pretraining.py` 已可比较 domain adaptation 前后领域 loss
 
 当前主要缺口:
 
-- data mixture / continued pretraining 还没有形成 runnable 专项脚本
+- `P10-P11` 已有 runnable 专项脚本，但仍然是教学级最小实现
 - context extension 目前更多依赖已有训练脚本参数实验

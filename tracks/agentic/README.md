@@ -25,5 +25,6 @@
 - `A10` 失败恢复
 - `A11` reflection and agent eval
 - `A12` planner-observer workflow
+- `A20` browser / office workflow
 
 当前可直接运行的最小命令见 [runbook.md](/Volumes/ExtaData/newcode/llm-engineering-lab/docs/runbook.md)。

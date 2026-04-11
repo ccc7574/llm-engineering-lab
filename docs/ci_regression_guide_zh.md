@@ -15,6 +15,28 @@
 
 这意味着仓库已经不再只是“有很多可运行脚本”，而是有了最小发布前检查体系。
 
+当前多模态能力梯度已经扩到五层:
+
+- text-only vs vision-augmented
+- noisy OCR vs structured extraction
+- grounding vs region-aware parsing
+- grounded parsing vs document workflow join
+- heuristic router vs learned router 的 multimodal SFT
+
+当前 agentic 能力梯度已经扩到四层:
+
+- direct vs tool use
+- tool use vs stateful recovery
+- tool use vs reflective repair
+- stateful vs planner / observer
+
+当前 post-training 能力梯度也已经形成 release-facing 对照:
+
+- consensus vs rejection sampling
+- base vs DPO
+- base vs GRPO-like
+- chosen win rate / preference margin / KL proxy
+
 ## 核心文件
 
 - suite runner: `code/stage_harness/suite_runner.py`

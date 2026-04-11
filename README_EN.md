@@ -63,6 +63,7 @@ It is closer to:
 
 The repo already has runnable starter paths across all six tracks. It now also includes:
 
+- runnable `P10/P11` pretraining routes for data mixture and continued pretraining
 - rejection sampling, toy DPO / GRPO-like post-training scripts, and alignment eval
 - coding judge / verifier, multi-file patching, agentic coding, SWE-bench-style triage, and `pass@k` sampling eval
 - multimodal grounding, multi-page document routing, and document workflow joins

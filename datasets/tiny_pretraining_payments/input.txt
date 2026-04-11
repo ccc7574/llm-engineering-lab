@@ -1,0 +1,12 @@
+payments risk teams review ledger retries and settlement drift.
+invoice approval flows need queue checks before final release.
+payments incidents focus on ledger health refund status and fraud review.
+risk owners compare settlement latency with chargeback pressure.
+payments risk teams review ledger retries and settlement drift.
+invoice approval flows need queue checks before final release.
+payments incidents focus on ledger health refund status and fraud review.
+risk owners compare settlement latency with chargeback pressure.
+payments risk teams review ledger retries and settlement drift.
+invoice approval flows need queue checks before final release.
+payments incidents focus on ledger health refund status and fraud review.
+risk owners compare settlement latency with chargeback pressure.

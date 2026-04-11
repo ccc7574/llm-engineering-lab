@@ -22,7 +22,7 @@
 ## 代码改造点
 
 - `datasets/`
-- `code/stage1_nanogpt_core/train.py`
+- `code/stage1_nanogpt_core/train_mixture.py`
 - 可新增最小 mixture manifest
 
 ## 交付标准
@@ -37,9 +37,9 @@
 
 ## 实验步骤
 
-1. 构造通用数据和垂直数据的最小混合
-2. 用不同比例训练短跑
-3. 比较采样输出和 loss
+1. 准备 `uniform` 和 `domain-heavy` 两种 mixture manifest
+2. 用 `train_mixture.py` 跑短训练
+3. 比较 per-source loss 和输出偏移
 
 ## 结果解读
 
