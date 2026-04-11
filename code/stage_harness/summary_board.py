@@ -25,6 +25,19 @@ TRACK_CONFIG = {
         "quality_gate": 0.05,
         "cost_metrics": ["avg_tool_calls", "avg_steps", "avg_state_reads", "avg_state_writes", "avg_reflection_steps"],
     },
+    "agentic_planner": {
+        "label": "Agentic Planner/Observer",
+        "primary_metric": "task_success_rate",
+        "quality_gate": 0.05,
+        "cost_metrics": [
+            "avg_tool_calls",
+            "avg_steps",
+            "avg_state_reads",
+            "avg_state_writes",
+            "avg_planning_steps",
+            "avg_observer_checks",
+        ],
+    },
     "bugfix": {
         "label": "Coding Bugfix",
         "primary_metric": "pass_at_1",

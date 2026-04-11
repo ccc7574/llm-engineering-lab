@@ -105,15 +105,16 @@ This track teaches that code quality depends on more than generation quality:
 - multi-file patch protocol
 - candidate sampling economics
 
-## `A00-A11`: Agentic Tool Use, Memory, Reflection
+## `A00-A12`: Agentic Tool Use, Memory, Reflection, Planner/Observer
 
 ```bash
 python3 eval/agentic_eval.py --data-path datasets/tiny_agentic/eval.jsonl --strategy tool_use --report-path runs/agentic_tool_use.json
 python3 eval/agentic_eval.py --data-path datasets/tiny_agentic_memory/eval.jsonl --strategy stateful --report-path runs/agentic_memory_stateful.json
 python3 eval/agentic_eval.py --data-path datasets/tiny_agentic_reflection/eval.jsonl --strategy reflective --report-path runs/agentic_reflection_reflective.json
+python3 eval/agentic_eval.py --data-path datasets/tiny_agentic_planner/eval.jsonl --strategy planner_observer --report-path runs/agentic_planner_planner_observer.json
 ```
 
-The key question is not "can the agent talk to tools?" but "does memory or reflection improve task success enough to justify the extra steps?"
+The key question is not "can the agent talk to tools?" but "does memory, reflection, or explicit planner/observer structure improve task success enough to justify the extra steps?"
 
 ## `M00-M04`: Multimodal and Grounding
 

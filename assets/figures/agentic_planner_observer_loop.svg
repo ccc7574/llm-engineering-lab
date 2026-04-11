@@ -1,0 +1,78 @@
+<svg width="960" height="540" viewBox="0 0 960 540" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="960" y2="540" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0f0f1a"/>
+      <stop offset="1" stop-color="#1a1a2e"/>
+    </linearGradient>
+    <marker id="arrow-purple" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#a855f7"/>
+    </marker>
+    <marker id="arrow-orange" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#f97316"/>
+    </marker>
+    <marker id="arrow-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#3b82f6"/>
+    </marker>
+    <marker id="arrow-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#10b981"/>
+    </marker>
+  </defs>
+
+  <rect width="960" height="540" fill="url(#bg)"/>
+  <rect x="24" y="24" width="912" height="492" rx="24" fill="#0f172a" stroke="#334155" stroke-width="2"/>
+
+  <text x="48" y="58" fill="#e2e8f0" font-family="'SF Mono', 'Fira Code', monospace" font-size="22" font-weight="700">Agentic Planner / Observer Loop</text>
+  <text x="48" y="82" fill="#94a3b8" font-family="'SF Mono', 'Fira Code', monospace" font-size="12">A12: make the agent prove task coverage and escalation safety before it emits the final action</text>
+
+  <rect x="48" y="116" width="170" height="108" rx="16" fill="#0f172a" stroke="#a855f7" stroke-width="2"/>
+  <text x="66" y="144" fill="#e2e8f0" font-family="'SF Mono', 'Fira Code', monospace" font-size="18" font-weight="700">Planner</text>
+  <text x="66" y="170" fill="#94a3b8" font-family="'SF Mono', 'Fira Code', monospace" font-size="12">1. owner lookup</text>
+  <text x="66" y="190" fill="#94a3b8" font-family="'SF Mono', 'Fira Code', monospace" font-size="12">2. primary channel</text>
+  <text x="66" y="210" fill="#94a3b8" font-family="'SF Mono', 'Fira Code', monospace" font-size="12">3. policy / threshold gate</text>
+
+  <rect x="280" y="116" width="180" height="108" rx="16" fill="#0f172a" stroke="#3b82f6" stroke-width="2"/>
+  <text x="298" y="144" fill="#e2e8f0" font-family="'SF Mono', 'Fira Code', monospace" font-size="18" font-weight="700">Executor</text>
+  <text x="298" y="170" fill="#94a3b8" font-family="'SF Mono', 'Fira Code', monospace" font-size="12">lookup owner</text>
+  <text x="298" y="190" fill="#94a3b8" font-family="'SF Mono', 'Fira Code', monospace" font-size="12">normalize primary route</text>
+  <text x="298" y="210" fill="#94a3b8" font-family="'SF Mono', 'Fira Code', monospace" font-size="12">compute retry total</text>
+
+  <rect x="522" y="116" width="190" height="108" rx="16" fill="#0f172a" stroke="#10b981" stroke-width="2"/>
+  <text x="540" y="144" fill="#e2e8f0" font-family="'SF Mono', 'Fira Code', monospace" font-size="18" font-weight="700">Observer</text>
+  <text x="540" y="170" fill="#94a3b8" font-family="'SF Mono', 'Fira Code', monospace" font-size="12">check escalation-safe route</text>
+  <text x="540" y="190" fill="#94a3b8" font-family="'SF Mono', 'Fira Code', monospace" font-size="12">check threshold / page gate</text>
+  <text x="540" y="210" fill="#94a3b8" font-family="'SF Mono', 'Fira Code', monospace" font-size="12">audit final dispatch draft</text>
+
+  <rect x="754" y="116" width="158" height="108" rx="16" fill="#0f172a" stroke="#f97316" stroke-width="2"/>
+  <text x="772" y="144" fill="#e2e8f0" font-family="'SF Mono', 'Fira Code', monospace" font-size="18" font-weight="700">Output</text>
+  <text x="772" y="170" fill="#94a3b8" font-family="'SF Mono', 'Fira Code', monospace" font-size="12">Page auth-oncall</text>
+  <text x="772" y="190" fill="#94a3b8" font-family="'SF Mono', 'Fira Code', monospace" font-size="12">in sev-ops</text>
+  <text x="772" y="210" fill="#94a3b8" font-family="'SF Mono', 'Fira Code', monospace" font-size="12">after 30 minutes</text>
+
+  <path d="M218 170H280" stroke="#a855f7" stroke-width="3" marker-end="url(#arrow-purple)"/>
+  <path d="M460 170H522" stroke="#3b82f6" stroke-width="3" marker-end="url(#arrow-blue)"/>
+  <path d="M712 170H754" stroke="#10b981" stroke-width="3" marker-end="url(#arrow-green)"/>
+
+  <rect x="88" y="292" width="784" height="164" rx="18" fill="#111827" stroke="#334155" stroke-width="2"/>
+  <text x="112" y="324" fill="#eab308" font-family="'SF Mono', 'Fira Code', monospace" font-size="16" font-weight="700">Why Planner / Observer Matters</text>
+
+  <rect x="112" y="344" width="226" height="84" rx="14" fill="#0f172a" stroke="#a855f7" stroke-width="1.5"/>
+  <text x="128" y="368" fill="#e2e8f0" font-family="'SF Mono', 'Fira Code', monospace" font-size="14" font-weight="700">Stateful Baseline</text>
+  <text x="128" y="392" fill="#94a3b8" font-family="'SF Mono', 'Fira Code', monospace" font-size="12">owner and channel are remembered,</text>
+  <text x="128" y="410" fill="#94a3b8" font-family="'SF Mono', 'Fira Code', monospace" font-size="12">but unsafe `search-hotline` still ships.</text>
+
+  <rect x="366" y="344" width="244" height="84" rx="14" fill="#0f172a" stroke="#3b82f6" stroke-width="1.5"/>
+  <text x="382" y="368" fill="#e2e8f0" font-family="'SF Mono', 'Fira Code', monospace" font-size="14" font-weight="700">Observer Repair</text>
+  <text x="382" y="392" fill="#94a3b8" font-family="'SF Mono', 'Fira Code', monospace" font-size="12">primary route fails policy check,</text>
+  <text x="382" y="410" fill="#94a3b8" font-family="'SF Mono', 'Fira Code', monospace" font-size="12">so the agent reroutes to `sev-ops`.</text>
+
+  <rect x="638" y="344" width="206" height="84" rx="14" fill="#0f172a" stroke="#10b981" stroke-width="1.5"/>
+  <text x="654" y="368" fill="#e2e8f0" font-family="'SF Mono', 'Fira Code', monospace" font-size="14" font-weight="700">Measured Cost</text>
+  <text x="654" y="392" fill="#94a3b8" font-family="'SF Mono', 'Fira Code', monospace" font-size="12">avg_planning_steps</text>
+  <text x="654" y="410" fill="#94a3b8" font-family="'SF Mono', 'Fira Code', monospace" font-size="12">avg_observer_checks</text>
+
+  <path d="M338 386H366" stroke="#a855f7" stroke-width="2.5" marker-end="url(#arrow-purple)"/>
+  <path d="M610 386H638" stroke="#10b981" stroke-width="2.5" marker-end="url(#arrow-green)"/>
+
+  <path d="M618 224V274C618 286 608 296 596 296H506C494 296 484 306 484 318V344" stroke="#10b981" stroke-width="2.5" marker-end="url(#arrow-green)"/>
+  <path d="M618 224V270C618 286 630 298 646 298H744C760 298 776 310 776 326V344" stroke="#f97316" stroke-width="2.5" marker-end="url(#arrow-orange)"/>
+</svg>

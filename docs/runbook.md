@@ -227,6 +227,20 @@ python3 code/stage_harness/regression_compare.py --baseline-report runs/agentic_
 - critique / revise 是否真的改善成功率
 - `avg_reflection_steps` 带来了多少额外步骤成本
 
+## `A12`: Planner / Observer Workflow Path
+
+```bash
+python3 eval/agentic_eval.py --data-path datasets/tiny_agentic_planner/eval.jsonl --strategy stateful --report-path runs/agentic_planner_stateful.json
+python3 eval/agentic_eval.py --data-path datasets/tiny_agentic_planner/eval.jsonl --strategy planner_observer --report-path runs/agentic_planner_planner_observer.json
+python3 code/stage_harness/regression_compare.py --baseline-report runs/agentic_planner_stateful.json --candidate-report runs/agentic_planner_planner_observer.json --output runs/agentic_planner_regression_diff.json
+```
+
+这条路径主要看:
+
+- memory / recovery 为什么还不能替代显式 planner
+- observer check 怎样把“看起来能执行”的草稿，变成真正满足升级策略的输出
+- `avg_planning_steps` 和 `avg_observer_checks` 带来了多少额外成本
+
 ## `M00-M02`: Multimodal Starter Path
 
 ```bash

@@ -15,6 +15,7 @@
 - 已形成 direct vs tool_use 的最小 agentic 对照实验
 - 已形成 tool_use vs stateful 的 state / recovery 对照实验
 - 已形成 tool_use vs reflective 的 reflection / self-check 对照实验
+- 已形成 stateful vs planner_observer 的 planner / executor / observer 对照实验
 
 建议首批任务:
 
@@ -23,5 +24,6 @@
 - `A02` memory 与状态管理
 - `A10` 失败恢复
 - `A11` reflection and agent eval
+- `A12` planner-observer workflow
 
 当前可直接运行的最小命令见 [runbook.md](/Volumes/ExtaData/newcode/llm-engineering-lab/docs/runbook.md)。

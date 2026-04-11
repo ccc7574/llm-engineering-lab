@@ -208,6 +208,7 @@ Agentic 能力线的最小入口。
 - 演示多步工具链与最小过程指标
 - 演示 state / memory 与 failure recovery 的最小可执行闭环
 - 演示 draft / critique / revise 的最小 reflection 对照实验
+- 演示 planner / executor / observer 如何把草稿执行升级成可审计的安全输出
 
 ### `stage_multimodal`
 

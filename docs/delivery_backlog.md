@@ -25,7 +25,7 @@
    - 当前已从 OCR / structured pipeline 扩到 page routing、region grounding 和 document workflow 级跨页 join。
 
 6. [done] 补 `Agentic` 的 reflection / agent eval
-   - 当前到 state / recovery 为止，离真实团队常见的 planner-reflection-observer 仍差一层。
+   - 当前已从 state / recovery 扩到 reflection 和 planner-observer，对真实团队常见的 planner-reflection-observer 闭环已有最小 runnable 入口。
 
 7. [done] 补 `Coding` 的 SWE-bench 风格任务和 `pass@k`
    - 当前 `Coding` 已覆盖 completion、bugfix、judge、testgen、agentic coding、SWE-bench 风格 triage 和 test-time sampling / `pass@k`。

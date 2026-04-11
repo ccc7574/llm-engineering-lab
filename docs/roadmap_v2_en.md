@@ -208,6 +208,7 @@ Suggested tasks:
 - `A02`
 - `A10`
 - `A11`
+- `A12`
 - `A20`
 
 ### Track H: Harness

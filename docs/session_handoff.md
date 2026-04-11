@@ -74,6 +74,51 @@
 
 ## Session Entry
 
+- Date: 2026-04-11 09:24 CST
+- Goal: 把 agentic 路线从 memory / reflection 扩到 planner-executor-observer 级工作流，并接进回归主链。
+- Status: 已完成 `planner_observer` 策略、planner 数据集、测试、suite 接线、summary board 指标、中英文文档和一张新 SVG；下一步是提交与 push，然后继续扫描下一个 production-grade 缺口。
+- Key findings:
+  - `stateful` 能记住 owner 和 route，但仍然会把不满足 escalation policy 的草稿直接发出去，这正是很多真实 agent workflow 的故障点。
+  - `reflection` 擅长修补单个草稿缺陷，但当任务需要显式计划覆盖和 observer gate 时，还需要更结构化的 planner / observer 分层。
+  - 把 `avg_planning_steps` 和 `avg_observer_checks` 接进 eval 和 summary board 后，agentic 这条线终于可以量化“治理收益是否值得额外步骤成本”。
+- Files touched:
+  - `code/stage_agentic/task_runner.py`
+  - `code/stage_agentic/tools.py`
+  - `eval/agentic_eval.py`
+  - `code/stage_harness/summary_board.py`
+  - `datasets/tiny_agentic_planner/eval.jsonl`
+  - `tests/test_agentic_planner.py`
+  - `manifests/regression_v2_suite.json`
+  - `tasks/A12_planner_observer_workflow.md`
+  - `tasks/README.md`
+  - `tracks/agentic/README.md`
+  - `README.md`
+  - `README_EN.md`
+  - `code/README.md`
+  - `docs/runbook.md`
+  - `docs/runbook_en.md`
+  - `docs/ci_regression_guide_zh.md`
+  - `docs/ci_regression_guide_en.md`
+  - `docs/roadmap_v2.md`
+  - `docs/roadmap_v2_en.md`
+  - `docs/delivery_backlog.md`
+  - `assets/figures/README.md`
+  - `assets/figures/agentic_planner_observer_loop.svg`
+  - `docs/session_handoff.md`
+- Validation:
+  - `python3 -m py_compile code/stage_agentic/task_runner.py eval/agentic_eval.py code/stage_harness/summary_board.py`
+  - `python3 -m unittest tests/test_agentic_planner.py tests/test_agentic_reflection.py`
+  - `python3 eval/agentic_eval.py --data-path datasets/tiny_agentic_planner/eval.jsonl --strategy stateful --report-path runs/agentic_planner_stateful.json`
+  - `python3 eval/agentic_eval.py --data-path datasets/tiny_agentic_planner/eval.jsonl --strategy planner_observer --report-path runs/agentic_planner_planner_observer.json`
+  - `python3 -m unittest discover -s tests`
+  - `python3 code/stage_harness/suite_runner.py --manifest manifests/regression_v2_suite.json --output runs/regression_suite_report.json --md-output runs/regression_suite_report.md --strict --require-ship`
+  - XML parse 校验 `assets/figures/agentic_planner_observer_loop.svg` 通过
+- Next step:
+  - 提交并 push
+  - 继续检查剩余 delivery-grade 缺口，优先看 multimodal SFT / post-training eval / harness live integration
+
+## Session Entry
+
 - Date: 2026-04-11 09:09 CST
 - Goal: 把多模态链路从 grounding 扩到 document workflow 级跨页 join，并把代码、回归清单、图解和操作文档一起交付。
 - Status: 已完成 `document_pipeline` 策略、workflow 数据集、测试、回归 suite 接线、中英文 runbook/CI 文档补充和三张相关 SVG；下一步是跑全量验证、提交与 push，然后继续扫描下一个交付缺口。

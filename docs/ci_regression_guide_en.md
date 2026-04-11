@@ -22,6 +22,13 @@ The multimodal ladder now spans four layers:
 - grounding vs page/region-aware parsing
 - grounded parsing vs document workflow joins
 
+The agentic ladder now spans four layers as well:
+
+- direct answer vs tool use
+- tool use vs stateful recovery
+- tool use vs reflective repair
+- stateful execution vs planner/observer governance
+
 ## Core Files
 
 - suite runner: `code/stage_harness/suite_runner.py`

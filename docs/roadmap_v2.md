@@ -260,6 +260,7 @@ llm-engineering-lab/
 - `A02` memory 与状态管理
 - `A10` 失败恢复与 reflection
 - `A11` agent eval / task success / step efficiency
+- `A12` planner-observer workflow
 - `A20` office workflow / browser workflow 案例
 
 ## Track H: Harness

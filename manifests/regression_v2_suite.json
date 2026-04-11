@@ -33,6 +33,8 @@
       "datasets/tiny_agentic/**",
       "datasets/tiny_agentic_memory/**",
       "datasets/tiny_agentic_reflection/**",
+      "datasets/tiny_agentic_planner/**",
+      "assets/figures/agentic_*",
       "tracks/agentic/**",
       "tasks/A*.md"
     ],
@@ -193,6 +195,21 @@
       "name": "agentic_reflection_regression_diff",
       "command": ["python3", "code/stage_harness/regression_compare.py", "--baseline-report", "runs/agentic_reflection_tool_use.json", "--candidate-report", "runs/agentic_reflection_reflective.json", "--output", "runs/agentic_reflection_regression_diff.json"],
       "expected_outputs": ["runs/agentic_reflection_regression_diff.json"]
+    },
+    {
+      "name": "agentic_planner_stateful",
+      "command": ["python3", "eval/agentic_eval.py", "--data-path", "datasets/tiny_agentic_planner/eval.jsonl", "--strategy", "stateful", "--report-path", "runs/agentic_planner_stateful.json"],
+      "expected_outputs": ["runs/agentic_planner_stateful.json"]
+    },
+    {
+      "name": "agentic_planner_planner_observer",
+      "command": ["python3", "eval/agentic_eval.py", "--data-path", "datasets/tiny_agentic_planner/eval.jsonl", "--strategy", "planner_observer", "--report-path", "runs/agentic_planner_planner_observer.json"],
+      "expected_outputs": ["runs/agentic_planner_planner_observer.json"]
+    },
+    {
+      "name": "agentic_planner_regression_diff",
+      "command": ["python3", "code/stage_harness/regression_compare.py", "--baseline-report", "runs/agentic_planner_stateful.json", "--candidate-report", "runs/agentic_planner_planner_observer.json", "--output", "runs/agentic_planner_regression_diff.json"],
+      "expected_outputs": ["runs/agentic_planner_regression_diff.json"]
     },
     {
       "name": "agentic_coding_single_pass",

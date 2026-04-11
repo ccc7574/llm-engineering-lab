@@ -17,6 +17,14 @@ def lookup_service_owner(service: str, context: dict) -> str:
     return context["service_owners"][service]
 
 
+def lookup_primary_channel(service: str, context: dict) -> str:
+    return context["service_primary_channels"][service]
+
+
+def lookup_backup_channel(service: str, context: dict) -> str:
+    return context["service_backup_channels"][service]
+
+
 def is_escalation_channel(channel: str, context: dict) -> bool:
     return channel in set(context["escalation_channels"])
 

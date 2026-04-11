@@ -459,6 +459,7 @@ workflow 会做这些事:
 - Agentic
 - Agentic Memory
 - Agentic Reflection
+- Agentic Planner / Observer
 - Multimodal
 - Multimodal Noisy OCR
 - Multimodal Grounding
