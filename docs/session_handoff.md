@@ -74,6 +74,46 @@
 
 ## Session Entry
 
+- Date: 2026-04-11 10:06 CST
+- Goal: 把 `S12` rejection sampling 从任务文档里的“建议路线”补成真正 runnable 的筛选 / accepted dataset / regression 闭环。
+- Status: 已完成候选池回放数据、`rejection_sampling.py`、`rejection_sampling_eval.py`、专项测试、suite 接线和中英文 runbook/CI 文档更新；下一步是提交与 push，然后继续看 `M10` multimodal SFT。
+- Key findings:
+  - 当前 live reasoning generator 在 tiny eval 上 `any_candidate_hit=0`，不适合拿来做 rejection sampling 教学闭环，否则会把问题误归因到筛选层。
+  - 对 `S12` 来说，更合理的最小实现是可审阅的候选池回放包: 先保证候选池里确实有对有错，再比较 consensus 和 filter-and-accept 的差别。
+  - rejection sampling 最关键的工程 tradeoff 不是“是否更准”，而是 accepted precision 提升是否值得 acceptance rate 下降；这正适合放进 summary board 做发布视角审阅。
+- Files touched:
+  - `code/stage3_reasoning/rejection_sampling.py`
+  - `eval/rejection_sampling_eval.py`
+  - `datasets/tiny_reasoning_rejection/eval.jsonl`
+  - `tests/test_rejection_sampling.py`
+  - `code/README.md`
+  - `tracks/post_training/README.md`
+  - `README.md`
+  - `README_EN.md`
+  - `docs/runbook.md`
+  - `docs/runbook_en.md`
+  - `docs/ci_regression_guide_zh.md`
+  - `docs/ci_regression_guide_en.md`
+  - `docs/delivery_backlog.md`
+  - `eval/README.md`
+  - `datasets/README.md`
+  - `tasks/S12_rejection_sampling_route.md`
+  - `manifests/regression_v2_suite.json`
+  - `code/stage_harness/summary_board.py`
+  - `docs/session_handoff.md`
+- Validation:
+  - `python3 -m py_compile code/stage3_reasoning/rejection_sampling.py eval/rejection_sampling_eval.py code/stage_harness/summary_board.py`
+  - `python3 -m unittest tests/test_rejection_sampling.py`
+  - `python3 eval/rejection_sampling_eval.py --data-path datasets/tiny_reasoning_rejection/eval.jsonl --strategy consensus --report-path /tmp/post_training_rejection_consensus.json`
+  - `python3 eval/rejection_sampling_eval.py --data-path datasets/tiny_reasoning_rejection/eval.jsonl --strategy rejection_sampling --report-path /tmp/post_training_rejection_sampling.json --accepted-output /tmp/post_training_rejection_accepts.jsonl`
+  - `python3 -m unittest discover -s tests`
+  - `python3 code/stage_harness/suite_runner.py --manifest manifests/regression_v2_suite.json --output runs/regression_suite_report.json --md-output runs/regression_suite_report.md --strict --require-ship`
+- Next step:
+  - 提交并 push
+  - 继续转向 `M10` multimodal SFT
+
+## Session Entry
+
 - Date: 2026-04-11 10:03 CST
 - Goal: 把 `stage5_toy_alignment` 从“可训练的教学脚本”提升到“可评测、可回归、可在 summary board 中审阅”的 release-facing 实验链。
 - Status: 已完成 `eval/alignment_eval.py`、`S23` 任务卡、post-training suite 接线、summary board 指标扩展和中英文 runbook/CI 文档更新；下一步是提交与 push，然后继续看 `M10` multimodal SFT 或 `S12` rejection sampling runnable 的缺口。

@@ -66,6 +66,28 @@ python3 code/stage4_verifier/rerank.py --checkpoint runs/stage4_verifier/ckpt.pt
 
 Use this path to show that better reasoning is often a pipeline question: generator quality, candidate diversity, verifier behavior, and rerank discipline all matter.
 
+## `S12`: Rejection Sampling Route
+
+```bash
+python3 eval/rejection_sampling_eval.py \
+  --data-path datasets/tiny_reasoning_rejection/eval.jsonl \
+  --strategy consensus \
+  --report-path runs/post_training_rejection_consensus.json
+
+python3 eval/rejection_sampling_eval.py \
+  --data-path datasets/tiny_reasoning_rejection/eval.jsonl \
+  --strategy rejection_sampling \
+  --report-path runs/post_training_rejection_sampling.json \
+  --accepted-output runs/post_training_rejection_accepts.jsonl
+
+python3 code/stage_harness/regression_compare.py \
+  --baseline-report runs/post_training_rejection_consensus.json \
+  --candidate-report runs/post_training_rejection_sampling.json \
+  --output runs/post_training_rejection_regression_diff.json
+```
+
+Use this route to show the low-risk production pattern before preference optimization: sample multiple candidates, filter aggressively, keep only high-precision accepted rows, and inspect whether the precision gain justifies the coverage loss.
+
 ## `S20-S21`: Toy Alignment
 
 ```bash

@@ -40,8 +40,11 @@
     ],
     "post_training": [
       "code/stage5_toy_alignment/**",
+      "code/stage3_reasoning/rejection_sampling.py",
       "eval/alignment_eval.py",
+      "eval/rejection_sampling_eval.py",
       "datasets/tiny_preferences/**",
+      "datasets/tiny_reasoning_rejection/**",
       "tracks/post_training/**",
       "tasks/S*.md",
       "assets/figures/post_training_*"
@@ -258,6 +261,21 @@
       "name": "post_training_grpo_regression_diff",
       "command": ["python3", "code/stage_harness/regression_compare.py", "--baseline-report", "runs/post_training_base_eval.json", "--candidate-report", "runs/post_training_grpo_eval.json", "--output", "runs/post_training_grpo_regression_diff.json"],
       "expected_outputs": ["runs/post_training_grpo_regression_diff.json"]
+    },
+    {
+      "name": "post_training_rejection_consensus",
+      "command": ["python3", "eval/rejection_sampling_eval.py", "--data-path", "datasets/tiny_reasoning_rejection/eval.jsonl", "--strategy", "consensus", "--report-path", "runs/post_training_rejection_consensus.json"],
+      "expected_outputs": ["runs/post_training_rejection_consensus.json"]
+    },
+    {
+      "name": "post_training_rejection_sampling",
+      "command": ["python3", "eval/rejection_sampling_eval.py", "--data-path", "datasets/tiny_reasoning_rejection/eval.jsonl", "--strategy", "rejection_sampling", "--report-path", "runs/post_training_rejection_sampling.json", "--accepted-output", "runs/post_training_rejection_accepts.jsonl"],
+      "expected_outputs": ["runs/post_training_rejection_sampling.json", "runs/post_training_rejection_accepts.jsonl"]
+    },
+    {
+      "name": "post_training_rejection_regression_diff",
+      "command": ["python3", "code/stage_harness/regression_compare.py", "--baseline-report", "runs/post_training_rejection_consensus.json", "--candidate-report", "runs/post_training_rejection_sampling.json", "--output", "runs/post_training_rejection_regression_diff.json"],
+      "expected_outputs": ["runs/post_training_rejection_regression_diff.json"]
     },
     {
       "name": "agentic_coding_repair_loop",

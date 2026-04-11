@@ -14,6 +14,8 @@
   - 带推理过程的小任务集
 - `tiny_reasoning/eval.jsonl`
   - 推理增强评测集
+- `tiny_reasoning_rejection/eval.jsonl`
+  - rejection sampling 候选池回放数据，用于演示 consensus vs filter-and-accept
 - `tiny_verifier/train.jsonl`
   - verifier 训练样本
 - `tiny_verifier/demo_candidates.jsonl`

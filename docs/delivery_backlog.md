@@ -47,6 +47,9 @@
 12. [done] 把 `stage5_toy_alignment` 接进 eval / regression / summary board
    - 当前已形成 base vs DPO、base vs GRPO-like 的对照，并输出 chosen win rate、preference margin、KL drift 相关指标。
 
+13. [done] 把 `S12` rejection sampling 接成 runnable route
+   - 当前已补候选池筛选、accepted dataset 导出和 consensus vs rejection_sampling 的 regression 对照。
+
 ## 当前执行顺序
 
 按以下顺序推进:

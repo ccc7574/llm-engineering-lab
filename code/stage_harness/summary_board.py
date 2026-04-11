@@ -117,6 +117,17 @@ TRACK_CONFIG = {
         "quality_gate": 0.05,
         "cost_metrics": ["mean_kl_proxy", "dpo_loss", "policy_chosen_win_rate"],
     },
+    "post_training_rejection": {
+        "label": "Post-Training Rejection Sampling",
+        "primary_metric": "task_success_rate",
+        "quality_gate": 0.05,
+        "cost_metrics": [
+            "acceptance_rate",
+            "accepted_precision",
+            "avg_sampled_candidates",
+            "avg_scored_candidates",
+        ],
+    },
     "repo_context": {
         "label": "Coding Repo Context",
         "primary_metric": "pass_at_1",

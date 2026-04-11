@@ -60,6 +60,11 @@
 - average generated tokens / verifier calls
 - latency 与 token cost 的变化
 
+### Post-Training
+
+- rejection sampling 的 acceptance rate / precision 变化
+- chosen win rate / preference margin / KL drift 对照
+
 ### Agentic
 
 - task success rate

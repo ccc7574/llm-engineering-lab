@@ -87,6 +87,32 @@ python3 code/stage4_verifier/rerank.py --checkpoint runs/stage4_verifier/ckpt.pt
 
 它不是通用 judge，而是面向当前 tiny arithmetic / reasoning 任务的最小 scorer。
 
+## `S12`: Rejection Sampling Route
+
+```bash
+python3 eval/rejection_sampling_eval.py \
+  --data-path datasets/tiny_reasoning_rejection/eval.jsonl \
+  --strategy consensus \
+  --report-path runs/post_training_rejection_consensus.json
+
+python3 eval/rejection_sampling_eval.py \
+  --data-path datasets/tiny_reasoning_rejection/eval.jsonl \
+  --strategy rejection_sampling \
+  --report-path runs/post_training_rejection_sampling.json \
+  --accepted-output runs/post_training_rejection_accepts.jsonl
+
+python3 code/stage_harness/regression_compare.py \
+  --baseline-report runs/post_training_rejection_consensus.json \
+  --candidate-report runs/post_training_rejection_sampling.json \
+  --output runs/post_training_rejection_regression_diff.json
+```
+
+这条路径主要看:
+
+- 为什么候选池里“有正确答案”还不等于最终链路会选中它
+- rejection sampling 怎样提高 accepted set 的精度
+- acceptance rate 和 precision 之间的取舍是否值得
+
 ## `S20-S21`: Toy Alignment
 
 ```bash

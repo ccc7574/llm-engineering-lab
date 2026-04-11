@@ -31,6 +31,7 @@ The agentic ladder now spans four layers as well:
 
 The post-training ladder now includes release-facing preference checks:
 
+- consensus vs rejection sampling
 - base checkpoint vs DPO aligned checkpoint
 - base checkpoint vs GRPO-like aligned checkpoint
 - chosen win rate / preference margin gains

@@ -31,10 +31,11 @@
 
 当前主要缺口:
 
-- `S12` rejection sampling 仍缺 runnable 脚本
+- 当前最主要剩余缺口已经转到更深的 multimodal SFT / browser workflow，而不是 post-training 基础 runnable
 
 当前已补到:
 
+- `S12` rejection sampling 已补到 runnable 筛选 / accepted dataset 导出
 - `S20-S21` 已有 toy runnable 入口
 - 已形成 base vs `DPO`、base vs `GRPO-like` 的 alignment eval / regression 对照
 - 已把 alignment 结果接进 summary board，可直接看 chosen win rate、preference margin 和 drift
