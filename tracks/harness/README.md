@@ -41,6 +41,7 @@
 - 已支持 artifact catalog，可给 `runs/` 下产物打生命周期标签
 - 已支持 baseline snapshot，可把关键 artifact 固化到版本化目录
 - 已支持 failure replay plan，可从 suite report 直接抽出 step 级与 task/sample 级重放命令
+- 已支持 notification delivery orchestration，可把 route、dispatch policy 和 live dispatch 串成统一入口
 
 建议首批任务:
 
@@ -73,3 +74,4 @@
 - `H34` artifact catalog and lifecycle
 - `H35` baseline snapshot governance
 - `H36` failure replay plan
+- `H37` notification delivery orchestration

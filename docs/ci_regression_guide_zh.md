@@ -43,6 +43,10 @@
   - `code/stage_harness/notification_dispatch.py`
   - `runs/notification_dispatch_result.json`
   - `runs/notification_dispatch_state.json`
+- delivery orchestration:
+  - `code/stage_harness/notification_delivery.py`
+  - `runs/notification_delivery.json`
+  - `runs/notification_delivery.md`
 - dispatch policy:
   - `code/stage_harness/notification_dispatch_policy.py`
   - `manifests/notification_dispatch_policy.json`
@@ -164,7 +168,7 @@ workflow 会做这些事:
 9. 生成 Slack / 飞书 payload artifact
 10. 基于 routing policy 选择 channel
 11. 生成 route matrix / diff / lint / policy gate
-12. 基于 dispatch policy 判断是否允许真实发送
+12. 基于 delivery orchestration 统一执行 route / dispatch policy / dispatch
 13. 生成 review summary
 14. 生成 release note
 15. 在 `pull_request` 下尝试回写 PR comment
@@ -258,6 +262,21 @@ workflow 会做这些事:
 这两个文件适合:
 
 - webhook 发送前最后一步
+
+### `runs/notification_delivery.md`
+
+看完整通知链的统一结果:
+
+- route 最终选中了哪个 channel
+- dispatch policy 是否允许真实发送
+- dispatch 最终状态是什么
+- 没发送时到底是 policy deny、缺 payload 还是 webhook 配置缺失
+
+这个文件适合:
+
+- 本地一次性检查完整通知链
+- CI 值班同学快速判断“通知为什么没出去”
+- release owner 对 route / policy / dispatch 做统一复盘
 - IM 机器人接入
 - 发布频道消息模板固化
 

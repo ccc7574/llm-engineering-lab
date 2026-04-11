@@ -16,6 +16,7 @@ from code.stage_harness.notification_dispatch import (
     execute_dispatch,
     validate_webhook_url,
 )
+from code.stage_harness.notification_delivery import run_delivery
 from code.stage_harness.notification_route import select_route
 from code.stage_harness.notification_route_lint import lint_routes
 from code.stage_harness.pr_comment import (
@@ -37,6 +38,95 @@ DISPATCH_POLICY_MANIFEST = REPO_ROOT / "manifests/notification_dispatch_policy.j
 
 
 class NotificationHarnessTests(unittest.TestCase):
+    def test_notification_delivery_skips_when_policy_denies_dispatch(self) -> None:
+        digest = {
+            "headline": "Regression suite passed",
+            "severity": "info",
+            "overall_gate": "ship",
+            "ship_ready": True,
+            "failure_counts": {},
+        }
+        routes = {
+            "channel_payloads": {"slack_webhook": "runs/notification_slack.json"},
+            "rules": [
+                {
+                    "event_names": ["workflow_dispatch"],
+                    "channel": "slack_webhook",
+                    "reason": "manual route for inspection",
+                }
+            ],
+        }
+        policy = json.loads(DISPATCH_POLICY_MANIFEST.read_text(encoding="utf-8"))
+
+        payload = run_delivery(
+            digest=digest,
+            routes=routes,
+            dispatch_policy_manifest=policy,
+            event_name="workflow_dispatch",
+            default_channel="none",
+            override_channel=None,
+            dry_run=False,
+            max_attempts=1,
+            retry_delay_seconds=0.0,
+            explicit_idempotency_key=None,
+            explicit_webhook_url=None,
+            explicit_signing_secret=None,
+            state_path=Path("runs/notification_dispatch_state_unused.json"),
+        )
+
+        self.assertEqual(payload["route"]["channel"], "slack_webhook")
+        self.assertFalse(payload["dispatch_policy"]["allow_dispatch"])
+        self.assertEqual(payload["dispatch_result"]["final_status"], "skipped_policy_denied")
+        self.assertEqual(payload["delivery_status"], "skipped_policy_denied")
+        self.assertFalse(payload["dispatched"])
+
+    def test_notification_delivery_dry_run_emits_dispatch_result(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            root = Path(tmp_dir)
+            payload_path = root / "notification_slack.json"
+            payload_path.write_text(json.dumps({"text": "hello"}), encoding="utf-8")
+            digest = {
+                "headline": "Scheduled regression suite passed",
+                "severity": "info",
+                "overall_gate": "ship",
+                "ship_ready": True,
+                "failure_counts": {},
+            }
+            routes = {
+                "channel_payloads": {"slack_webhook": str(payload_path)},
+                "rules": [
+                    {
+                        "event_names": ["schedule"],
+                        "channel": "slack_webhook",
+                        "reason": "scheduled ship-ready notifications go to slack",
+                    }
+                ],
+            }
+            policy = json.loads(DISPATCH_POLICY_MANIFEST.read_text(encoding="utf-8"))
+
+            payload = run_delivery(
+                digest=digest,
+                routes=routes,
+                dispatch_policy_manifest=policy,
+                event_name="schedule",
+                default_channel="none",
+                override_channel=None,
+                dry_run=True,
+                max_attempts=1,
+                retry_delay_seconds=0.0,
+                explicit_idempotency_key=None,
+                explicit_webhook_url="https://hooks.slack.com/services/T000/B000/demo",
+                explicit_signing_secret=None,
+                state_path=root / "notification_dispatch_state.json",
+            )
+
+        self.assertEqual(payload["route"]["channel"], "slack_webhook")
+        self.assertTrue(payload["dispatch_policy"]["allow_dispatch"])
+        self.assertEqual(payload["dispatch_result"]["final_status"], "dry_run")
+        self.assertEqual(payload["dispatch_result"]["payload_path"], str(payload_path))
+        self.assertEqual(payload["delivery_status"], "dry_run")
+        self.assertFalse(payload["dispatched"])
+
     def test_policy_gate_report_mode_does_not_fail_on_hold(self) -> None:
         with tempfile.TemporaryDirectory() as tmp_dir:
             tmp_path = Path(tmp_dir)

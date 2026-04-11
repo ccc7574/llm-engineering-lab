@@ -179,6 +179,29 @@ python3 code/stage_harness/failure_replay.py \
 
 This last command is important even when the suite passes. Weak baselines still produce failed samples, and the replay plan turns them into ready-to-run `--task-id` commands under `runs/replay/`.
 
+Generate the end-to-end notification delivery decision:
+
+```bash
+python3 code/stage_harness/notification_delivery.py \
+  --digest runs/notification_digest.json \
+  --routes manifests/notification_routes.json \
+  --dispatch-policy manifests/notification_dispatch_policy.json \
+  --event-name workflow_dispatch \
+  --default-channel none \
+  --state-path runs/notification_dispatch_state.json \
+  --route-output runs/notification_route.json \
+  --dispatch-policy-output runs/notification_dispatch_policy.json \
+  --dispatch-result-output runs/notification_dispatch_result.json \
+  --output runs/notification_delivery.json \
+  --md-output runs/notification_delivery.md
+```
+
+This command is the shortest path to answer:
+
+- where would this run route?
+- is live dispatch allowed?
+- what happened when delivery was attempted?
+
 ## Recommended Reading Order for Operators
 
 If you are treating this repo like a release-facing lab instead of a tutorial, use this order:

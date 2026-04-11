@@ -33,6 +33,9 @@ This means the project is no longer just a bag of runnable demos. It has a real 
   - `runs/artifact_catalog.md`
   - `runs/failure_replay_plan.json`
   - `runs/failure_replay_plan.md`
+- delivery orchestration:
+  - `runs/notification_delivery.json`
+  - `runs/notification_delivery.md`
 - release-facing artifacts:
   - `runs/release_note.json`
   - `runs/release_note.md`
@@ -158,6 +161,17 @@ Use this when you need the next action, not just the diagnosis:
 - generated `--task-id` commands with dedicated `runs/replay/*.json` outputs
 
 This is useful even when the suite passes, because weak baseline reports still expose failed samples that are worth replaying and teaching from.
+
+### `runs/notification_delivery.md`
+
+Use this when you want the end-to-end notification answer in one place:
+
+- which channel route selection chose
+- whether dispatch policy allowed live sending
+- whether dispatch was actually attempted
+- why delivery was skipped or failed
+
+This is the artifact that turns route, policy, and dispatch from separate debugging steps into one operator-facing decision trail.
 
 ### `runs/release_note.md`
 

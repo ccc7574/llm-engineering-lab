@@ -74,6 +74,39 @@
 
 ## Session Entry
 
+- Date: 2026-04-11 01:18 CST
+- Goal: 把通知链里的 route、dispatch policy 和 live dispatch 收敛成统一 delivery 入口。
+- Status: 已完成 `notification_delivery.py`、workflow 接线、测试扩展和中英文文档更新；下一步是跑通知链测试与全量单测、提交与 push。
+- Key findings:
+  - 当前通知链的主要复杂度已经不在单个脚本能力，而在 workflow 和本地都要重复拼接 route / policy / dispatch 三段逻辑。
+  - 如果没有统一 delivery artifact，reviewer 很难快速判断“没发通知”到底是 policy deny、缺 payload 还是 webhook 配置问题。
+  - 把 delivery orchestration 独立成单入口后，workflow 和本地运行终于开始复用完全相同的编排路径。
+- Files touched:
+  - `code/stage_harness/notification_delivery.py`
+  - `tests/test_notification_harness.py`
+  - `.github/workflows/regression-suite.yml`
+  - `tasks/H37_notification_delivery_orchestration.md`
+  - `tasks/README.md`
+  - `tracks/harness/README.md`
+  - `code/README.md`
+  - `README.md`
+  - `README_EN.md`
+  - `docs/runbook.md`
+  - `docs/runbook_en.md`
+  - `docs/ci_regression_guide_zh.md`
+  - `docs/ci_regression_guide_en.md`
+  - `docs/session_handoff.md`
+- Validation:
+  - `python3 -m py_compile code/stage_harness/notification_delivery.py`
+  - `python3 -m unittest tests/test_notification_harness.py`
+  - `python3 -m unittest discover -s tests`
+  - `python3 code/stage_harness/notification_delivery.py --digest runs/notification_digest.json --routes manifests/notification_routes.json --dispatch-policy manifests/notification_dispatch_policy.json --event-name workflow_dispatch --default-channel none --dry-run --state-path runs/notification_dispatch_state.json --route-output runs/notification_route.json --dispatch-policy-output runs/notification_dispatch_policy.json --dispatch-result-output runs/notification_dispatch_result.json --output runs/notification_delivery.json --md-output runs/notification_delivery.md`
+- Next step:
+  - 提交并 push
+  - 继续检查剩余交付级缺口
+
+## Session Entry
+
 - Date: 2026-04-11 01:02 CST
 - Goal: 补英文交付细节文档，优先覆盖 runbook 和 CI / regression 指南。
 - Status: 已完成 `runbook_en.md`、`ci_regression_guide_en.md`，并接到 `README_EN.md` 与 `roadmap_v2_en.md`；下一步是提交与 push，然后继续扫描剩余交付缺口。

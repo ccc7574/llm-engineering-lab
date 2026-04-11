@@ -150,6 +150,7 @@ Harness 能力线的最小入口。
 - `notification_digest.py`
 - `notification_payloads.py`
 - `notification_dispatch.py`
+- `notification_delivery.py`
 - `notification_route.py`
 - `notification_route_matrix.py`
 - `notification_route_diff.py`
@@ -188,6 +189,7 @@ Harness 能力线的最小入口。
 - 支持 PR comment GitHub API 失败诊断和 markdown 结果摘要
 - 支持 live webhook host 校验、Feishu secret 签名和 dispatch security artifact
 - 支持 artifact catalog、baseline snapshot 和 failure replay plan，把产物治理和 task/sample 级失败重放都纳入标准链路
+- 支持 notification delivery orchestration，把 route、dispatch policy 和 live dispatch 收敛到统一入口
 
 ### `stage_agentic`
 

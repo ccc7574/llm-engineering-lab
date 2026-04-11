@@ -154,6 +154,7 @@ V2 的任务体系会逐步从旧的 `T00-T32` 编号，迁移到按能力线组
 - [H34_artifact_catalog_and_lifecycle.md](/Volumes/ExtaData/newcode/llm-engineering-lab/tasks/H34_artifact_catalog_and_lifecycle.md)
 - [H35_baseline_snapshot_governance.md](/Volumes/ExtaData/newcode/llm-engineering-lab/tasks/H35_baseline_snapshot_governance.md)
 - [H36_failure_replay_plan.md](/Volumes/ExtaData/newcode/llm-engineering-lab/tasks/H36_failure_replay_plan.md)
+- [H37_notification_delivery_orchestration.md](/Volumes/ExtaData/newcode/llm-engineering-lab/tasks/H37_notification_delivery_orchestration.md)
 - `H20` 周报与复盘模板
 
 ## 旧任务到新任务的映射

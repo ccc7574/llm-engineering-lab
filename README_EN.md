@@ -68,6 +68,7 @@ The repo already has runnable starter paths across all six tracks. It now also i
 - multimodal grounding and multi-page document routing
 - agentic reflection eval
 - a manifest-driven regression suite, summary board, release gate, notification routing, and CI launcher
+- unified notification delivery orchestration across route, dispatch policy, and live dispatch
 - English runbook and CI/regression operator docs
 
 This means the repo is already useful as a production-minded teaching base, even though some deeper layers are still being expanded.

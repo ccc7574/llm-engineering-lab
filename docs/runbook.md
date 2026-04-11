@@ -618,6 +618,38 @@ python3 code/stage_harness/notification_dispatch_policy.py \
 - `workflow_dispatch` 只有高严重度告警或显式 route override 时才允许真实发送
 - 其他事件默认只生成 artifact，不直接 live dispatch
 
+## `H37`: Notification Delivery Orchestration
+
+如果要把 route、dispatch policy 和 live dispatch 串成一条统一入口，可以执行:
+
+```bash
+python3 code/stage_harness/notification_delivery.py \
+  --digest runs/notification_digest.json \
+  --routes manifests/notification_routes.json \
+  --dispatch-policy manifests/notification_dispatch_policy.json \
+  --event-name workflow_dispatch \
+  --default-channel none \
+  --state-path runs/notification_dispatch_state.json \
+  --route-output runs/notification_route.json \
+  --dispatch-policy-output runs/notification_dispatch_policy.json \
+  --dispatch-result-output runs/notification_dispatch_result.json \
+  --output runs/notification_delivery.json \
+  --md-output runs/notification_delivery.md
+```
+
+这条路径会统一产出:
+
+- `notification_route.json`
+- `notification_dispatch_policy.json`
+- `notification_dispatch_result.json`
+- `notification_delivery.json`
+
+它适合:
+
+- 本地一次性模拟完整通知链
+- CI 复用同一段 route / policy / dispatch 编排
+- release owner 快速确认“这次有没有尝试发送、为什么没发送、最终状态是什么”
+
 ## `H25`: Notification Review Summary
 
 如果要给 reviewer / release owner 产出压缩版审阅结论，可以执行:
