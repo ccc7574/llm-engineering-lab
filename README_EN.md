@@ -63,7 +63,7 @@ It is closer to:
 
 The repo already has runnable starter paths across all six tracks. It now also includes:
 
-- toy DPO / GRPO-like post-training scripts
+- toy DPO / GRPO-like post-training scripts plus alignment eval
 - coding judge / verifier, multi-file patching, agentic coding, SWE-bench-style triage, and `pass@k` sampling eval
 - multimodal grounding, multi-page document routing, and document workflow joins
 - agentic reflection and planner-observer eval

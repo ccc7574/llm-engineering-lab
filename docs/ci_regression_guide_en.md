@@ -29,6 +29,13 @@ The agentic ladder now spans four layers as well:
 - tool use vs reflective repair
 - stateful execution vs planner/observer governance
 
+The post-training ladder now includes release-facing preference checks:
+
+- base checkpoint vs DPO aligned checkpoint
+- base checkpoint vs GRPO-like aligned checkpoint
+- chosen win rate / preference margin gains
+- drift to reference via a KL-style proxy
+
 ## Core Files
 
 - suite runner: `code/stage_harness/suite_runner.py`

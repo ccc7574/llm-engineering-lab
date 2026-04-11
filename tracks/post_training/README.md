@@ -20,14 +20,21 @@
 - [S20_toy_dpo.md](/Volumes/ExtaData/newcode/llm-engineering-lab/tasks/S20_toy_dpo.md)
 - [S21_toy_grpo.md](/Volumes/ExtaData/newcode/llm-engineering-lab/tasks/S21_toy_grpo.md)
 - [S22_post_training_review.md](/Volumes/ExtaData/newcode/llm-engineering-lab/tasks/S22_post_training_review.md)
+- [S23_alignment_eval_and_visualization.md](/Volumes/ExtaData/newcode/llm-engineering-lab/tasks/S23_alignment_eval_and_visualization.md)
 
 当前仓库中最直接相关的实现:
 
 - [stage2_sft](/Volumes/ExtaData/newcode/llm-engineering-lab/code/stage2_sft)
 - [stage3_reasoning](/Volumes/ExtaData/newcode/llm-engineering-lab/code/stage3_reasoning)
 - [stage4_verifier](/Volumes/ExtaData/newcode/llm-engineering-lab/code/stage4_verifier)
+- [stage5_toy_alignment](/Volumes/ExtaData/newcode/llm-engineering-lab/code/stage5_toy_alignment)
 
 当前主要缺口:
 
 - `S12` rejection sampling 仍缺 runnable 脚本
-- `S20-S21` 已有 toy runnable 入口，但还缺更完整的 alignment eval 与结果可视化
+
+当前已补到:
+
+- `S20-S21` 已有 toy runnable 入口
+- 已形成 base vs `DPO`、base vs `GRPO-like` 的 alignment eval / regression 对照
+- 已把 alignment 结果接进 summary board，可直接看 chosen win rate、preference margin 和 drift

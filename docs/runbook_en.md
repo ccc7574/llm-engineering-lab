@@ -78,9 +78,37 @@ python3 code/stage5_toy_alignment/train_grpo.py \
   --data-path datasets/tiny_preferences/train.jsonl \
   --init-from runs/stage2_sft_smoke/ckpt.pt \
   --out-dir runs/stage5_grpo
+
+python3 eval/alignment_eval.py \
+  --checkpoint runs/stage2_sft_smoke/ckpt.pt \
+  --reference-checkpoint runs/stage2_sft_smoke/ckpt.pt \
+  --data-path datasets/tiny_preferences/train.jsonl \
+  --report-path runs/post_training_base_eval.json
+
+python3 eval/alignment_eval.py \
+  --checkpoint runs/stage5_dpo/ckpt.pt \
+  --reference-checkpoint runs/stage2_sft_smoke/ckpt.pt \
+  --data-path datasets/tiny_preferences/train.jsonl \
+  --report-path runs/post_training_dpo_eval.json
+
+python3 eval/alignment_eval.py \
+  --checkpoint runs/stage5_grpo/ckpt.pt \
+  --reference-checkpoint runs/stage2_sft_smoke/ckpt.pt \
+  --data-path datasets/tiny_preferences/train.jsonl \
+  --report-path runs/post_training_grpo_eval.json
+
+python3 code/stage_harness/regression_compare.py \
+  --baseline-report runs/post_training_base_eval.json \
+  --candidate-report runs/post_training_dpo_eval.json \
+  --output runs/post_training_dpo_regression_diff.json
+
+python3 code/stage_harness/regression_compare.py \
+  --baseline-report runs/post_training_base_eval.json \
+  --candidate-report runs/post_training_grpo_eval.json \
+  --output runs/post_training_grpo_regression_diff.json
 ```
 
-These scripts are deliberately small. The point is to make preference signals, reference anchoring, and update tradeoffs visible to non-research engineers.
+These scripts are deliberately small. The point is to make preference signals, reference anchoring, update tradeoffs, and the final win-rate / margin gains visible to non-research engineers.
 
 ## `C00-C21`: Coding Evaluation Ladder
 

@@ -456,6 +456,8 @@ workflow 会做这些事:
 - Coding Multi-File Patch
 - Coding Test Generation
 - Coding Agentic Repair
+- Post-Training DPO
+- Post-Training GRPO
 - Agentic
 - Agentic Memory
 - Agentic Reflection

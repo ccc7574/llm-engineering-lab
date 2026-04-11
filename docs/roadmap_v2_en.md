@@ -143,6 +143,7 @@ Suggested tasks:
 - `S20`
 - `S21`
 - `S22`
+- `S23`
 
 ### Track C: Coding
 

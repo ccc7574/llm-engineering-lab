@@ -81,6 +81,8 @@ def infer_scope_tags(step_name: str) -> list[str]:
         return ["agentic"]
     if step_name.startswith("multimodal_"):
         return ["multimodal"]
+    if step_name.startswith("post_training_"):
+        return ["post_training"]
     if step_name in META_STEP_NAMES:
         return ["harness"]
     return []

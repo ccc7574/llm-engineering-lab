@@ -180,6 +180,7 @@ llm-engineering-lab/
 - `S20` toy DPO
 - `S21` toy GRPO / reward-guided update
 - `S22` 后训练收益、成本、风险复盘
+- `S23` alignment eval and visualization
 
 ## Track C: Coding
 

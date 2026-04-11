@@ -35,6 +35,7 @@
 
 - 偏好优化前后输出选择倾向的变化
 - 是否出现过拟合或风格塌缩
+- chosen win rate / preference margin / KL drift 对照
 
 ### Coding
 

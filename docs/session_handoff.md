@@ -74,6 +74,48 @@
 
 ## Session Entry
 
+- Date: 2026-04-11 10:03 CST
+- Goal: 把 `stage5_toy_alignment` 从“可训练的教学脚本”提升到“可评测、可回归、可在 summary board 中审阅”的 release-facing 实验链。
+- Status: 已完成 `eval/alignment_eval.py`、`S23` 任务卡、post-training suite 接线、summary board 指标扩展和中英文 runbook/CI 文档更新；下一步是提交与 push，然后继续看 `M10` multimodal SFT 或 `S12` rejection sampling runnable 的缺口。
+- Key findings:
+  - 如果只看 stage5 的训练日志，很容易误判“是否真的学到了偏好”；把 base vs aligned checkpoint 拉到统一 evaluator 里之后，收益和 drift 才能一起看。
+  - 对这个 tiny preference 集来说，`policy_chosen_win_rate` 太离散，不适合作为主门槛；`mean_preference_margin` 更稳定，更适合作为 regression primary metric。
+  - tokenizer 扩容时，如果不消掉新增 token / position 的随机初始化噪声，base 对 base 也会出现假性 drift，alignment 指标会被污染。
+- Files touched:
+  - `code/stage5_toy_alignment/utils.py`
+  - `eval/alignment_eval.py`
+  - `tests/test_alignment_eval.py`
+  - `tests/test_stage5_toy_alignment.py`
+  - `code/stage_harness/summary_board.py`
+  - `code/stage_harness/suite_runner.py`
+  - `manifests/regression_v2_suite.json`
+  - `tracks/post_training/README.md`
+  - `tasks/S23_alignment_eval_and_visualization.md`
+  - `tasks/README.md`
+  - `docs/roadmap_v2.md`
+  - `docs/roadmap_v2_en.md`
+  - `README.md`
+  - `README_EN.md`
+  - `code/README.md`
+  - `eval/README.md`
+  - `docs/runbook.md`
+  - `docs/runbook_en.md`
+  - `docs/ci_regression_guide_zh.md`
+  - `docs/ci_regression_guide_en.md`
+  - `docs/delivery_backlog.md`
+  - `docs/session_handoff.md`
+- Validation:
+  - `python3 -m py_compile code/stage5_toy_alignment/utils.py eval/alignment_eval.py code/stage_harness/summary_board.py code/stage_harness/suite_runner.py`
+  - `python3 -m unittest tests/test_stage5_toy_alignment.py tests/test_alignment_eval.py`
+  - `python3 eval/alignment_eval.py --checkpoint runs/stage2_sft_smoke/ckpt.pt --reference-checkpoint runs/stage2_sft_smoke/ckpt.pt --data-path datasets/tiny_preferences/train.jsonl --report-path runs/post_training_base_eval.json`
+  - `python3 -m unittest discover -s tests`
+  - `python3 code/stage_harness/suite_runner.py --manifest manifests/regression_v2_suite.json --output runs/regression_suite_report.json --md-output runs/regression_suite_report.md --strict --require-ship`
+- Next step:
+  - 提交并 push
+  - 优先看 `M10` multimodal SFT 或 `S12` rejection sampling runnable
+
+## Session Entry
+
 - Date: 2026-04-11 09:24 CST
 - Goal: 把 agentic 路线从 memory / reflection 扩到 planner-executor-observer 级工作流，并接进回归主链。
 - Status: 已完成 `planner_observer` 策略、planner 数据集、测试、suite 接线、summary board 指标、中英文文档和一张新 SVG；下一步是提交与 push，然后继续扫描下一个 production-grade 缺口。

@@ -49,15 +49,18 @@ def initialize_from_checkpoint(model: MiniGPT, checkpoint: dict) -> None:
             target_state[key] = source_value
             continue
         if key in {"token_embedding.weight", "lm_head.weight"} and source_value.ndim == 2:
+            target_value.zero_()
             rows = min(source_value.shape[0], target_value.shape[0])
             cols = min(source_value.shape[1], target_value.shape[1])
             target_value[:rows, :cols] = source_value[:rows, :cols]
             continue
         if key == "lm_head.bias" and source_value.ndim == 1:
+            target_value.zero_()
             rows = min(source_value.shape[0], target_value.shape[0])
             target_value[:rows] = source_value[:rows]
             continue
         if key == "position_embedding.weight" and source_value.ndim == 2:
+            target_value.zero_()
             rows = min(source_value.shape[0], target_value.shape[0])
             cols = min(source_value.shape[1], target_value.shape[1])
             target_value[:rows, :cols] = source_value[:rows, :cols]
@@ -108,6 +111,11 @@ def evaluate_preference_pairs(
     ref_margin = ref_chosen - ref_rejected
     preference_margin = policy_margin - ref_margin
     dpo_loss = -F.logsigmoid(beta * preference_margin).mean().item()
+    reference_chosen_win_rate = (ref_margin > 0).float().mean().item()
+    policy_chosen_win_rate = (policy_margin > 0).float().mean().item()
+    mean_kl_proxy = (
+        ((policy_chosen - ref_chosen) ** 2 + (policy_rejected - ref_rejected) ** 2) / 2
+    ).mean().item()
 
     return {
         "pair_count": len(pairs),
@@ -116,7 +124,10 @@ def evaluate_preference_pairs(
         "mean_policy_margin": policy_margin.mean().item(),
         "mean_reference_margin": ref_margin.mean().item(),
         "mean_preference_margin": preference_margin.mean().item(),
-        "policy_chosen_win_rate": (policy_margin > 0).float().mean().item(),
+        "policy_chosen_win_rate": policy_chosen_win_rate,
+        "reference_chosen_win_rate": reference_chosen_win_rate,
+        "chosen_win_rate_delta": policy_chosen_win_rate - reference_chosen_win_rate,
+        "mean_kl_proxy": mean_kl_proxy,
         "dpo_loss": dpo_loss,
     }
 

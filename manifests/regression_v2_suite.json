@@ -38,6 +38,14 @@
       "tracks/agentic/**",
       "tasks/A*.md"
     ],
+    "post_training": [
+      "code/stage5_toy_alignment/**",
+      "eval/alignment_eval.py",
+      "datasets/tiny_preferences/**",
+      "tracks/post_training/**",
+      "tasks/S*.md",
+      "assets/figures/post_training_*"
+    ],
     "multimodal": [
       "code/stage_multimodal/**",
       "eval/multimodal_eval.py",
@@ -215,6 +223,41 @@
       "name": "agentic_coding_single_pass",
       "command": ["python3", "eval/agentic_coding_eval.py", "--data-path", "datasets/tiny_agentic_coding/eval.jsonl", "--strategy", "single_pass", "--report-path", "runs/agentic_coding_single_pass.json"],
       "expected_outputs": ["runs/agentic_coding_single_pass.json"]
+    },
+    {
+      "name": "post_training_base_eval",
+      "command": ["python3", "eval/alignment_eval.py", "--checkpoint", "runs/stage2_sft_smoke/ckpt.pt", "--reference-checkpoint", "runs/stage2_sft_smoke/ckpt.pt", "--data-path", "datasets/tiny_preferences/train.jsonl", "--report-path", "runs/post_training_base_eval.json"],
+      "expected_outputs": ["runs/post_training_base_eval.json"]
+    },
+    {
+      "name": "post_training_dpo_train",
+      "command": ["python3", "code/stage5_toy_alignment/train_dpo.py", "--data-path", "datasets/tiny_preferences/train.jsonl", "--init-from", "runs/stage2_sft_smoke/ckpt.pt", "--out-dir", "runs/stage5_dpo_suite_smoke", "--max-iters", "20", "--eval-interval", "20", "--batch-size", "2", "--learning-rate", "5e-4"],
+      "expected_outputs": ["runs/stage5_dpo_suite_smoke/ckpt.pt", "runs/stage5_dpo_suite_smoke/train_state.json"]
+    },
+    {
+      "name": "post_training_dpo_eval",
+      "command": ["python3", "eval/alignment_eval.py", "--checkpoint", "runs/stage5_dpo_suite_smoke/ckpt.pt", "--reference-checkpoint", "runs/stage2_sft_smoke/ckpt.pt", "--data-path", "datasets/tiny_preferences/train.jsonl", "--report-path", "runs/post_training_dpo_eval.json"],
+      "expected_outputs": ["runs/post_training_dpo_eval.json"]
+    },
+    {
+      "name": "post_training_dpo_regression_diff",
+      "command": ["python3", "code/stage_harness/regression_compare.py", "--baseline-report", "runs/post_training_base_eval.json", "--candidate-report", "runs/post_training_dpo_eval.json", "--output", "runs/post_training_dpo_regression_diff.json"],
+      "expected_outputs": ["runs/post_training_dpo_regression_diff.json"]
+    },
+    {
+      "name": "post_training_grpo_train",
+      "command": ["python3", "code/stage5_toy_alignment/train_grpo.py", "--data-path", "datasets/tiny_preferences/train.jsonl", "--init-from", "runs/stage2_sft_smoke/ckpt.pt", "--out-dir", "runs/stage5_grpo_suite_smoke", "--max-iters", "20", "--eval-interval", "20", "--batch-size", "2", "--learning-rate", "5e-4"],
+      "expected_outputs": ["runs/stage5_grpo_suite_smoke/ckpt.pt", "runs/stage5_grpo_suite_smoke/train_state.json"]
+    },
+    {
+      "name": "post_training_grpo_eval",
+      "command": ["python3", "eval/alignment_eval.py", "--checkpoint", "runs/stage5_grpo_suite_smoke/ckpt.pt", "--reference-checkpoint", "runs/stage2_sft_smoke/ckpt.pt", "--data-path", "datasets/tiny_preferences/train.jsonl", "--report-path", "runs/post_training_grpo_eval.json"],
+      "expected_outputs": ["runs/post_training_grpo_eval.json"]
+    },
+    {
+      "name": "post_training_grpo_regression_diff",
+      "command": ["python3", "code/stage_harness/regression_compare.py", "--baseline-report", "runs/post_training_base_eval.json", "--candidate-report", "runs/post_training_grpo_eval.json", "--output", "runs/post_training_grpo_regression_diff.json"],
+      "expected_outputs": ["runs/post_training_grpo_regression_diff.json"]
     },
     {
       "name": "agentic_coding_repair_loop",

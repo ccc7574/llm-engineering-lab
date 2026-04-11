@@ -64,6 +64,7 @@ V2 的任务体系会逐步从旧的 `T00-T32` 编号，迁移到按能力线组
 - [S20_toy_dpo.md](/Volumes/ExtaData/newcode/llm-engineering-lab/tasks/S20_toy_dpo.md)
 - [S21_toy_grpo.md](/Volumes/ExtaData/newcode/llm-engineering-lab/tasks/S21_toy_grpo.md)
 - [S22_post_training_review.md](/Volumes/ExtaData/newcode/llm-engineering-lab/tasks/S22_post_training_review.md)
+- [S23_alignment_eval_and_visualization.md](/Volumes/ExtaData/newcode/llm-engineering-lab/tasks/S23_alignment_eval_and_visualization.md)
 
 ### `Track C: Coding`
 

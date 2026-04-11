@@ -105,6 +105,18 @@ TRACK_CONFIG = {
         "quality_gate": 0.05,
         "cost_metrics": ["avg_visual_tokens_used", "avg_observation_steps", "avg_reasoning_steps"],
     },
+    "post_training_dpo": {
+        "label": "Post-Training DPO",
+        "primary_metric": "mean_preference_margin",
+        "quality_gate": 0.05,
+        "cost_metrics": ["mean_kl_proxy", "dpo_loss", "policy_chosen_win_rate"],
+    },
+    "post_training_grpo": {
+        "label": "Post-Training GRPO",
+        "primary_metric": "mean_preference_margin",
+        "quality_gate": 0.05,
+        "cost_metrics": ["mean_kl_proxy", "dpo_loss", "policy_chosen_win_rate"],
+    },
     "repo_context": {
         "label": "Coding Repo Context",
         "primary_metric": "pass_at_1",

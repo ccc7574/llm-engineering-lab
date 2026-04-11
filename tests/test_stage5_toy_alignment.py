@@ -22,6 +22,7 @@ class Stage5ToyAlignmentTests(unittest.TestCase):
                 "code/stage5_toy_alignment/utils.py",
                 "code/stage5_toy_alignment/train_dpo.py",
                 "code/stage5_toy_alignment/train_grpo.py",
+                "eval/alignment_eval.py",
             ],
             cwd=REPO_ROOT,
             capture_output=True,

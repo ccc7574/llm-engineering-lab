@@ -99,6 +99,34 @@ python3 code/stage5_toy_alignment/train_grpo.py \
   --data-path datasets/tiny_preferences/train.jsonl \
   --init-from runs/stage2_sft_smoke/ckpt.pt \
   --out-dir runs/stage5_grpo
+
+python3 eval/alignment_eval.py \
+  --checkpoint runs/stage2_sft_smoke/ckpt.pt \
+  --reference-checkpoint runs/stage2_sft_smoke/ckpt.pt \
+  --data-path datasets/tiny_preferences/train.jsonl \
+  --report-path runs/post_training_base_eval.json
+
+python3 eval/alignment_eval.py \
+  --checkpoint runs/stage5_dpo/ckpt.pt \
+  --reference-checkpoint runs/stage2_sft_smoke/ckpt.pt \
+  --data-path datasets/tiny_preferences/train.jsonl \
+  --report-path runs/post_training_dpo_eval.json
+
+python3 eval/alignment_eval.py \
+  --checkpoint runs/stage5_grpo/ckpt.pt \
+  --reference-checkpoint runs/stage2_sft_smoke/ckpt.pt \
+  --data-path datasets/tiny_preferences/train.jsonl \
+  --report-path runs/post_training_grpo_eval.json
+
+python3 code/stage_harness/regression_compare.py \
+  --baseline-report runs/post_training_base_eval.json \
+  --candidate-report runs/post_training_dpo_eval.json \
+  --output runs/post_training_dpo_regression_diff.json
+
+python3 code/stage_harness/regression_compare.py \
+  --baseline-report runs/post_training_base_eval.json \
+  --candidate-report runs/post_training_grpo_eval.json \
+  --output runs/post_training_grpo_regression_diff.json
 ```
 
 这两条路线当前都是教学级最小实现:
@@ -111,6 +139,7 @@ python3 code/stage5_toy_alignment/train_grpo.py \
 - chosen / rejected 对怎样变成训练信号
 - reference model 为什么重要
 - 偏好优化和 SFT、rejection sampling 的边界是什么
+- chosen win rate、preference margin 和 drift 到底有没有改善
 
 ## `C00-C03`: Coding Starter Path
 

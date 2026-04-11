@@ -44,6 +44,9 @@
 11. [partial] 为关键任务补更多可视化资产
    - 当前已补 Harness artifact governance、Coding eval ladder、Post-Training alignment、Company route map、Pretraining data mixture、Multimodal grounding 和 Agentic reflection 图；后续继续补更多训练/评测架构图和案例决策图。
 
+12. [done] 把 `stage5_toy_alignment` 接进 eval / regression / summary board
+   - 当前已形成 base vs DPO、base vs GRPO-like 的对照，并输出 chosen win rate、preference margin、KL drift 相关指标。
+
 ## 当前执行顺序
 
 按以下顺序推进:
