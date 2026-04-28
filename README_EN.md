@@ -6,6 +6,19 @@ English readers can use this file as the primary entry point. The Chinese primar
 
 Instead of presenting isolated concepts, the repo places the reader in a 2026-style model team environment. You learn pretraining, post-training, coding, multimodal, agentic, and harness engineering by completing realistic tasks, reading small but runnable code, and interpreting regression artifacts the way a real team would.
 
+## Reading Order
+
+| Order | Start Here | What to Focus On | Related Files |
+| --- | --- | --- | --- |
+| 1 | Project charter | Understand why this repo is a task-driven model engineering lab rather than a traditional tutorial | `docs/project_charter_en.md` |
+| 2 | V2 roadmap | Build the global map across pretraining, post-training, coding, multimodal, agentic, and harness tracks | `docs/roadmap_v2_en.md` |
+| 3 | Learning paths | Choose the right depth: Starter, Practitioner, or Production-minded | `docs/learning_paths_en.md`, `docs/role_learning_paths_en.md` |
+| 4 | Task system | Learn how work orders, task IDs, and V1-to-V2 mapping are organized | `tasks/README.md` |
+| 5 | Code entry points | Use runnable code to understand each track's smallest loop | `code/README.md`, `code/` |
+| 6 | Data and evals | See how training, SFT, coding, agentic, and multimodal data feed regression loops | `datasets/README.md`, `eval/README.md` |
+| 7 | Runbooks | Run the golden path and interpret CI/regression artifacts | `docs/runbook_en.md`, `docs/ci_regression_guide_en.md` |
+| 8 | Company cases | Compare big-tech, mid-company, and small-team engineering tradeoffs | `cases/README.md`, `cases/*/README.md` |
+
 ## What This Project Is
 
 This project is not:

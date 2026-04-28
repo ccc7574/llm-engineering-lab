@@ -6,6 +6,19 @@
 
 它不再把自己定义成“最小内部 AI 助手演练仓库”，而是把读者放进一个更接近 2026 真实团队协作的学习环境里: 你需要像模型团队的新工程师一样，围绕预训练、后训练、coding、多模态、agentic、harness 六条能力线，连续完成一组真实工单，逐步理解、掌握并实践模型优化。
 
+## 阅读顺序
+
+| 顺序 | 先看哪里 | 重点看什么 | 对应文件 |
+| --- | --- | --- | --- |
+| 1 | 项目章程 | 先确认这个仓库为什么不是传统教程，而是任务驱动的模型工程实验室 | `docs/project_charter.md` |
+| 2 | V2 路线图 | 建立六条能力线的全局地图：pretraining、post-training、coding、multimodal、agentic、harness | `docs/roadmap_v2.md` |
+| 3 | 学习路径 | 选择 Starter / Practitioner / Production-minded 的阅读和练习深度 | `docs/learning_paths.md`, `docs/role_learning_paths.md` |
+| 4 | 任务系统 | 了解工单编号、任务层级，以及 V1 到 V2 的映射关系 | `tasks/README.md` |
+| 5 | 代码入口 | 从可运行代码理解每条能力线的最小闭环 | `code/README.md`, `code/` |
+| 6 | 数据与评测 | 看训练、SFT、coding、agentic、multimodal 数据如何进入评测闭环 | `datasets/README.md`, `eval/README.md` |
+| 7 | 运行手册 | 按 golden path 跑通 starter path 和回归套件 | `docs/runbook.md`, `docs/ci_regression_guide_zh.md` |
+| 8 | 公司案例 | 从 bigtech / mid_company / small_team 三种组织约束理解工程取舍 | `cases/README.md`, `cases/*/README.md` |
+
 ## 项目定位
 
 这个项目不是:
