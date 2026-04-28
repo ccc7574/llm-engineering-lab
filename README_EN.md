@@ -2,6 +2,8 @@
 
 English readers can use this file as the primary entry point. The Chinese primary entry remains [README.md](/Volumes/ExtaData/newcode/llm-engineering-lab/README.md).
 
+Chinese learning guides are available in `docs/code-walkthrough.zh-CN.md`, `docs/design-principles.zh-CN.md`, and `docs/learning-labs/lab-01-run-starter-path.zh-CN.md`.
+
 `LLM Engineering Lab` is an immersive model engineering lab for software engineers who are not algorithm researchers.
 
 Instead of presenting isolated concepts, the repo places the reader in a 2026-style model team environment. You learn pretraining, post-training, coding, multimodal, agentic, and harness engineering by completing realistic tasks, reading small but runnable code, and interpreting regression artifacts the way a real team would.

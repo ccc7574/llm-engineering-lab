@@ -19,6 +19,14 @@
 | 7 | 运行手册 | 按 golden path 跑通 starter path 和回归套件 | `docs/runbook.md`, `docs/ci_regression_guide_zh.md` |
 | 8 | 公司案例 | 从 bigtech / mid_company / small_team 三种组织约束理解工程取舍 | `cases/README.md`, `cases/*/README.md` |
 
+## 辅助学习材料
+
+| 材料 | 适合什么时候看 | 文件 |
+| --- | --- | --- |
+| 代码导览 | 想按六条能力线理解数据、代码、评测、报告的闭环时 | `docs/code-walkthrough.zh-CN.md` |
+| 设计原则 | 想理解为什么这个仓库强调小模型、小数据、eval 和 harness 时 | `docs/design-principles.zh-CN.md` |
+| Lab 01 | 想用最短路径跑通 starter path，建立模型工程直觉时 | `docs/learning-labs/lab-01-run-starter-path.zh-CN.md` |
+
 ## 项目定位
 
 这个项目不是:
